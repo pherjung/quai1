@@ -15,7 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from calendrier import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('calendar/', views.CalendarView.as_view(), name='calendar'),
 ]
