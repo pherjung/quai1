@@ -21,6 +21,7 @@ from calendrier import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
+    path('accounts/', include('login.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('', auth_views.LoginView.as_view(), name='home')
 ]
