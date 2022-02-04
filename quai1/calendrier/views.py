@@ -1,6 +1,7 @@
 # from django.shortcuts import render
 from django.views import generic
 from django.utils.html import format_html, mark_safe
+from django.contrib.auth.mixins import LoginRequiredMixin
 import datetime
 import calendar
 
@@ -8,7 +9,7 @@ from .models import Shift
 from .utils import Calendar
 
 
-class CalendarView(generic.ListView):
+class CalendarView(LoginRequiredMixin, generic.ListView):
     model = Shift
     template_name = 'calendrier/body.html'
     login_url = '/accounts/login/'
