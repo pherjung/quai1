@@ -1,1 +1,6 @@
 env/
+manage.py
+db.sqlite3
+__pycache__/
+*.pyc
+migrations/
