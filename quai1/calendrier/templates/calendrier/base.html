@@ -13,8 +13,10 @@
     <!-- end -->
     <title>Quai1 ++</title>
     <link rel="stylesheet" href="{% static 'calendrier/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'calendrier/fontawesome-web/css/all.css' %}">
   </head>
   <body>
+    {% include 'calendrier/header.html' %}
     {% block content %}
     {% endblock %}
   </body>

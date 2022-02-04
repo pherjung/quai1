@@ -1,0 +1,27 @@
+<header>
+  <div class="topnav" id="topnav">
+    <a href="#home" class="active">Quai1 ++</a>
+    <a href="souhaits/">Souhaits</a>
+    <a href="aide/">Aide</a>
+    <a href="parametres/">Paramètres</a>
+    <a href="logout">Se déconnecter</a>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+
+  <script>
+    function myFunction() {
+      var x = document.getElementById("topnav");
+      if (x.className === "topnav") {
+          x.className += " responsive";
+            
+          } else {
+              x.className = "topnav";
+
+          }
+
+    }
+  </script>
+
+</header>
