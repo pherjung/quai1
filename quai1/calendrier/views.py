@@ -17,7 +17,7 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         date = get_date(self.request.GET.get('month', None))
-        cal = Calendar(date.year, date.month)
+        cal = Calendar(self.request, date.year, date.month)
         html_cal = mark_safe(cal.formatmonth(withyear=True))
         context['calendar'] = format_html(html_cal)
         context['next_month'] = next_month(date)

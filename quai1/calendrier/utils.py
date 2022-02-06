@@ -3,13 +3,15 @@ from .models import Shift
 
 
 class Calendar(HTMLCalendar):
-    def __init__(self, year=None, month=None):
+    def __init__(self, request, year=None, month=None):
+        self.user = request.user
         self.year = year
         self.month = month
         super(Calendar, self).__init__()
 
     def formatday(self, day, shift):
-        shift_per_day = shift.filter(date__day=day)
+        shift_per_day = shift.filter(date__day=day,
+                                     owner=self.user)
         cell = ''
         for shift in shift_per_day:
             cell += f'<p>{shift.shift_name}</p>'

@@ -1,4 +1,5 @@
 from django.db import models
+from login.models import CustomUser
 
 
 class Shift(models.Model):
@@ -10,3 +11,5 @@ class Shift(models.Model):
     date = models.DateField()
     start_hour = models.TimeField(None)
     end_hour = models.TimeField(None)
+    owner = models.ForeignKey(CustomUser,
+                              on_delete=models.DO_NOTHING)
