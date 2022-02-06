@@ -129,3 +129,5 @@ LOGIN_REDIRECT_URL = 'calendar'
 
 # Redirect user once he is logged out
 LOGOUT_REDIRECT_URL = 'home'
+
+AUTH_USER_MODEL = 'login.CustomUser'
