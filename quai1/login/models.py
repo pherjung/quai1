@@ -8,9 +8,9 @@ class CustomUser(AbstractUser):
     url = models.URLField(max_length=150)
     depot = models.CharField(max_length=50)
     phoneNbRegex = RegexValidator(regex=r"^\+?1?[\s|\d]{8,25}$")
-    phoneNB = models.CharField(validators=[phoneNbRegex],
-                               max_length=16,
-                               unique=True)
+    phone_nb = models.CharField(validators=[phoneNbRegex],
+                                max_length=16,
+                                unique=True)
 
     def __str__(self):
         return self.username

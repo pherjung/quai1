@@ -12,7 +12,7 @@ class CustomUserAdmin(UserAdmin):
     list_display = ['username',
                     'email',
                     'depot',
-                    'phoneNB',
+                    'phone_nb',
                     'url']
 
 
