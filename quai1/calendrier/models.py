@@ -9,7 +9,7 @@ class Shift(models.Model):
                 )
     shift_name = models.CharField(max_length=100)
     date = models.DateField()
-    start_hour = models.TimeField(None)
-    end_hour = models.TimeField(None)
+    start_hour = models.TimeField(null=True)
+    end_hour = models.TimeField(null=True)
     owner = models.ForeignKey(CustomUser,
                               on_delete=models.DO_NOTHING)
