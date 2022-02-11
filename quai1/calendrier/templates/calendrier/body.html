@@ -1,10 +1,20 @@
 {% extends 'calendrier/base.html' %}
 
 {% block content %}
-{{ calendar }}
-
-<div class="clearfix">
-    <a class="btn btn-info center" href="{% url 'calendar' %}?{{ prev_month }}" >Previous Month</a>
-    <a class="btn btn-info center" href="{% url 'calendar' %}?{{ next_month }}" >Next Month</a>
+<div class="parent">
+  <div class="calendar" id="calendar">
+    {{ calendar }}
+    <div class="button">
+      <a class="btn btn-info center" href="{% url 'calendar' %}?{{ prev_month }}" >Previous Month</a>
+      <a class="btn btn-info center" href="{% url 'calendar' %}?{{ next_month }}" >Next Month</a>
+    </div>
+  </div>
+  <div class="box" id="box">
+    <p>Ceci est un test</p>
+    <a href="javascript:void(0);" class="icon" onclick="myFunction('calendar');myFunction('box')">
+      <i class="fa fa-xmark"></i>
+    </a>
+  </div>
 </div>
+
 {% endblock %}

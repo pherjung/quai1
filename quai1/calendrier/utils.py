@@ -19,7 +19,7 @@ class Calendar(HTMLCalendar):
             cell += f'<p>{shift.end_hour} </p>'
 
         if day != 0:
-            return f"<td><div class='date'>{day}</div>{cell}</td>"
+            return f"<td onclick=myFunction('calendar');myFunction('box')><div class='date'>{day}</div>{cell}</td>"
 
         return '<td></td>'
 
