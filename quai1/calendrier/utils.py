@@ -1,3 +1,4 @@
+from datetime import datetime
 from calendar import HTMLCalendar
 from .models import Shift
 
@@ -19,7 +20,12 @@ class Calendar(HTMLCalendar):
             cell += f'<p>{shift.end_hour} </p>'
 
         if day != 0:
-            return f"<td onclick=myFunction('calendar');myFunction('box')><div class='date'>{day}</div>{cell}</td>"
+            date_obj = datetime(self.year, self.month, day)
+            day_name = date_obj.strftime("%A")
+            month_name = date_obj.strftime("%B")
+            class_date = f"{day_name}_{day}_{month_name}_{self.year}"
+            date_cell = f"<div class='date'>{day}</div>{cell}"
+            return f"<td class={class_date} onclick=\"displayBlock(this, 'calendar')\">{date_cell}</td>"
 
         return '<td></td>'
 
