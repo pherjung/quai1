@@ -5,19 +5,20 @@
     <a href="aide/">Aide</a>
     <a href="parametres/">Paramètres</a>
     <a href="{% url 'logout' %}">Se déconnecter</a>
-    <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+    <a href="javascript:void(0);" class="icon" onclick="myFunction('topnav')">
       <i class="fa fa-bars"></i>
     </a>
   </div>
 
   <script>
-    function myFunction() {
-      var x = document.getElementById("topnav");
-      if (x.className === "topnav") {
+    function myFunction(id) {
+      var x = document.getElementById(id);
+      console.log(id)
+      if (x.className === id) {
           x.className += " responsive";
             
           } else {
-              x.className = "topnav";
+              x.className = id;
 
           }
 
