@@ -1,23 +1,18 @@
 function myFunction(id) {
   var x = document.getElementById(id);
-  console.log(id)
   if (x.className === id) {
     x.className += " responsive";
-
 
   } else {
     x.className = id;
 
-
   }
-
 
 }
 
 function switchBlock() {
   myFunction('calendar')
   myFunction('box')
-
 
 }
 
