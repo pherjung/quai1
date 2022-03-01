@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'calendrier',
     'login',
+    'exchange',
 ]
 
 MIDDLEWARE = [

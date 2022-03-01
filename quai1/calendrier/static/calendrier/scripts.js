@@ -32,8 +32,28 @@ function displayBlock(obj, id) {
 
   }
 
+  date = document.getElementById("id_date")
+  date.setAttribute('value', full_date)
+  forms = document.getElementsByTagName('form')
+
+  if (shift === 'RT' || shift === 'RTT' || shift === 'CT' || shift === 'CTT') {
+    var form = 'rest_form'
+
+  } else if (shift != 'F') {
+    //var options = []
+
   }
 
+  if (shift != 'F') {
+    //Set type=hidden to all children
+    for (let i = 0; i < forms.length; i++) {
+      forms[i].style.visibility = "hidden"
 
+    }
+
+    //Show wished input
+    document.getElementById(form).style.visibility = "visible"
+
+  }
 
 }

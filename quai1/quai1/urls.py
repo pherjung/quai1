@@ -17,11 +17,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from calendrier import views
+from exchange import views as forms
 
 urlpatterns = [
+    path('', auth_views.LoginView.as_view(), name='home'),
     path('admin/', admin.site.urls),
-    path('calendar/', views.CalendarView.as_view(), name='calendar'),
     path('accounts/', include('login.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('', auth_views.LoginView.as_view(), name='home')
+    path('calendar/', views.CalendarView.as_view(), name='calendar'),
+    path('', include('exchange.urls')),
 ]

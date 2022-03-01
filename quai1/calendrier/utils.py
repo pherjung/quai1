@@ -15,7 +15,8 @@ class Calendar(HTMLCalendar):
                                      owner=self.user)
         cell = ''
         for shift in shift_per_day:
-            cell += f'<p>{shift.shift_name}</p>'
+            info = f"class={shift.shift_name} id ='shift'"
+            cell += f"<p {info}>{shift.shift_name}</p>"
             cell += f'<p>{shift.start_hour}</p>'
             cell += f'<p>{shift.end_hour} </p>'
 
@@ -25,7 +26,8 @@ class Calendar(HTMLCalendar):
             month_name = date_obj.strftime("%B")
             class_date = f"{day_name}_{day}_{month_name}_{self.year}"
             date_cell = f"<div class='date'>{day}</div>{cell}"
-            return f"<td class={class_date} onclick=\"displayBlock(this, 'calendar')\">{date_cell}</td>"
+            param = f"class={class_date} onclick=\"displayBlock(this, 'calendar')\""
+            return f"<td {param}>{date_cell}</td>"
 
         return '<td></td>'
 
