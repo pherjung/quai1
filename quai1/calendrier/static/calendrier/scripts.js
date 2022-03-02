@@ -32,8 +32,12 @@ function displayBlock(obj, id) {
 
   }
 
-  date = document.getElementById("id_date")
-  date.setAttribute('value', full_date)
+  dates = document.getElementsByName('date')
+  for (let u = 0; u < dates.length; u++) {
+    dates[u].setAttribute('value', full_date)
+
+  }
+
   forms = document.getElementsByTagName('form')
 
   if (shift === 'RT' || shift === 'RTT' || shift === 'CT' || shift === 'CTT') {
