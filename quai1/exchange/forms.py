@@ -7,7 +7,7 @@ class RestForms(forms.Form):
         ('give_rest', 'Mettre le congé en concours'),
     ]
     date = forms.CharField(widget=forms.HiddenInput())
-    give_rest = forms.ChoiceField(label='Souhaits',
+    give_rest = forms.ChoiceField(label='Souhait',
                                   choices=OPTIONS,
                                   required=True)
 
