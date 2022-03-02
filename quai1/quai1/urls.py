@@ -25,5 +25,5 @@ urlpatterns = [
     path('accounts/', include('login.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
-    path('', include('exchange.urls')),
+    path('calendar/', include('exchange.urls')),
 ]

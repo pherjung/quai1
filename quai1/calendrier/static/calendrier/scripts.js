@@ -44,7 +44,7 @@ function displayBlock(obj, id) {
     var form = 'rest_form'
 
   } else if (shift != 'F') {
-    //var options = []
+    var form = 'shift_form'
 
   }
 

@@ -8,4 +8,9 @@
     {{ form.as_p }}
     <input id="form" type="submit" value="Valider">
   </form>
+  <form id="shift_form" action="validate_shift/" method="post">
+    {% csrf_token %}
+    {{ shift_form.as_p }}
+    <input id="shift_form" type="submit" value="Valider">
+  </form>
 </div>
