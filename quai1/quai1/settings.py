@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'calendrier',
     'login',
     'exchange',
+    'inform',
 ]
 
 MIDDLEWARE = [
