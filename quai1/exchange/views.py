@@ -27,6 +27,7 @@ def ask_leave(request):
 
         if form.is_valid():
             asked_date = form.cleaned_data['date']
+            user_note = form.cleaned_data['note']
             form_date = datetime.strptime(asked_date, "%A %d %B %Y")
             ask = Shift.objects.get(date=form_date, owner=request.user)
             givers = Shift.objects.filter(
@@ -38,6 +39,7 @@ def ask_leave(request):
             while item < len(givers):
                 save_asked = Ask_leave.objects.create(user_shift=ask,
                                                       giver_shift=givers[item],
+                                                      note=user_note)
                 save_asked.save()
 
     return HttpResponseRedirect(reverse('calendar'))

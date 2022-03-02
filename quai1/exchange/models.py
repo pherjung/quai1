@@ -14,3 +14,5 @@ class Ask_leave(models.Model):
     giver_shift = models.ForeignKey(Shift,
                                     related_name='giver',
                                     on_delete=models.DO_NOTHING)
+    note = models.TextField(null=True)
+    status = models.BooleanField(null=True)

@@ -20,3 +20,7 @@ class AskLeaveForms(forms.Form):
     ask_rest = forms.ChoiceField(label='Souhait',
                                  choices=OPTIONS,
                                  required=True)
+    note = forms.CharField(label='Remarque',
+                           widget=forms.Textarea(attrs={
+                               'cols': 20,
+                               'rows': 10}))
