@@ -34,9 +34,10 @@ def ask_leave(request):
                 start_hour=None,
                 shift_name__iregex=r'(C|R)T*'
             ).exclude(owner=request.user)
-            for leave in givers:
+            item = 0
+            while item < len(givers):
                 save_asked = Ask_leave.objects.create(user_shift=ask,
-                                                      giver_shift=leave)
+                                                      giver_shift=givers[item],
                 save_asked.save()
 
     return HttpResponseRedirect(reverse('calendar'))
