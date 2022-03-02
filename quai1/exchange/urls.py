@@ -3,6 +3,6 @@ from . import views
 
 
 urlpatterns = [
-    path('validate/', views.save_rest, name='form'),
-    path('validate_shift/', views.ask_rest, name='ask_rest'),
+    path('validate/', views.save_leave, name='form'),
+    path('validate_shift/', views.ask_leave, name='ask_rest'),
 ]

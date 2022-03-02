@@ -41,7 +41,7 @@ function displayBlock(obj, id) {
   forms = document.getElementsByTagName('form')
 
   if (shift === 'RT' || shift === 'RTT' || shift === 'CT' || shift === 'CTT') {
-    var form = 'rest_form'
+    var form = 'leave_form'
 
   } else if (shift != 'F') {
     var form = 'shift_form'

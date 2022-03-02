@@ -3,7 +3,7 @@
   <a href="javascript:void(0);" class="icon" onclick="switchBlock()">
     <i class="fa fa-xmark"></i>
   </a>
-  <form id="rest_form" action="validate/" method="post">
+  <form id="leave_form" action="validate/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <input id="form" type="submit" value="Valider">

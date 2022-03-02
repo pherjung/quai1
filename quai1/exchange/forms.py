@@ -1,7 +1,7 @@
 from django import forms
 
 
-class RestForms(forms.Form):
+class LeaveForms(forms.Form):
     # forms related to rest
     OPTIONS = [
         ('give_rest', 'Mettre le congé en concours'),
@@ -12,7 +12,7 @@ class RestForms(forms.Form):
                                   required=True)
 
 
-class AskRestForms(forms.Form):
+class AskLeaveForms(forms.Form):
     OPTIONS = [
         ('ask_rest', 'Demander un congé'),
     ]
