@@ -21,6 +21,7 @@ class AskLeaveForms(forms.Form):
                                  choices=OPTIONS,
                                  required=True)
     note = forms.CharField(label='Remarque',
+                           required=False,
                            widget=forms.Textarea(attrs={
                                'cols': 20,
                                'rows': 10}))
