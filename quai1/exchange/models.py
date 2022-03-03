@@ -5,6 +5,7 @@ from calendrier.models import Shift
 class Give_leave(models.Model):
     shift = models.ForeignKey(Shift,
                               on_delete=models.DO_NOTHING)
+    given = models.BooleanField(default=False)
 
 
 class Ask_leave(models.Model):
