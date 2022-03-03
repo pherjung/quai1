@@ -30,16 +30,28 @@ def ask_leave(request):
             user_note = form.cleaned_data['note']
             form_date = datetime.strptime(asked_date, "%A %d %B %Y")
             ask = Shift.objects.get(date=form_date, owner=request.user)
+            # Recover all given leaves
+            leaves = Give_leave.objects.filter(
+                shift_id__date=form_date
+            ).exclude(
+                shift_id__owner_id__username=request.user
+            ).values_list('shift_id')
+            # Recover column ID of all leaves not owned by requester
             givers = Shift.objects.filter(
                 date=form_date,
                 start_hour=None,
                 shift_name__iregex=r'(C|R)T*'
             ).exclude(owner=request.user)
+            # Save shifts
             item = 0
             while item < len(givers):
+                for i in range(len(leaves)):
+                    gifted = True if givers[item].id in leaves[i] else False
+
                 save_asked = Ask_leave.objects.create(user_shift=ask,
                                                       giver_shift=givers[item],
-                                                      note=user_note)
+                                                      note=user_note,
+                                                      gift=gifted)
                 save_asked.save()
                 item += 1
 
