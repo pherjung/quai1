@@ -41,5 +41,6 @@ def ask_leave(request):
                                                       giver_shift=givers[item],
                                                       note=user_note)
                 save_asked.save()
+                item += 1
 
     return HttpResponseRedirect(reverse('calendar'))
