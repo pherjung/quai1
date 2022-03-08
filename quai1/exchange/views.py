@@ -44,6 +44,7 @@ def ask_leave(request):
             ).exclude(owner=request.user)
             # Save shifts
             item = 0
+            gifted = False
             while item < len(givers):
                 for i in range(len(leaves)):
                     gifted = True if givers[item].id in leaves[i] else False
