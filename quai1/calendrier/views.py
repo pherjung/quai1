@@ -1,4 +1,3 @@
-# from django.shortcuts import render
 from django.views import generic
 from django.utils.html import format_html, mark_safe
 from django.contrib.auth.mixins import LoginRequiredMixin
