@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from calendrier import views
-from exchange import views as forms
 
 urlpatterns = [
     path('', auth_views.LoginView.as_view(), name='home'),
