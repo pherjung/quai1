@@ -1,0 +1,37 @@
+{% extends 'calendrier/base.html' %}
+
+{% block content %}
+
+<h3>Congés à échanger</h3>
+<div class="info">
+  <div>Date</div>
+  <div>Horaire</div>
+  <div>Congés</div>
+</div>
+</br>
+
+{% for data in ask_leaves %}
+<div class="form" onclick="">
+  <div class="date-info">
+    </br>{{ data.1|date:"l d.m.y" }}
+  </div>
+  <div class="hour">
+    {{ data.2|default_if_none:'-' }}</br>
+    {{ data.3|default_if_none:'-' }}
+  </div>
+  <div class="form-dates">
+    <form id="test" action="validate/" method="post" style="text-align: center">
+      {% csrf_token %}
+      {{ leaves|get_item:data.4 }}</br></br>
+      <button name="accept" type="submit">Accept</button>
+      <button name="decline" type="submit">Decline</button>
+    </form>
+  </div>
+  <div class="i">
+    <i class="fa-solid fa-info"></i>
+  </div>
+</div>
+<hr>
+{% endfor %}
+
+{% endblock %}

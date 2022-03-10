@@ -176,3 +176,50 @@ body {
   margin: auto;
 
 }
+
+.info {
+  margin: auto;
+  justify-content: center;
+  display: flex;
+  font-weight: bold;
+
+}
+
+.info div {
+  padding-left: 10px;
+  padding-right: 35px;
+
+}
+
+.form {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-template-columns: auto auto auto auto;
+  gap: 10px;
+
+}
+
+.date-info {
+  display: grid;
+  align-content: end;
+  margin-bottom: 15px;
+
+}
+
+.hour {
+  display: grid;
+  width: 75px;
+  justify-content: center;
+
+}
+
+.form-dates {
+  display: grid;
+
+}
+
+hr {
+  width: 50%;
+
+}
