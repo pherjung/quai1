@@ -91,11 +91,6 @@ body {
 
   }
 
-  .box.responsive p {
-    margin-left: auto;
-
-  }
-
   .box.responsive a {
     margin-right: auto;
     padding-left: 2%;
@@ -105,14 +100,21 @@ body {
 
 @media screen and (min-width: 600px) {
   .calendar {
-    width: 65%;
+    width: 70%;
+    margin: auto;
 
   }
 
   .calendar.responsive {
     max-width: 45%;
     margin-left: 10%;
+    margin-right: 1%;
     float: left;
+
+  }
+
+  .calendar.responsive table {
+    width: 100%;
 
   }
 
@@ -122,7 +124,7 @@ body {
 
   }
 
-  .box.responsive p {
+  #full_date {
     display: inline-block;
 
   }
@@ -136,7 +138,6 @@ body {
 }
 
 .calendar {
-  margin: auto;
   table-layout: fixed;
   font-size: 13px;
   text-align: center;
