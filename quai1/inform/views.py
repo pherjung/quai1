@@ -45,3 +45,7 @@ def exchanges(request):
     context = {'leaves': given_leaves,
                'ask_leaves': ask_leaves}
     return render(request, 'inform/exchanges.html', context)
+
+
+def wishes(request):
+    return render(request, 'inform/wishes.html')
