@@ -16,5 +16,5 @@ class Ask_leave(models.Model):
                                     related_name='giver',
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
-    status = models.BooleanField(null=True)
+    accepted = models.BooleanField(null=True)
     gift = models.BooleanField()
