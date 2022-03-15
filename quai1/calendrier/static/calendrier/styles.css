@@ -178,7 +178,7 @@ body {
 
 }
 
-.info {
+.header {
   margin: auto;
   justify-content: center;
   display: flex;
@@ -186,7 +186,7 @@ body {
 
 }
 
-.info div {
+.header div {
   padding-left: 10px;
   padding-right: 35px;
 
@@ -197,7 +197,7 @@ body {
   justify-content: center;
   align-content: center;
   grid-template-columns: auto auto auto auto;
-  gap: 10px;
+  gap: 15px;
 
 }
 
@@ -212,11 +212,6 @@ body {
   display: grid;
   width: 75px;
   justify-content: center;
-
-}
-
-.form-dates {
-  display: grid;
 
 }
 
