@@ -1,5 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db import IntegrityError
 from datetime import datetime
 
 from .forms import LeaveForms, AskLeaveForms
@@ -11,14 +12,16 @@ def save_leave(request):
     if request.method == 'POST':
         form = LeaveForms(request.POST)
 
-        if form.is_valid():
-            cleaned_date = form.cleaned_data['date']
-            form_date = datetime.strptime(cleaned_date, "%A %d %B %Y")
-            give = Shift.objects.get(date=form_date, owner=request.user)
-            save_gived = Give_leave.objects.create(shift=give)
-            save_gived.save()
-
-    return HttpResponseRedirect(reverse('calendar'))
+        try:
+            if form.is_valid():
+                cleaned_date = form.cleaned_data['date']
+                form_date = datetime.strptime(cleaned_date, "%A %d %B %Y")
+                give = Shift.objects.get(date=form_date, owner=request.user)
+                save_gived = Give_leave.objects.create(shift=give)
+                save_gived.save()
+        except IntegrityError:
+            print('Congé déjà posé')
+        return HttpResponseRedirect(reverse('calendar'))
 
 
 def ask_leave(request):
