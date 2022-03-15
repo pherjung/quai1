@@ -4,5 +4,6 @@ from . import views
 
 urlpatterns = [
     path('exchanges/', views.exchanges, name='exchanges'),
+    path('exchanges/validate/', views.validate),
     path('wishes/', views.wishes, name='wishes'),
 ]

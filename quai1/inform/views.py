@@ -1,4 +1,6 @@
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
 import datetime
@@ -42,13 +44,43 @@ def exchanges(request):
             shift__owner=i,
             given=False
         ).values_list(
-            'shift__date',
-            'shift__owner__username')
-        given_leaves[i] = AcceptDeclineForm(dates)
+            'shift',
+            'shift__date'
+        ).exclude(shift__date__lt=(datetime.datetime.now()))
+        given_leaves[i] = AcceptDeclineForm(user_dates=dates)
 
-    context = {'leaves': given_leaves,
+    context = {'accepted': accepted,
+               'leaves': given_leaves,
                'ask_leaves': ask_leaves}
     return render(request, 'inform/exchanges.html', context)
+
+
+def validate(request):
+    if request.method == 'POST':
+        dates = request.POST['accept_decline']
+        shift = request.POST['id']
+        status = request.POST.get('status')
+        form = AcceptDeclineForm(request.POST, user_dates=dates)
+        if form.is_valid():
+            date_leave = form.cleaned_data['accept_decline']
+            if status == 'Decline':
+                Ask_leave.objects.filter(
+                    user_shift=shift,
+                    giver_shift__owner__username=request.user
+                ).update(accepted=False)
+            elif status == 'Accept':
+                Ask_leave.objects.filter(
+                    user_shift=shift,
+                    giver_shift__owner__username=request.user
+                ).update(accepted=True)
+                if date_leave != 'À discuter':
+                    Give_leave.objects.filter(
+                        shift=date_leave
+                    ).update(given=True)
+    else:
+        AcceptDeclineForm()
+
+    return HttpResponseRedirect(reverse('exchanges'))
 
 
 def wishes(request):
