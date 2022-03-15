@@ -20,11 +20,12 @@
     {{ data.3|default_if_none:'-' }}
   </div>
   <div class="form-dates">
-    <form id="test" action="validate/" method="post" style="text-align: center">
+      <form id="test" action="validate/" method="post" style="text-align: center">
       {% csrf_token %}
       {{ leaves|get_item:data.4 }}</br></br>
-      <button name="accept" type="submit">Accept</button>
-      <button name="decline" type="submit">Decline</button>
+      <input value="{{ data.8 }}" name="id" type="hidden">
+      <input value="Accept" name="status" type="submit"></input>
+      <input value="Decline" name="status" type="submit"></input>
     </form>
   </div>
   <div class="i">

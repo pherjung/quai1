@@ -27,7 +27,8 @@ def exchanges(request):
         'user_shift__owner',
         'user_shift__owner__username',
         'note',
-        'gift')
+        'gift',
+        'user_shift')
 
     leaves = 0
     while leaves < len(ask_leaves):
