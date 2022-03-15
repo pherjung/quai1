@@ -15,7 +15,8 @@ def exchanges(request):
     # Recover all the leave the connected user can exchange
     ask_leaves = Ask_leave.objects.filter(
         giver_shift_id__owner__username=request.user,
-        user_shift__date__gt=(datetime.datetime.now())
+        user_shift__date__gt=(datetime.datetime.now()),
+        accepted=None,
     ).values_list(
         'user_shift__shift_name',
         'user_shift__date',
