@@ -2,8 +2,34 @@
 
 {% block content %}
 
+<h3>Congés échangés</h3>
+<div class="header">
+  <div>Tour</div>
+  <div>Date</div>
+  <div>Horaire</div>
+  <div>Collègue</div>
+</div>
+</br>
+
+{% for accept in accepted %}
+<div class="form">
+  <div>{{ accept.0 }}</div>
+  <div>{{ accept.1 }}</div>
+  <div>
+    {{ accept.2|default_if_none:'-' }}</br>
+    {{ accept.3|default_if_none:'-' }}
+  </div>
+  <div>
+    {{ accept.4 }}</br>
+    {{ accept.5 }}
+  </div>
+  <div>{{ accept.6|default_if_none:'-' }}</div>
+</div>
+<hr>
+{% endfor %}
+
 <h3>Congés à échanger</h3>
-<div class="info">
+<div class="header">
   <div>Date</div>
   <div>Horaire</div>
   <div>Congés</div>

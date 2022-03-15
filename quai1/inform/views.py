@@ -15,6 +15,21 @@ def get_item(dictionary, key):
 
 @login_required
 def exchanges(request):
+    # Given leaves
+    accepted = Ask_leave.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        accepted=True
+    ).values_list(
+        'user_shift__shift_name',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'user_shift__owner__first_name',
+        'user_shift__owner__last_name',
+        'note',
+    ).exclude(user_shift__date__lt=(datetime.datetime.now()))
+
+    # Requested leaves
     asker_ids = set()
     # Recover all the leave the connected user can exchange
     ask_leaves = Ask_leave.objects.filter(
