@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.template.defaulttags import register
 import datetime
@@ -10,6 +11,7 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+@login_required
 def exchanges(request):
     asker_ids = set()
     # Recover all the leave the connected user can exchange
