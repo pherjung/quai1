@@ -2,6 +2,25 @@
 
 {% block content %}
 
+<h3>Congés mis en concours</h3>
+<div class="header-gift">
+  <div>Date</div>
+</div>
+
+{% for gift in gifts %}
+<div class=gift>
+  <div>{{ gift.1 }}<div>
+  <div>
+    <form action="delete/" method="post">
+      {% csrf_token %}
+      {{ gifts_form|get_item:gift.0 }}
+      <input value="Supprimer" name="status" type="submit"></input>
+    </form>
+  </div>
+</div>
+<hr>
+{% endfor %}
+
 <h3>Congés échangés</h3>
 <div class="header">
   <div>Tour</div>

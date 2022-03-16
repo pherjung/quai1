@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 import datetime
 from exchange.models import Ask_leave, Give_leave
-from .forms import AcceptDeclineForm
+from .forms import AcceptDeclineForm, DeleteGiftedLeaveForm
 
 
 @register.filter
@@ -15,6 +15,17 @@ def get_item(dictionary, key):
 
 @login_required
 def exchanges(request):
+    # Gifted leaves
+    gifts = Give_leave.objects.filter(
+        shift__owner__username=request.user,
+    ).values_list(
+        'shift',
+        'shift__date',
+    ).exclude(shift__date__lt=(datetime.datetime.now()))
+    gifts_form = dict()
+    for item in gifts:
+        gifts_form[item[0]] = DeleteGiftedLeaveForm(leave_id=item[0])
+
     # Given leaves
     accepted = Ask_leave.objects.filter(
         giver_shift_id__owner__username=request.user,
@@ -64,7 +75,9 @@ def exchanges(request):
         ).exclude(shift__date__lt=(datetime.datetime.now()))
         given_leaves[i] = AcceptDeclineForm(user_dates=dates)
 
-    context = {'accepted': accepted,
+    context = {'gifts': gifts,
+               'gifts_form': gifts_form,
+               'accepted': accepted,
                'leaves': given_leaves,
                'ask_leaves': ask_leaves}
     return render(request, 'inform/exchanges.html', context)

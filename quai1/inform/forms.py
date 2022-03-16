@@ -19,3 +19,13 @@ class AcceptDeclineForm(forms.Form):
     accept_decline = forms.ChoiceField(label="",
                                        required=False,
                                        choices=[])
+
+
+class DeleteGiftedLeaveForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.leave_id = kwargs.pop('leave_id')
+        super(DeleteGiftedLeaveForm, self).__init__(*args, **kwargs)
+        self.fields['leave'].initial = self.leave_id
+
+    leave = forms.CharField(label="",
+                            widget=forms.HiddenInput())
