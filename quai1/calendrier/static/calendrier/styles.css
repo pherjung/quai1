@@ -252,3 +252,22 @@ hr {
   gap: 15px;
 
 }
+
+.accepted-header {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-template-columns: auto auto auto auto auto;
+  gap: 15px;
+  font-weight: bold;
+
+}
+
+.accepted {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-template-columns: auto auto auto auto auto;
+  gap: 15px;
+
+}
