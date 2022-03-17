@@ -2,10 +2,12 @@
 
 {% block content %}
 
+{% if gifts %}
 <h3>Congés mis en concours</h3>
 <div class="header-gift">
   <div>Date</div>
 </div>
+{% endif %}
 
 {% for gift in gifts %}
 <div class=gift>
@@ -21,6 +23,7 @@
 <hr>
 {% endfor %}
 
+{% if accepted %}
 <h3>Congés échangés</h3>
 <div class="header">
   <div>Tour</div>
@@ -29,6 +32,7 @@
   <div>Collègue</div>
 </div>
 </br>
+{% endif %}
 
 {% for accept in accepted %}
 <div class="form">
@@ -52,6 +56,7 @@
 <hr>
 {% endfor %}
 
+{% if ask_leaves %}
 <h3>Congés à échanger</h3>
 <div class="header">
   <div>Date</div>
@@ -59,6 +64,7 @@
   <div>Congés</div>
 </div>
 </br>
+{% endif %}
 
 {% for data in ask_leaves %}
 <div class="form" onclick="">
