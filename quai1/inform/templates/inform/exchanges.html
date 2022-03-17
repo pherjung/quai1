@@ -9,7 +9,7 @@
 
 {% for gift in gifts %}
 <div class=gift>
-  <div>{{ gift.1 }}<div>
+  <div>{{ gift.1|date:"l d.m.y" }}<div>
   <div>
     <form action="delete/" method="post">
       {% csrf_token %}
@@ -33,7 +33,7 @@
 {% for accept in accepted %}
 <div class="form">
   <div>{{ accept.0 }}</div>
-  <div>{{ accept.1 }}</div>
+  <div>{{ accept.1|date:"l d.m.y" }}</div>
   <div>
     {{ accept.2|default_if_none:'-' }}</br>
     {{ accept.3|default_if_none:'-' }}
