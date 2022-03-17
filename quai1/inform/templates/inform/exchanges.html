@@ -2,6 +2,10 @@
 
 {% block content %}
 
+{% if not gifts and not accepted and not ask_leaves %}
+<h3>Aucun congé mis en concours ou échanges</h3>
+{% endif %}
+
 {% if gifts %}
 <h3>Congés mis en concours</h3>
 <div class="header-gift">
