@@ -2,4 +2,64 @@
 
 {% block content %}
 
+{% if not accepted_wishes and not wishes %}
+<h3>Aucun souhaits</h3>
+{% endif %}
+
+{% if accepted_wishes %}
+<h3>Congés échangés</h3>
+<div class="accepted-header">
+  <div>Date</div>
+  <div>Horaire</div>
+  <div>Collègue</div>
+  <div>Congé échangé</div>
+  <div>Note</div>
+</div>
+{% endif %}
+
+{% for accepted in accepted_wishes %}
+<div class="accepted">
+  <div>{{ accepted.0|date:"l d.m.y" }}</div>
+  <div>
+    {{ accepted.1|default_if_none:"-" }}</br>
+    {{ accepted.2|default_if_none:"-" }}
+  </div>
+  <div>
+    {{ accepted.3 }}</br>
+    {{ accepted.4 }}
+  </div>
+  <div>{{ accepted.5|date:"l d.m.y" }}</div>
+  <div>{{ accepted.6 }}</div>
+</div>
+<hr>
+{% endfor %}
+
+{% if wishes %}
+<h3>Congés souhaités</h3>
+<div class="wishes">
+  <div>Date</div>
+  <div>Horaire</div>
+  <div>Note</div>
+</div>
+{% endif %}
+
+{% for wish in wishes %}
+<div class="wishes-form">
+  <div>{{ wish.1|date:"l d.m.y" }}</div>
+  <div>
+    {{ wish.2|default_if_none:'-' }}</br>
+    {{ wish.3|default_if_none:'-' }}
+  </div>
+  <div>{{ wish.4|default_if_none:'' }}</div>
+  <div>
+    <form action="delete/" method="post">
+      {% csrf_token %}
+      {{ wishes_form|get_item:wish.0 }}
+      <input value="Supprimer" name="status" type="submit"></input>
+    </form>
+  </div>
+</div>
+<hr>
+{% endfor %}
+
 {% endblock %}

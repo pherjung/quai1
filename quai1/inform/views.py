@@ -138,5 +138,35 @@ def delete(request):
     return HttpResponseRedirect(reverse('exchanges'))
 
 
+@login_required
 def wishes(request):
-    return render(request, 'inform/wishes.html')
+    accepted_wishes = Ask_leave.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=True
+    ).values_list(
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
+        'given_leave__date',
+        'note',
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
+    wishes = Ask_leave.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=None
+    ).values_list(
+        'user_shift',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'note',
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
+    wishes_dict = dict()
+    for item in wishes:
+        wishes_dict[item[0]] = DeleteGiftedLeaveForm(leave_id=item[0])
+
+    context = {'accepted_wishes': accepted_wishes,
+               'wishes': wishes,
+               'wishes_form': wishes_dict}
+    return render(request, 'inform/wishes.html', context)
