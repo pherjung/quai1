@@ -3,7 +3,7 @@
 {% block content %}
 
 {% if not gifts and not accepted and not ask_leaves %}
-<h3>Aucun congé mis en concours ou échanges</h3>
+<h3>Aucun congé mis en concours ou à échanger</h3>
 {% endif %}
 
 {% if gifts %}
@@ -54,6 +54,8 @@
   <div>
     {% if accept.7 %}
       <p>En échange : {{ accept.7|date:"l d.m.y" }}</p>
+    {% else %}
+      <p>À discuter</p>
     {% endif %}
   </div>
 </div>

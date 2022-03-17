@@ -3,6 +3,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
+from django.db.models import Q
 import datetime
 from exchange.models import Ask_leave, Give_leave
 from .forms import AcceptDeclineForm, DeleteForm
@@ -29,8 +30,10 @@ def exchanges(request):
 
     # Given leaves
     accepted = Ask_leave.objects.filter(
-        giver_shift_id__owner__username=request.user,
-        accepted=True
+        Q(giver_shift_id__owner__username=request.user,
+          accepted=True)
+        | Q(giver_shift_id__owner__username=request.user,
+            negotiate=True)
     ).values_list(
         'user_shift__shift_name',
         'user_shift__date',
@@ -58,7 +61,8 @@ def exchanges(request):
         'user_shift__owner__username',
         'note',
         'gift',
-        'user_shift')
+        'user_shift',
+    ).exclude(negotiate=True)
 
     leaves = 0
     while leaves < len(ask_leaves):
@@ -98,7 +102,7 @@ def validate(request):
                     user_shift=shift,
                     giver_shift__owner__username=request.user
                 ).update(accepted=False)
-            elif status == 'Accept':
+            elif status == 'Accept' and date_leave != 'À discuter':
                 Ask_leave.objects.filter(
                     user_shift=shift,
                     giver_shift__owner__username=request.user,
@@ -106,12 +110,16 @@ def validate(request):
                     accepted=True,
                     given_leave=date_leave,
                 )
-                if date_leave != 'À discuter':
-                    Give_leave.objects.filter(
-                        shift=date_leave
-                    ).update(
-                        given=True,
-                        who=request.user)
+                Give_leave.objects.filter(
+                    shift=date_leave
+                ).update(
+                    given=True,
+                    who=request.user)
+            elif status == 'Accept' and date_leave == 'À discuter':
+                Ask_leave.objects.filter(
+                    user_shift=shift,
+                    giver_shift__owner__username=request.user,
+                ).update(negotiate=True)
     else:
         AcceptDeclineForm()
 
@@ -141,8 +149,10 @@ def delete(request):
 @login_required
 def wishes(request):
     accepted_wishes = Ask_leave.objects.filter(
-        user_shift__owner__username=request.user,
-        accepted=True
+        Q(user_shift__owner__username=request.user,
+          accepted=True)
+        | Q(user_shift__owner__username=request.user,
+            negotiate=True)
     ).values_list(
         'user_shift__date',
         'user_shift__start_hour',
