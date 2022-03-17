@@ -111,5 +111,25 @@ def validate(request):
     return HttpResponseRedirect(reverse('exchanges'))
 
 
+def delete(request):
+    if request.method == 'POST':
+        shift = request.POST['leave']
+        form = DeleteGiftedLeaveForm(request.POST, leave_id=shift)
+        if form.is_valid():
+            shift = form.cleaned_data['leave']
+            Ask_leave.objects.filter(
+                giver_shift=shift,
+                giver_shift__owner__username=request.user,
+            ).update(gift=False)
+            Give_leave.objects.filter(
+                shift=shift,
+                shift__owner__username=request.user
+            ).delete()
+    else:
+        DeleteGiftedLeaveForm()
+
+    return HttpResponseRedirect(reverse('exchanges'))
+
+
 def wishes(request):
     return render(request, 'inform/wishes.html')
