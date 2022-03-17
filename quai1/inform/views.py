@@ -18,6 +18,7 @@ def exchanges(request):
     # Gifted leaves
     gifts = Give_leave.objects.filter(
         shift__owner__username=request.user,
+        given=False,
     ).values_list(
         'shift',
         'shift__date',
