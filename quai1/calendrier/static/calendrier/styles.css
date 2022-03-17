@@ -219,3 +219,36 @@ hr {
   width: 50%;
 
 }
+
+.header-gift {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: auto;
+  font-weight: bold;
+
+}
+
+.gift {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: auto auto;
+
+}
+
+.wishes {
+  display: grid;
+  justify-content: center;
+  grid-template-columns: auto auto auto;
+  font-weight: bold;
+  gap: 20px;
+
+}
+
+.wishes-form {
+  display: grid;
+  justify-content: center;
+  align-content: center;
+  grid-template-columns: auto auto auto;
+  gap: 15px;
+
+}
