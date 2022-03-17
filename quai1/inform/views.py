@@ -39,6 +39,7 @@ def exchanges(request):
         'user_shift__owner__first_name',
         'user_shift__owner__last_name',
         'note',
+        'given_leave__date',
     ).exclude(user_shift__date__lt=(datetime.datetime.now()))
 
     # Requested leaves
@@ -100,12 +101,17 @@ def validate(request):
             elif status == 'Accept':
                 Ask_leave.objects.filter(
                     user_shift=shift,
-                    giver_shift__owner__username=request.user
-                ).update(accepted=True)
+                    giver_shift__owner__username=request.user,
+                ).update(
+                    accepted=True,
+                    given_leave=date_leave,
+                )
                 if date_leave != 'À discuter':
                     Give_leave.objects.filter(
                         shift=date_leave
-                    ).update(given=True)
+                    ).update(
+                        given=True,
+                        who=request.user)
     else:
         AcceptDeclineForm()
 

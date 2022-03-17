@@ -43,6 +43,11 @@
     {{ accept.5 }}
   </div>
   <div>{{ accept.6|default_if_none:'-' }}</div>
+  <div>
+    {% if accept.7 %}
+      <p>En échange : {{ accept.7|date:"l d.m.y" }}</p>
+    {% endif %}
+  </div>
 </div>
 <hr>
 {% endfor %}
