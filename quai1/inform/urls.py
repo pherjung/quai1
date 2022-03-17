@@ -7,4 +7,5 @@ urlpatterns = [
     path('exchanges/validate/', views.validate),
     path('exchanges/delete/', views.delete),
     path('wishes/', views.wishes, name='wishes'),
+    path('wishes/delete/', views.delete_wish),
 ]

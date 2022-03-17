@@ -170,3 +170,19 @@ def wishes(request):
                'wishes': wishes,
                'wishes_form': wishes_dict}
     return render(request, 'inform/wishes.html', context)
+
+
+def delete_wish(request):
+    if request.method == 'POST':
+        shift = request.POST['leave']
+        form = DeleteForm(request.POST, leave_id=shift)
+        if form.is_valid():
+            shift = form.cleaned_data['leave']
+            Ask_leave.objects.filter(
+                user_shift=shift,
+                user_shift__owner__username=request.user,
+            ).delete()
+    else:
+        DeleteForm()
+
+    return HttpResponseRedirect(reverse('wishes'))
