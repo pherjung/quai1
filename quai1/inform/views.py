@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 import datetime
 from exchange.models import Ask_leave, Give_leave
-from .forms import AcceptDeclineForm, DeleteGiftedLeaveForm
+from .forms import AcceptDeclineForm, DeleteForm
 
 
 @register.filter
@@ -25,7 +25,7 @@ def exchanges(request):
     ).exclude(shift__date__lt=(datetime.datetime.now()))
     gifts_form = dict()
     for item in gifts:
-        gifts_form[item[0]] = DeleteGiftedLeaveForm(leave_id=item[0])
+        gifts_form[item[0]] = DeleteForm(leave_id=item[0])
 
     # Given leaves
     accepted = Ask_leave.objects.filter(
@@ -121,7 +121,7 @@ def validate(request):
 def delete(request):
     if request.method == 'POST':
         shift = request.POST['leave']
-        form = DeleteGiftedLeaveForm(request.POST, leave_id=shift)
+        form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
             Ask_leave.objects.filter(
@@ -133,7 +133,7 @@ def delete(request):
                 shift__owner__username=request.user
             ).delete()
     else:
-        DeleteGiftedLeaveForm()
+        DeleteForm()
 
     return HttpResponseRedirect(reverse('exchanges'))
 
@@ -164,7 +164,7 @@ def wishes(request):
     ).exclude(user_shift__date__lt=datetime.datetime.now())
     wishes_dict = dict()
     for item in wishes:
-        wishes_dict[item[0]] = DeleteGiftedLeaveForm(leave_id=item[0])
+        wishes_dict[item[0]] = DeleteForm(leave_id=item[0])
 
     context = {'accepted_wishes': accepted_wishes,
                'wishes': wishes,

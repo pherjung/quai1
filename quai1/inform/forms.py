@@ -21,10 +21,10 @@ class AcceptDeclineForm(forms.Form):
                                        choices=[])
 
 
-class DeleteGiftedLeaveForm(forms.Form):
+class DeleteForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.leave_id = kwargs.pop('leave_id')
-        super(DeleteGiftedLeaveForm, self).__init__(*args, **kwargs)
+        super(DeleteForm, self).__init__(*args, **kwargs)
         self.fields['leave'].initial = self.leave_id
 
     leave = forms.CharField(label="",
