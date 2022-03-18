@@ -148,6 +148,7 @@ def delete(request):
 
 @login_required
 def wishes(request):
+    # Show leave accepted or to negotiate
     accepted_wishes = Ask_leave.objects.filter(
         Q(user_shift__owner__username=request.user,
           accepted=True)
