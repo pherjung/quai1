@@ -163,17 +163,21 @@ def wishes(request):
         'given_leave__date',
         'note',
     ).exclude(user_shift__date__lt=datetime.datetime.now())
+    # Show only one wish per date
     wishes = Ask_leave.objects.filter(
         user_shift__owner__username=request.user,
-        accepted=None
     ).values_list(
         'user_shift',
         'user_shift__date',
         'user_shift__start_hour',
         'user_shift__end_hour',
         'note',
-    ).exclude(
-        user_shift__date__lt=datetime.datetime.now(),
+    ).exclude(Q(
+        user_shift__date__lt=datetime.datetime.now()
+    ) | Q(
+        accepted=True
+    ) | Q(
+        negotiate=True)
     ).distinct()
     wishes_dict = dict()
     for item in wishes:
