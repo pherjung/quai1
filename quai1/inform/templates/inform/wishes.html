@@ -30,6 +30,9 @@
   </div>
   <div>{{ accepted.5|date:"l d.m.y" }}</div>
   <div>{{ accepted.6 }}</div>
+  {% if not accepted.5 %}
+  <div>À discuter</p></div>
+  {% endif %}
 </div>
 <hr>
 {% endfor %}
