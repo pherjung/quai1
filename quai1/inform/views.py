@@ -30,10 +30,8 @@ def exchanges(request):
 
     # Given leaves
     accepted = Ask_leave.objects.filter(
-        Q(giver_shift_id__owner__username=request.user,
-          accepted=True)
-        | Q(giver_shift_id__owner__username=request.user,
-            negotiate=True)
+        giver_shift_id__owner__username=request.user,
+        accepted=True,
     ).values_list(
         'user_shift__shift_name',
         'user_shift__date',
@@ -61,8 +59,7 @@ def exchanges(request):
         'user_shift__owner__username',
         'note',
         'gift',
-        'user_shift',
-    ).exclude(negotiate=True)
+        'user_shift')
 
     leaves = 0
     while leaves < len(ask_leaves):
@@ -119,7 +116,7 @@ def validate(request):
                 Ask_leave.objects.filter(
                     user_shift=shift,
                     giver_shift__owner__username=request.user,
-                ).update(negotiate=True)
+                ).update(accepted=True)
     else:
         AcceptDeclineForm()
 
@@ -150,10 +147,8 @@ def delete(request):
 def wishes(request):
     # Show leave accepted or to negotiate
     accepted_wishes = Ask_leave.objects.filter(
-        Q(user_shift__owner__username=request.user,
-          accepted=True)
-        | Q(user_shift__owner__username=request.user,
-            negotiate=True)
+        user_shift__owner__username=request.user,
+        accepted=True,
     ).values_list(
         'user_shift__date',
         'user_shift__start_hour',
@@ -174,10 +169,7 @@ def wishes(request):
         'note',
     ).exclude(Q(
         user_shift__date__lt=datetime.datetime.now()
-    ) | Q(
-        accepted=True
-    ) | Q(
-        negotiate=True)
+    ) | Q(accepted=True)
     ).distinct()
     wishes_dict = dict()
     for item in wishes:
@@ -198,7 +190,7 @@ def delete_wish(request):
             Ask_leave.objects.filter(
                 user_shift=shift,
                 user_shift__owner__username=request.user,
-            ).exclude(Q(accepted=True) | Q(negotiate=True)).delete()
+            ).exclude(accepted=True).delete()
     else:
         DeleteForm()
 

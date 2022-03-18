@@ -21,7 +21,6 @@ class Ask_leave(models.Model):
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)
-    negotiate = models.BooleanField(default=False)
     gift = models.BooleanField()
     given_leave = models.ForeignKey(Shift,
                                     null=True,
