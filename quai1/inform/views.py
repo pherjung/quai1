@@ -76,7 +76,7 @@ def exchanges(request):
             'shift',
             'shift__date'
         ).exclude(shift__date__lt=(datetime.datetime.now()))
-        given_leaves[i] = AcceptDeclineForm(user_dates=dates)
+        given_leaves[i] = AcceptDeclineForm(user_dates=dates).as_p()
 
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
@@ -173,7 +173,7 @@ def wishes(request):
     ).distinct()
     wishes_dict = dict()
     for item in wishes:
-        wishes_dict[item[0]] = DeleteForm(leave_id=item[0])
+        wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
     context = {'accepted_wishes': accepted_wishes,
                'wishes': wishes,

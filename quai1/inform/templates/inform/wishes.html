@@ -8,61 +8,72 @@
 
 {% if accepted_wishes %}
 <h3>Congés échangés</h3>
-<div class="accepted-header">
-  <div>Date</div>
-  <div>Horaire</div>
-  <div>Collègue</div>
-  <div>Congé échangé</div>
-  <div>Note</div>
-</div>
+<table class="table">
+  <tr>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Collègue</th>
+    <th>Congé échangé</th>
+    <th>Note</th>
+  </tr>
 {% endif %}
 
 {% for accepted in accepted_wishes %}
-<div class="accepted">
-  <div>{{ accepted.0|date:"l d.m.y" }}</div>
-  <div>
+<tr class=td-bottom>
+  <td>{{ accepted.0|date:"l d.m.y" }}</td>
+  <td class="hour">
     {{ accepted.1|default_if_none:"-" }}</br>
     {{ accepted.2|default_if_none:"-" }}
-  </div>
-  <div>
+  </td>
+  <td>
     {{ accepted.3 }}</br>
     {{ accepted.4 }}
-  </div>
-  <div>{{ accepted.5|date:"l d.m.y" }}</div>
-  <div>{{ accepted.6 }}</div>
+  </td>
   {% if not accepted.5 %}
-  <div>À discuter</p></div>
+    <td>À discuter</p></td>
+  {% else %}
+    <td>{{ accepted.5|date:"l d.m.y" }}</td>
   {% endif %}
-</div>
-<hr>
+  <td>{{ accepted.6 }}</td>
+</tr>
 {% endfor %}
+
+{% if accepted_wishes %}
+</table>
+{% endif %}
 
 {% if wishes %}
 <h3>Congés souhaités</h3>
-<div class="wishes">
-  <div>Date</div>
-  <div>Horaire</div>
-  <div>Note</div>
-</div>
+<table class="table">
+  <tr>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Note</th>
+  </tr>
 {% endif %}
 
 {% for wish in wishes %}
-<div class="wishes-form">
-  <div>{{ wish.1|date:"l d.m.y" }}</div>
-  <div>
-    {{ wish.2|default_if_none:'-' }}</br>
-    {{ wish.3|default_if_none:'-' }}
-  </div>
-  <div>{{ wish.4|default_if_none:'' }}</div>
-  <div>
-    <form action="delete/" method="post">
-      {% csrf_token %}
-      {{ wishes_form|get_item:wish.0 }}
-      <input value="Supprimer" name="status" type="submit"></input>
-    </form>
-  </div>
-</div>
-<hr>
+  <tr>
+    <td>{{ wish.1|date:"l d.m.y" }}</td>
+    <td>
+      {{ wish.2|default_if_none:'-' }}</br>
+      {{ wish.3|default_if_none:'-' }}
+    </td>
+    <td>{{ wish.4|default_if_none:'' }}</td>
+  </tr>
+  <tr class="td-bottom">
+    <td colspan="3">
+      <form action="delete/" metdod="post">
+        {% csrf_token %}
+        {{ wishes_form|get_item:wish.0 }}
+        <input value="Supprimer" name="status" type="submit"></input>
+      </form>
+    </td>
+  </tr>
 {% endfor %}
+
+{% if wishes %}
+</table>
+{% endif %}
 
 {% endblock %}

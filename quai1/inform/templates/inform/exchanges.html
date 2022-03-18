@@ -8,93 +8,105 @@
 
 {% if gifts %}
 <h3>Congés mis en concours</h3>
-<div class="header-gift">
-  <div>Date</div>
-</div>
+<table class="table">
+  <tr>
+    <th>Date</th>
+  </tr>
 {% endif %}
 
 {% for gift in gifts %}
-<div class=gift>
-  <div>{{ gift.1|date:"l d.m.y" }}<div>
-  <div>
+<tr class="td-bottom">
+  <td>
+    {{ gift.1|date:"l d.m.y" }}
     <form action="delete/" method="post">
       {% csrf_token %}
       {{ gifts_form|get_item:gift.0 }}
       <input value="Supprimer" name="status" type="submit"></input>
     </form>
-  </div>
-</div>
-<hr>
+  </td>
+</tr>
 {% endfor %}
+
+{% if gifts %}
+</table>
+{% endif %}
 
 {% if accepted %}
 <h3>Congés échangés</h3>
-<div class="header">
-  <div>Tour</div>
-  <div>Date</div>
-  <div>Horaire</div>
-  <div>Collègue</div>
-</div>
-</br>
+<table class="table">
+  <tr>
+    <th>Tour</th>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Collègue</th>
+  </tr>
 {% endif %}
 
 {% for accept in accepted %}
-<div class="form">
-  <div>{{ accept.0 }}</div>
-  <div>{{ accept.1|date:"l d.m.y" }}</div>
-  <div>
+<tr>
+  <td>{{ accept.0 }}</td>
+  <td>{{ accept.1|date:"l d.m.y" }}</td>
+  <td>
     {{ accept.2|default_if_none:'-' }}</br>
     {{ accept.3|default_if_none:'-' }}
-  </div>
-  <div>
+  </td>
+  <td>
     {{ accept.4 }}</br>
     {{ accept.5 }}
-  </div>
-  <div>{{ accept.6|default_if_none:'-' }}</div>
-  <div>
+  </td>
+  <td>{{ accept.6|default_if_none:'-' }}</td>
+</tr>
+<tr class="td-bottom">
+  <td colspan="5">
     {% if accept.7 %}
       <p>En échange : {{ accept.7|date:"l d.m.y" }}</p>
     {% else %}
       <p>À discuter</p>
     {% endif %}
-  </div>
-</div>
-<hr>
+  </td>
+</tr>
 {% endfor %}
+
+{% if accepted %}
+</table>
+{% endif %}
 
 {% if ask_leaves %}
 <h3>Congés à échanger</h3>
-<div class="header">
-  <div>Date</div>
-  <div>Horaire</div>
-  <div>Congés</div>
-</div>
-</br>
+<table class="table">
+  <tr>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Congés</th>
+  </tr>
 {% endif %}
 
 {% for data in ask_leaves %}
-<div class="form" onclick="">
-  <div class="date-info">
+<tr class="td-bottom">
+  <td>
     </br>{{ data.1|date:"l d.m.y" }}
-  </div>
-  <div class="hour">
+  </td>
+  <td>
     {{ data.2|default_if_none:'-' }}</br>
     {{ data.3|default_if_none:'-' }}
-  </div>
-  <div class="form-dates">
-      <form id="test" action="validate/" method="post" style="text-align: center">
+  </td>
+  <td>
+    <form id="test" action="validate/" method="post" style="text-align: center">
       {% csrf_token %}
-      {{ leaves|get_item:data.4 }}</br></br>
+      {{ leaves|get_item:data.4 }}
       <input value="{{ data.8 }}" name="id" type="hidden">
       <input value="Accept" name="status" type="submit"></input>
       <input value="Decline" name="status" type="submit"></input>
     </form>
-  </div>
-  <div class="i">
+  </td>
+  <td>
     <i class="fa-solid fa-info"></i>
-  </div>
-</div>
-<hr>
+  </td>
+</tr>
 {% endfor %}
+
+{% if ask_leaves %}
+</table>
+{% endif %}
 
 {% endblock %}

@@ -192,82 +192,13 @@ body {
 
 }
 
-.form {
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  grid-template-columns: auto auto auto auto;
-  gap: 15px;
+.table {
+  margin: auto;
+  text-align: center;
 
 }
 
-.date-info {
-  display: grid;
-  align-content: end;
-  margin-bottom: 15px;
-
-}
-
-.hour {
-  display: grid;
-  width: 75px;
-  justify-content: center;
-
-}
-
-hr {
-  width: 50%;
-
-}
-
-.header-gift {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: auto;
-  font-weight: bold;
-
-}
-
-.gift {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: auto auto;
-
-}
-
-.wishes {
-  display: grid;
-  justify-content: center;
-  grid-template-columns: auto auto auto;
-  font-weight: bold;
-  gap: 20px;
-
-}
-
-.wishes-form {
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  grid-template-columns: auto auto auto;
-  gap: 15px;
-
-}
-
-.accepted-header {
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  grid-template-columns: auto auto auto auto auto;
-  gap: 15px;
-  font-weight: bold;
-
-}
-
-.accepted {
-  display: grid;
-  justify-content: center;
-  align-content: center;
-  grid-template-columns: auto auto auto auto auto;
-  gap: 15px;
+.td-bottom td {
+  border-bottom: 1px solid #ddd;
 
 }
