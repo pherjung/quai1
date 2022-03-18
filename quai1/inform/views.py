@@ -198,7 +198,7 @@ def delete_wish(request):
             Ask_leave.objects.filter(
                 user_shift=shift,
                 user_shift__owner__username=request.user,
-            ).delete()
+            ).exclude(Q(accepted=True) | Q(negotiate=True)).delete()
     else:
         DeleteForm()
 
