@@ -75,7 +75,7 @@ def ask_leave(request):
                 else:
                     print('There is already an asked leave')
 
-            if form.cleaned_data['ask_rest'] == 'horary':
+            if form.cleaned_data['ask_rest'] == 'schedule':
                 condition = 0
                 start_hour1 = form.cleaned_data['start_hour_1']
                 condition += 1 if start_hour1 else 0

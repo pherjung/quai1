@@ -15,7 +15,7 @@ class LeaveForms(forms.Form):
 class AskLeaveForms(forms.Form):
     OPTIONS = [
         ('ask_rest', 'Demander un congé'),
-        ('horary', "Modifier l'horaire"),
+        ('schedule', "Modifier l'horaire"),
     ]
     date = forms.CharField(widget=forms.HiddenInput())
     ask_rest = forms.ChoiceField(label='Souhait',

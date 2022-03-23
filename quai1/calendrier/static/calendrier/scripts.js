@@ -67,10 +67,10 @@ function displayBlock(obj, id) {
 function hide() {
   form = document.getElementById("id_ask_rest").value
   if (form == "ask_rest") {
-    document.getElementById("horary").style.display = "none";
+    document.getElementById("schedule").style.display = "none";
 
   } else {
-    document.getElementById("horary").style.display = "";
+    document.getElementById("schedule").style.display = "";
 
   }
 
