@@ -59,5 +59,46 @@ function displayBlock(obj, id) {
     document.getElementById(form).style.visibility = "visible"
 
   }
+  hide()
+
+
+}
+
+function hide() {
+  form = document.getElementById("id_ask_rest").value
+  if (form == "ask_rest") {
+    document.getElementById("horary").style.display = "none";
+
+  } else {
+    document.getElementById("horary").style.display = "";
+
+  }
+
+}
+
+function start_now(name) {
+  if (document.querySelector('#id_'+name).checked == true) {
+    document.getElementById(name).style.display = "";
+
+  } else {
+    document.getElementById(name).style.display = "none";
+
+  }
+
+  start = document.getElementById('id_start').checked
+  end = document.getElementById('id_end').checked
+
+}
+
+function from_between(name) {
+  field1 = document.getElementById('id_' + name + '_hour_1').value
+  field2 = document.getElementById('id_' + name + '_hour_2').value
+  text = document.getElementById('info_' + name)
+  if (field1 && field2) {
+    text.innerHTML = 'Entre :'
+  } else {
+    text.innerHTML = 'Dès :'
+
+  }
 
 }

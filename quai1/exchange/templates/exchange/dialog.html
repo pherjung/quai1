@@ -2,7 +2,7 @@
   <p id="full_date"></p>
   <a href="javascript:void(0);" class="icon" onclick="switchBlock()">
     <i class="fa fa-xmark"></i>
-  </a>
+  </a></br>
   <form id="leave_form" action="validate/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
@@ -10,7 +10,33 @@
   </form>
   <form id="shift_form" action="validate_shift/" method="post">
     {% csrf_token %}
-    {{ shift_form.as_p }}
+    {{ shift_form.date }}
+    {{ shift_form.ask_rest.label }} :
+    {{ shift_form.ask_rest }}</br></br>
+    <div id="horary">
+      {{ shift_form.start.label }}
+      {{ shift_form.start }}</br>
+      <div id="start" style="display: none">
+        <p id="info_start"></p>
+        {{ shift_form.start_hour_1 }} - {{ shift_form.start_hour_2 }}</br></br>
+        {{ shift_form.tolerance_start.label }} :
+        {{ shift_form.tolerance_start }}</br></br>
+      </div>
+      {{ shift_form.end.label }}
+      {{ shift_form.end }}</br>
+      <div id="end" style="display: none">
+        <p id="info_end"></p>
+        {{ shift_form.end_hour_1 }} - {{ shift_form.end_hour_2 }}</br></br>
+        {{ shift_form.tolerance_end.label }} :
+        {{ shift_form.tolerance_end }}</br></br>
+      </div>
+      <div id="all" style="display: none">
+        {{ shift_form.shift_in_hour.label }} :
+        {{ shift_form.shift_in_hour }}</br>
+      </div>
+      {{ shift_form.note.label }} :</br>
+    </div>
+    {{ shift_form.note }}</br>
     <input id="shift_form" type="submit" value="Valider">
   </form>
 </div>
