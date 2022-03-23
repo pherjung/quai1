@@ -6,7 +6,7 @@ import calendar
 
 from .models import Shift
 from .utils import Calendar
-from exchange.forms import LeaveForms, AskLeaveForms
+from exchange.forms import LeaveForms, RequestLeaveForms
 
 
 class CalendarView(LoginRequiredMixin, generic.ListView):
@@ -23,7 +23,7 @@ class CalendarView(LoginRequiredMixin, generic.ListView):
         context['next_month'] = next_month(date)
         context['prev_month'] = prev_month(date)
         context['form'] = LeaveForms()
-        context['shift_form'] = AskLeaveForms()
+        context['shift_form'] = RequestLeaveForms()
         return context
 
 

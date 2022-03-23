@@ -11,8 +11,8 @@
   <form id="shift_form" action="validate_shift/" method="post">
     {% csrf_token %}
     {{ shift_form.date }}
-    {{ shift_form.ask_rest.label }} :
-    {{ shift_form.ask_rest }}</br></br>
+    {{ shift_form.request_leave.label }} :
+    {{ shift_form.request_leave }}</br></br>
     <div id="schedule">
       {{ shift_form.start.label }}
       {{ shift_form.start }}</br>

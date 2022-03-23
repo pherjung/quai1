@@ -4,9 +4,9 @@ from django.db import IntegrityError
 from datetime import datetime
 from django.db.models import Q
 
-from .forms import LeaveForms, AskLeaveForms
+from .forms import LeaveForms, RequestLeaveForms
 from calendrier.models import Shift
-from .models import Give_leave, Ask_leave, Request_shift
+from .models import Give_leave, Request_leave, Request_shift
 
 
 def save_leave(request):
@@ -17,7 +17,7 @@ def save_leave(request):
             if form.is_valid():
                 cleaned_date = form.cleaned_data['date']
                 form_date = datetime.strptime(cleaned_date, "%A %d %B %Y")
-                Ask_leave.objects.filter(
+                Request_leave.objects.filter(
                     giver_shift__owner__username=request.user,
                     giver_shift__date=form_date,
                 ).update(gift=True)
@@ -29,18 +29,18 @@ def save_leave(request):
         return HttpResponseRedirect(reverse('calendar'))
 
 
-def ask_leave(request):
+def request_leave(request):
     if request.method == 'POST':
-        form = AskLeaveForms(request.POST)
+        form = RequestLeaveForms(request.POST)
 
         if form.is_valid():
-            asked_date = form.cleaned_data['date']
+            requested_date = form.cleaned_data['date']
             user_note = form.cleaned_data['note']
-            form_date = datetime.strptime(asked_date, "%A %d %B %Y")
-            ask = Shift.objects.get(date=form_date, owner=request.user)
-            if form.cleaned_data['ask_rest'] == 'ask_rest':
-                # Check if there is already asked leave
-                wishes = Ask_leave.objects.filter(
+            form_date = datetime.strptime(requested_date, "%A %d %B %Y")
+            request = Shift.objects.get(date=form_date, owner=request.user)
+            if form.cleaned_data['request_leave'] == 'request_leave':
+                # Check if there is already requested leave
+                wishes = Request_leave.objects.filter(
                     user_shift__owner__username=request.user,
                     user_shift__date=form_date,
                 )
@@ -64,18 +64,18 @@ def ask_leave(request):
                         for i in range(len(leaves)):
                             gift = True if give[it].id in leaves[i] else False
 
-                        save_asked = Ask_leave.objects.create(
-                            user_shift=ask,
+                        save_requested = Request_leave.objects.create(
+                            user_shift=request,
                             giver_shift=give[it],
                             note=user_note,
                             gift=gift
                         )
-                        save_asked.save()
+                        save_requested.save()
                         it += 1
                 else:
-                    print('There is already an asked leave')
+                    print('There is already an requested leave')
 
-            if form.cleaned_data['ask_rest'] == 'schedule':
+            if form.cleaned_data['request_leave'] == 'schedule':
                 condition = 0
                 start_hour1 = form.cleaned_data['start_hour_1']
                 condition += 1 if start_hour1 else 0
@@ -108,7 +108,7 @@ def ask_leave(request):
                             start_hour2) + tolerance_start).time()
                         query['start_hour__range'] = [start_minus, start_plus]
                     # Search starting from end_minus
-                    # Search between asked time
+                    # Search between requested time
                     case 3:
                         end = end_hour1 if end_hour1 else end_hour2
                         end_plus = (datetime.combine(
@@ -149,7 +149,7 @@ def ask_leave(request):
                 ti = 0
                 while ti < len(shifts):
                     save_modify = Request_shift.objects.create(
-                        user_shift=ask,
+                        user_shift=request,
                         giver_shift=shifts[ti],
                         note=user_note,
                     )

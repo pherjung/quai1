@@ -2,28 +2,28 @@ from django import forms
 
 
 class LeaveForms(forms.Form):
-    # forms related to rest
+    # forms related to leave
     OPTIONS = [
-        ('give_rest', 'Mettre le congé en concours'),
+        ('give_leave', 'Mettre le congé en concours'),
     ]
     date = forms.CharField(widget=forms.HiddenInput())
-    give_rest = forms.ChoiceField(label='Souhait',
-                                  choices=OPTIONS,
-                                  required=True)
+    give_leave = forms.ChoiceField(label='Souhait',
+                                   choices=OPTIONS,
+                                   required=True)
 
 
-class AskLeaveForms(forms.Form):
+class RequestLeaveForms(forms.Form):
     OPTIONS = [
-        ('ask_rest', 'Demander un congé'),
+        ('request_leave', 'Demander un congé'),
         ('schedule', "Modifier l'horaire"),
     ]
     date = forms.CharField(widget=forms.HiddenInput())
-    ask_rest = forms.ChoiceField(label='Souhait',
-                                 choices=OPTIONS,
-                                 required=True,
-                                 widget=forms.Select(
-                                     attrs={'onchange': 'hide()'})
-                                 )
+    request_leave = forms.ChoiceField(label='Souhait',
+                                      choices=OPTIONS,
+                                      required=True,
+                                      widget=forms.Select(
+                                          attrs={'onchange': 'hide()'})
+                                      )
     start = forms.BooleanField(label="Entrée de service",
                                label_suffix="",
                                required=False,

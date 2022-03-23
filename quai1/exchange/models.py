@@ -12,12 +12,12 @@ class Give_leave(models.Model):
                             on_delete=models.DO_NOTHING)
 
 
-class Ask_leave(models.Model):
+class Request_leave(models.Model):
     user_shift = models.ForeignKey(Shift,
-                                   related_name='asker',
+                                   related_name='requester_leave',
                                    on_delete=models.DO_NOTHING)
     giver_shift = models.ForeignKey(Shift,
-                                    related_name='giver',
+                                    related_name='giver_leave',
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)
@@ -29,10 +29,10 @@ class Ask_leave(models.Model):
 
 class Request_shift(models.Model):
     user_shift = models.ForeignKey(Shift,
-                                   related_name='request_asker',
+                                   related_name='requester_shift',
                                    on_delete=models.DO_NOTHING)
     giver_shift = models.ForeignKey(Shift,
-                                    related_name='request_giver',
+                                    related_name='request_shift',
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)

@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if not gifts and not accepted and not ask_leaves %}
+{% if not gifts and not accepted and not request_leaves %}
 <h3>Aucun congé mis en concours ou à échanger</h3>
 {% endif %}
 
@@ -71,7 +71,7 @@
 </table>
 {% endif %}
 
-{% if ask_leaves %}
+{% if request_leaves %}
 <h3>Congés à échanger</h3>
 <table class="table">
   <tr>
@@ -81,7 +81,7 @@
   </tr>
 {% endif %}
 
-{% for data in ask_leaves %}
+{% for data in request_leaves %}
 <tr class="td-bottom">
   <td>
     </br>{{ data.1|date:"l d.m.y" }}
@@ -105,7 +105,7 @@
 </tr>
 {% endfor %}
 
-{% if ask_leaves %}
+{% if request_leaves %}
 </table>
 {% endif %}
 

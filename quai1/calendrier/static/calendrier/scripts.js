@@ -65,8 +65,8 @@ function displayBlock(obj, id) {
 }
 
 function hide() {
-  form = document.getElementById("id_ask_rest").value
-  if (form == "ask_rest") {
+  form = document.getElementById("id_request_leave").value
+  if (form == "request_leave") {
     document.getElementById("schedule").style.display = "none";
 
   } else {

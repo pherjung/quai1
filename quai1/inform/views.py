@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
 import datetime
-from exchange.models import Ask_leave, Give_leave
+from exchange.models import Request_leave, Give_leave
 from .forms import AcceptDeclineForm, DeleteForm
 
 
@@ -29,7 +29,7 @@ def exchanges(request):
         gifts_form[item[0]] = DeleteForm(leave_id=item[0])
 
     # Given leaves
-    accepted = Ask_leave.objects.filter(
+    accepted = Request_leave.objects.filter(
         giver_shift_id__owner__username=request.user,
         accepted=True,
     ).values_list(
@@ -44,9 +44,9 @@ def exchanges(request):
     ).exclude(user_shift__date__lt=(datetime.datetime.now()))
 
     # Requested leaves
-    asker_ids = set()
+    requester_ids = set()
     # Recover all the leave the connected user can exchange
-    ask_leaves = Ask_leave.objects.filter(
+    request_leaves = Request_leave.objects.filter(
         giver_shift_id__owner__username=request.user,
         user_shift__date__gt=(datetime.datetime.now()),
         accepted=None,
@@ -62,13 +62,13 @@ def exchanges(request):
         'user_shift')
 
     leaves = 0
-    while leaves < len(ask_leaves):
-        # Recover all askers
-        asker_ids.add(ask_leaves[leaves][4])
+    while leaves < len(request_leaves):
+        # Recover all requesters
+        requester_ids.add(request_leaves[leaves][4])
         leaves += 1
 
     given_leaves = dict()
-    for i in asker_ids:
+    for i in requester_ids:
         dates = Give_leave.objects.filter(
             shift__owner=i,
             given=False
@@ -82,7 +82,7 @@ def exchanges(request):
                'gifts_form': gifts_form,
                'accepted': accepted,
                'leaves': given_leaves,
-               'ask_leaves': ask_leaves}
+               'request_leaves': request_leaves}
     return render(request, 'inform/exchanges.html', context)
 
 
@@ -95,12 +95,12 @@ def validate(request):
         if form.is_valid():
             date_leave = form.cleaned_data['accept_decline']
             if status == 'Decline':
-                Ask_leave.objects.filter(
+                Request_leave.objects.filter(
                     user_shift=shift,
                     giver_shift__owner__username=request.user
                 ).update(accepted=False)
             elif status == 'Accept' and date_leave != 'À discuter':
-                Ask_leave.objects.filter(
+                Request_leave.objects.filter(
                     user_shift=shift,
                     giver_shift__owner__username=request.user,
                 ).update(
@@ -113,7 +113,7 @@ def validate(request):
                     given=True,
                     who=request.user)
             elif status == 'Accept' and date_leave == 'À discuter':
-                Ask_leave.objects.filter(
+                Request_leave.objects.filter(
                     user_shift=shift,
                     giver_shift__owner__username=request.user,
                 ).update(accepted=True)
@@ -129,7 +129,7 @@ def delete(request):
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
-            Ask_leave.objects.filter(
+            Request_leave.objects.filter(
                 giver_shift=shift,
                 giver_shift__owner__username=request.user,
             ).update(gift=False)
@@ -146,7 +146,7 @@ def delete(request):
 @login_required
 def wishes(request):
     # Show leave accepted or to negotiate
-    accepted_wishes = Ask_leave.objects.filter(
+    accepted_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
         accepted=True,
     ).values_list(
@@ -159,7 +159,7 @@ def wishes(request):
         'note',
     ).exclude(user_shift__date__lt=datetime.datetime.now())
     # Show only one wish per date
-    wishes = Ask_leave.objects.filter(
+    wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
     ).values_list(
         'user_shift',
@@ -187,7 +187,7 @@ def delete_wish(request):
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
-            Ask_leave.objects.filter(
+            Request_leave.objects.filter(
                 user_shift=shift,
                 user_shift__owner__username=request.user,
             ).exclude(accepted=True).delete()
