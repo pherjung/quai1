@@ -25,3 +25,14 @@ class Ask_leave(models.Model):
     given_leave = models.ForeignKey(Shift,
                                     null=True,
                                     on_delete=models.DO_NOTHING)
+
+
+class Request_shift(models.Model):
+    user_shift = models.ForeignKey(Shift,
+                                   related_name='request_asker',
+                                   on_delete=models.DO_NOTHING)
+    giver_shift = models.ForeignKey(Shift,
+                                    related_name='request_giver',
+                                    on_delete=models.DO_NOTHING)
+    note = models.TextField(null=True)
+    accepted = models.BooleanField(null=True)
