@@ -51,12 +51,12 @@ function displayBlock(obj, id) {
   if (shift != 'F') {
     //Set type=hidden to all children
     for (let i = 0; i < forms.length; i++) {
-      forms[i].style.visibility = "hidden"
+      forms[i].style.display = "none"
 
     }
 
     //Show wished input
-    document.getElementById(form).style.visibility = "visible"
+    document.getElementById(form).style.display = ""
 
   }
   hide()
