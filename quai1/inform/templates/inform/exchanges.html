@@ -31,7 +31,7 @@
 </table>
 {% endif %}
 
-{% if accepted %}
+{% if accepted_leaves %}
 <h3>Congés échangés</h3>
 <table class="table">
   <tr>
@@ -42,7 +42,7 @@
   </tr>
 {% endif %}
 
-{% for accept in accepted %}
+{% for accept in accepted_leaves %}
 <tr>
   <td>{{ accept.0 }}</td>
   <td>{{ accept.1|date:"l d.m.y" }}</td>
@@ -67,7 +67,7 @@
 </tr>
 {% endfor %}
 
-{% if accepted %}
+{% if accepted_leaves %}
 </table>
 {% endif %}
 

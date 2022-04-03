@@ -29,7 +29,7 @@ def exchanges(request):
         gifts_form[item[0]] = DeleteForm(leave_id=item[0])
 
     # Given leaves
-    accepted = Request_leave.objects.filter(
+    accepted_leaves = Request_leave.objects.filter(
         giver_shift_id__owner__username=request.user,
         accepted=True,
     ).values_list(
@@ -111,7 +111,7 @@ def exchanges(request):
 
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
-               'accepted': accepted,
+               'accepted_leaves': accepted_leaves,
                'leaves': given_leaves,
                'request_leaves': request_leaves,
                'accepted_shifts': accepted_shifts,
