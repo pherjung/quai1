@@ -6,7 +6,7 @@ from django.template.defaulttags import register
 from django.db.models import Q
 import datetime
 from exchange.models import Request_leave, Give_leave
-from .forms import AcceptDeclineForm, DeleteForm
+from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm
 
 
 @register.filter
@@ -76,7 +76,7 @@ def exchanges(request):
             'shift',
             'shift__date'
         ).exclude(shift__date__lt=(datetime.datetime.now()))
-        given_leaves[i] = AcceptDeclineForm(user_dates=dates).as_p()
+        given_leaves[i] = AcceptDeclineDateForm(user_dates=dates).as_p()
 
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
