@@ -91,12 +91,32 @@ def exchanges(request):
         'user_shift__owner__last_name',
         'note',
     ).exclude(user_shift__date__lt=(datetime.datetime.now()))
+
+    # Recover all the shifts the connected user can exchange
+    request_shifts = Request_shift.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        user_shift__date__gt=(datetime.datetime.now()),
+        accepted=None,
+    ).values_list(
+        'user_shift',
+        'user_shift__shift_name',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'note')
+
+    shifts_forms = {}
+    for a in request_shifts:
+        shifts_forms[a[0]] = AcceptDeclineForm(shift_id=a[0]).as_p()
+
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
                'accepted': accepted,
                'leaves': given_leaves,
                'request_leaves': request_leaves,
-               'accepted_shifts': accepted_shifts}
+               'accepted_shifts': accepted_shifts,
+               'request_shifts': request_shifts,
+               'request_shifts_forms': shifts_forms}
     return render(request, 'inform/exchanges.html', context)
 
 

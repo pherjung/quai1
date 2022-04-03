@@ -149,4 +149,45 @@
 {% if accepted_shifts %}
 </table>
 {% endif %}
+
+{% if request_shifts %}
+<h3>Tours à échanger</h3>
+<table class="table">
+  <tr>
+    <th>Tour</th>
+    <th>Date</th>
+    <th>Horaire</th>
+  </tr>
+{% endif %}
+
+{% for shift in request_shifts %}
+<tr class="td-bottom">
+  <td>
+    {{ shift.1 }}
+  </td>
+  <td>
+    {{ shift.2|date:"l d.m.y" }}
+  <td>
+    {{ shift.3|default_if_none:'-' }}</br>
+    {{ shift.4|default_if_none:'-' }}
+  </td>
+  <td>
+    <form id="test" action="validate/" method="post" style="text-align: center">
+      {% csrf_token %}
+      {{ request_shifts_forms|get_item:shift.0 }}
+      <input value="{{ shift.0 }}" name="id" type="hidden">
+      <input value="Accept" name="status" type="submit"></input>
+      <input value="Decline" name="status" type="submit"></input>
+    </form>
+  </td>
+  <td>
+    <i class="fa-solid fa-info"></i>
+  </td>
+</tr>
+{% endfor %}
+
+{% if request_leaves %}
+</table>
+{% endif %}
+
 {% endblock %}
