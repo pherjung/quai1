@@ -4,8 +4,8 @@ from django.db import IntegrityError
 from datetime import datetime
 from django.db.models import Q
 
-from .forms import LeaveForms, RequestLeaveForms
 from calendrier.models import Shift
+from .forms import LeaveForms, RequestLeaveForms
 from .models import Give_leave, Request_leave, Request_shift
 
 
@@ -45,7 +45,7 @@ def request_leave(request):
                     user_shift__owner__username=user,
                     user_shift__date=form_date,
                 )
-                if not len(wishes):
+                if not wishes:
                     # Recover all given leaves
                     leaves = Give_leave.objects.filter(
                         shift_id__date=form_date
@@ -59,20 +59,20 @@ def request_leave(request):
                         shift_name__iregex=r'(C|R)T*'
                     ).exclude(owner=user)
                     # Save shifts
-                    it = 0
-                    gift = False
-                    while it < len(give):
-                        for i in range(len(leaves)):
-                            gift = True if give[it].id in leaves[i] else False
+                    give_it = 0
+                    gift = False  # Useful in case len(give) is 0
+                    while give_it < len(give):
+                        for index in enumerate(leaves):
+                            gift = bool(give[give_it].id in leaves[index[0]])
 
                         save_requested = Request_leave.objects.create(
                             user_shift=request,
-                            giver_shift=give[it],
+                            giver_shift=give[give_it],
                             note=user_note,
                             gift=gift
                         )
                         save_requested.save()
-                        it += 1
+                        give_it += 1
                 else:
                     print('There is already an requested leave')
 
@@ -147,14 +147,14 @@ def request_leave(request):
                         shift_name__iregex=(r'^200'))
                 ).exclude(owner=user)
 
-                ti = 0
-                while ti < len(shifts):
+                shift_it = 0
+                while shift_it < len(shifts):
                     save_modify = Request_shift.objects.create(
                         user_shift=request,
-                        giver_shift=shifts[ti],
+                        giver_shift=shifts[shift_it],
                         note=user_note,
                     )
                     save_modify.save()
-                    ti += 1
+                    shift_it += 1
 
     return HttpResponseRedirect(reverse('calendar'))

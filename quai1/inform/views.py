@@ -1,10 +1,10 @@
+import datetime
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
-import datetime
 from exchange.models import Request_leave, Give_leave, Request_shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm
 
@@ -106,8 +106,8 @@ def exchanges(request):
         'note')
 
     shifts_forms = {}
-    for a in request_shifts:
-        shifts_forms[a[0]] = AcceptDeclineForm(shift_id=a[0]).as_p()
+    for item2 in request_shifts:
+        shifts_forms[item2[0]] = AcceptDeclineForm(shift_id=item2[0]).as_p()
 
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
@@ -228,7 +228,7 @@ def wishes(request):
         'note',
     ).exclude(user_shift__date__lt=datetime.datetime.now())
     # Show only one wish per date
-    wishes = Request_leave.objects.filter(
+    user_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
         accepted=None,
     ).values_list(
@@ -242,7 +242,7 @@ def wishes(request):
     ) | Q(accepted=True)
     ).distinct()
     wishes_dict = {}
-    for item in wishes:
+    for item in user_wishes:
         wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
     # Wish to change the schedule
@@ -262,7 +262,8 @@ def wishes(request):
         schedules_form[day[0]] = DeleteForm(leave_id=day[0])
 
     context = {'accepted_wishes': accepted_wishes,
-               'wishes': wishes,
+               'accepted_shifts': accepted_shifts,
+               'wishes': user_wishes,
                'wishes_form': wishes_dict,
                'schedules': schedules,
                'schedules_form': schedules_form}

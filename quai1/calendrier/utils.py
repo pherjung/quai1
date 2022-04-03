@@ -8,17 +8,17 @@ class Calendar(HTMLCalendar):
         self.user = request.user
         self.year = year
         self.month = month
-        super(Calendar, self).__init__()
+        super().__init__()
 
     def formatday(self, day, shift):
         shift_per_day = shift.filter(date__day=day,
                                      owner=self.user)
         cell = ''
-        for shift in shift_per_day:
-            info = f"class={shift.shift_name} id ='shift'"
-            cell += f"<p {info}>{shift.shift_name}</p>"
-            cell += f'<p>{shift.start_hour}</p>'
-            cell += f'<p>{shift.end_hour} </p>'
+        for shift_day in shift_per_day:
+            info = f"class={shift_day.shift_name} id ='shift'"
+            cell += f"<p {info}>{shift_day.shift_name}</p>"
+            cell += f'<p>{shift_day.start_hour}</p>'
+            cell += f'<p>{shift_day.end_hour} </p>'
 
         if day != 0:
             date_obj = datetime(self.year, self.month, day)
@@ -33,8 +33,8 @@ class Calendar(HTMLCalendar):
 
     def formatweek(self, theweek, shifts):
         week = ''
-        for day, weekday in theweek:
-            week += self.formatday(day, shifts)
+        for day in theweek:
+            week += self.formatday(day[0], shifts)
 
         return f'<tr> {week} </tr>'
 
