@@ -32,16 +32,17 @@ def save_leave(request):
 def request_leave(request):
     if request.method == 'POST':
         form = RequestLeaveForms(request.POST)
+        user = request.user
 
         if form.is_valid():
             requested_date = form.cleaned_data['date']
             user_note = form.cleaned_data['note']
             form_date = datetime.strptime(requested_date, "%A %d %B %Y")
-            request = Shift.objects.get(date=form_date, owner=request.user)
+            request = Shift.objects.get(date=form_date, owner=user)
             if form.cleaned_data['request_leave'] == 'request_leave':
                 # Check if there is already requested leave
                 wishes = Request_leave.objects.filter(
-                    user_shift__owner__username=request.user,
+                    user_shift__owner__username=user,
                     user_shift__date=form_date,
                 )
                 if not len(wishes):
@@ -49,14 +50,14 @@ def request_leave(request):
                     leaves = Give_leave.objects.filter(
                         shift_id__date=form_date
                     ).exclude(
-                        shift_id__owner_id__username=request.user
+                        shift_id__owner_id__username=user
                     ).values_list('shift_id')
                     # Recover column ID of all leaves not owned by requester
                     give = Shift.objects.filter(
                         date=form_date,
                         start_hour=None,
                         shift_name__iregex=r'(C|R)T*'
-                    ).exclude(owner=request.user)
+                    ).exclude(owner=user)
                     # Save shifts
                     it = 0
                     gift = False
@@ -144,7 +145,7 @@ def request_leave(request):
                     Q(**query)
                     | Q(date=form_date,
                         shift_name__iregex=(r'^200'))
-                ).exclude(owner__username=request.user)
+                ).exclude(owner=user)
 
                 ti = 0
                 while ti < len(shifts):
