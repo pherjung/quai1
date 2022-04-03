@@ -230,6 +230,7 @@ def wishes(request):
     # Show only one wish per date
     wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
+        accepted=None,
     ).values_list(
         'user_shift',
         'user_shift__date',
