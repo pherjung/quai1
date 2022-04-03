@@ -93,7 +93,7 @@
   </tr>
   <tr class="td-bottom">
     <td colspan="3">
-      <form action="delete/" metdod="post">
+      <form action="delete/" method="post">
         {% csrf_token %}
         {{ wishes_form|get_item:wish.0 }}
         <input value="Supprimer" name="status" type="submit"></input>
