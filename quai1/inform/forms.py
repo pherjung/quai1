@@ -30,3 +30,13 @@ class DeleteForm(forms.Form):
 
     leave = forms.CharField(label="",
                             widget=forms.HiddenInput())
+
+
+class AcceptDeclineForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.shift_id = kwargs.pop('shift_id')
+        super(AcceptDeclineForm, self).__init__(*args, **kwargs)
+        self.fields['shift'].initial = self.shift_id
+
+    shift = forms.CharField(label="",
+                            widget=forms.HiddenInput())

@@ -122,37 +122,60 @@ def exchanges(request):
 
 def validate(request):
     if request.method == 'POST':
-        dates = request.POST['accept_decline']
         shift = request.POST['id']
         status = request.POST.get('status')
-        form = AcceptDeclineForm(request.POST, user_dates=dates)
+        if 'accept_decline_date' in request.POST:
+            dates = request.POST['accept_decline_date']
+            form = AcceptDeclineDateForm(request.POST, user_dates=dates)
+        else:
+            dates = None
+            form = AcceptDeclineForm(request.POST, shift_id=shift)
+
         if form.is_valid():
-            date_leave = form.cleaned_data['accept_decline']
+            if dates:
+                date_leave = form.cleaned_data['accept_decline_date']
             if status == 'Decline':
-                Request_leave.objects.filter(
-                    user_shift=shift,
-                    giver_shift__owner__username=request.user
-                ).update(accepted=False)
-            elif status == 'Accept' and date_leave != 'À discuter':
-                Request_leave.objects.filter(
-                    user_shift=shift,
-                    giver_shift__owner__username=request.user,
-                ).update(
-                    accepted=True,
-                    given_leave=date_leave,
-                )
-                Give_leave.objects.filter(
-                    shift=date_leave
-                ).update(
-                    given=True,
-                    who=request.user)
-            elif status == 'Accept' and date_leave == 'À discuter':
-                Request_leave.objects.filter(
-                    user_shift=shift,
-                    giver_shift__owner__username=request.user,
-                ).update(accepted=True)
+                match dates:
+                    case str():
+                        Request_leave.objects.filter(
+                            user_shift=shift,
+                            giver_shift__owner__username=request.user
+                        ).update(accepted=False)
+                    case None:
+                        Request_shift.objects.filter(
+                            user_shift=shift,
+                            giver_shift__owner__username=request.user
+                        ).update(accepted=False)
+            elif status == 'Accept':
+                match dates:
+                    case 'À discuter':
+                        Request_leave.objects.filter(
+                            user_shift=shift,
+                            giver_shift__owner__username=request.user,
+                        ).update(accepted=True)
+                    case str():
+                        Request_leave.objects.filter(
+                            user_shift=shift,
+                            giver_shift__owner__username=request.user,
+                        ).update(
+                            accepted=True,
+                            given_leave=date_leave,
+                        )
+                        Give_leave.objects.filter(
+                            shift=date_leave
+                        ).update(
+                            given=True,
+                            who=request.user)
+                    case None:
+                        Request_shift.objects.filter(
+                            user_shift=shift,
+                            giver_shift__owner__username=request.user,
+                        ).update(accepted=True)
     else:
-        AcceptDeclineForm()
+        if 'accept_decline_date' in request.POST:
+            AcceptDeclineDateForm()
+        else:
+            AcceptDeclineForm()
 
     return HttpResponseRedirect(reverse('exchanges'))
 
