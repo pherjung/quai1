@@ -106,4 +106,36 @@
 </table>
 {% endif %}
 
+{% if schedules %}
+<h3>Tours souhaités</h3>
+<table class="table">
+  <tr>
+    <th>Date</th>
+    <th>Souhait</th>
+    <th>Note</th>
+  </tr>
+{% endif %}
+
+{% for day in schedules %}
+  <tr>
+    <td>{{ day.1|date:"l d.m.y" }}</td>
+    <td>{{ day.2|default_if_none:'' }}</td>
+  </tr>
+  <tr class="td-bottom">
+    <td colspan="3">
+      <form action="delete/" method="post">
+        {% csrf_token %}
+        {{ schedules_form|get_item:day.0 }}
+        <input value="shift" name="shift" type="hidden">
+        <input value="Supprimer" name="status" type="submit"></input>
+      </form>
+    </td>
+  </tr>
+{% endfor %}
+
+{% if schedules %}
+</table>
+{% endif %}
+
+
 {% endblock %}

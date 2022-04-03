@@ -240,26 +240,52 @@ def wishes(request):
         user_shift__date__lt=datetime.datetime.now()
     ) | Q(accepted=True)
     ).distinct()
-    wishes_dict = dict()
+    wishes_dict = {}
     for item in wishes:
         wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
+    # Wish to change the schedule
+    schedules = Request_shift.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=None,
+    ).values_list(
+        'user_shift',
+        'user_shift__date',
+        'note',
+    ).exclude(Q(
+        user_shift__date__lt=datetime.datetime.now()
+    ) | Q(accepted=True)
+    ).distinct()
+    schedules_form = {}
+    for day in schedules:
+        schedules_form[day[0]] = DeleteForm(leave_id=day[0])
+
     context = {'accepted_wishes': accepted_wishes,
                'wishes': wishes,
-               'wishes_form': wishes_dict}
+               'wishes_form': wishes_dict,
+               'schedules': schedules,
+               'schedules_form': schedules_form}
     return render(request, 'inform/wishes.html', context)
 
 
 def delete_wish(request):
+    print('debug delete_wish', request.POST)
     if request.method == 'POST':
         shift = request.POST['leave']
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
-            Request_leave.objects.filter(
-                user_shift=shift,
-                user_shift__owner__username=request.user,
-            ).exclude(accepted=True).delete()
+            if 'shift' in request.POST:
+                print('debug delete_wish')
+                Request_shift.objects.filter(
+                    user_shift=shift,
+                    user_shift__owner__username=request.user,
+                ).exclude(accepted=True).delete()
+            else:
+                Request_leave.objects.filter(
+                    user_shift=shift,
+                    user_shift__owner__username=request.user,
+                ).exclude(accepted=True).delete()
     else:
         DeleteForm()
 
