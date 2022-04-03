@@ -1,6 +1,9 @@
 from django import forms
 
 
+from django.core.exceptions import ValidationError
+
+
 class LeaveForms(forms.Form):
     # forms related to leave
     OPTIONS = [
@@ -81,3 +84,17 @@ class RequestLeaveForms(forms.Form):
                            widget=forms.Textarea(attrs={
                                'cols': 20,
                                'rows': 2}))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        start1 = cleaned_data['start_hour_1']
+        start2 = cleaned_data['start_hour_2']
+        end1 = cleaned_data['end_hour_1']
+        end2 = cleaned_data['end_hour_2']
+        if (start2 and start1) and start2 < start1:
+            print('debug 1')
+            raise ValidationError("L'heure ne suit pas", code='invalid')
+
+        if (end2 and end1) and end2 < end1:
+            print('debug 2')
+            raise ValidationError("L'heure ne suit pas", code='invalid')
