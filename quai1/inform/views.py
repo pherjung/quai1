@@ -24,7 +24,7 @@ def exchanges(request):
         'shift',
         'shift__date',
     ).exclude(shift__date__lt=(datetime.datetime.now()))
-    gifts_form = dict()
+    gifts_form = {}
     for item in gifts:
         gifts_form[item[0]] = DeleteForm(leave_id=item[0])
 
@@ -67,7 +67,7 @@ def exchanges(request):
         requester_ids.add(request_leaves[leaves][4])
         leaves += 1
 
-    given_leaves = dict()
+    given_leaves = {}
     for i in requester_ids:
         dates = Give_leave.objects.filter(
             shift__owner=i,
