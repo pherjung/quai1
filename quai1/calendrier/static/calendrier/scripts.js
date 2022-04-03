@@ -97,8 +97,14 @@ function from_between(name) {
   if (field1 && field2) {
     text.innerHTML = 'Entre :'
   } else {
-    text.innerHTML = 'Dès :'
-
+      switch(name) {
+        case 'start':
+          text.innerHTML = 'Dès :'
+          break;
+        case 'end':
+          text.innerHTML = "Jusqu'à :"
+          break;
+      }
   }
 
 }
