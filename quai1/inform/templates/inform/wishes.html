@@ -2,7 +2,7 @@
 
 {% block content %}
 
-{% if not accepted_wishes and not wishes %}
+{% if not accepted_wishes and not wishes and not schedules and not accepted_shifts %}
 <h3>Aucun souhaits</h3>
 {% endif %}
 
@@ -39,6 +39,36 @@
 {% endfor %}
 
 {% if accepted_wishes %}
+</table>
+{% endif %}
+
+{% if accepted_shifts %}
+<h3>Tours échangés</h3>
+<table class="table">
+  <tr>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Collègue</th>
+    <th>Note</th>
+  </tr>
+{% endif %}
+
+{% for accepted_shift in accepted_shifts %}
+<tr class=td-bottom>
+  <td>{{ accepted_shift.0|date:"l d.m.y" }}</td>
+  <td class="hour">
+    {{ accepted_shift.1|default_if_none:"-" }}</br>
+    {{ accepted_shift.2|default_if_none:"-" }}
+  </td>
+  <td>
+    {{ accepted_shift.3 }}</br>
+    {{ accepted_shift.4 }}
+  </td>
+  <td>{{ accepted_shift.5 }}</td>
+</tr>
+{% endfor %}
+
+{% if accepted_shifts %}
 </table>
 {% endif %}
 

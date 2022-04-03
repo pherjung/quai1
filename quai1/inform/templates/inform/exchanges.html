@@ -2,8 +2,8 @@
 
 {% block content %}
 
-{% if not gifts and not accepted and not request_leaves %}
-<h3>Aucun congé mis en concours ou à échanger</h3>
+{% if not gifts and not accepted_leaves and not request_leaves and not accepted_shifts and not request_shifts %}
+<h3>Aucun échanges, ni de congés mis en concours</h3>
 {% endif %}
 
 {% if gifts %}
@@ -109,4 +109,44 @@
 </table>
 {% endif %}
 
+{% if accepted_shifts %}
+<h3>Tours échangés</h3>
+<table class="table">
+  <tr>
+    <th>Tour</th>
+    <th>Date</th>
+    <th>Horaire</th>
+    <th>Collègue</th>
+    <th>Notes</th>
+  </tr>
+{% endif %}
+
+{% for accept_shift in accepted_shifts %}
+<tr>
+  <td>{{ accept_shift.0 }}</td>
+  <td>{{ accept_shift.1|date:"l d.m.y" }}</td>
+  <td>
+    {{ accept_shift.2|default_if_none:'-' }}</br>
+    {{ accept_shift.3|default_if_none:'-' }}
+  </td>
+  <td>
+    {{ accept_shift.4 }}</br>
+    {{ accept_shift.5 }}
+  </td>
+  <td>{{ accept_shift.6|default_if_none:'-' }}</td>
+</tr>
+<tr class="td-bottom">
+  <td colspan="5">
+    {% if accept.7 %}
+      <p>En échange : {{ accept.7|date:"l d.m.y" }}</p>
+    {% else %}
+      <p>À discuter</p>
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+
+{% if accepted_shifts %}
+</table>
+{% endif %}
 {% endblock %}

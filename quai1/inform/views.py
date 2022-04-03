@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
 import datetime
-from exchange.models import Request_leave, Give_leave
+from exchange.models import Request_leave, Give_leave, Request_shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm
 
 
@@ -78,11 +78,25 @@ def exchanges(request):
         ).exclude(shift__date__lt=(datetime.datetime.now()))
         given_leaves[i] = AcceptDeclineDateForm(user_dates=dates).as_p()
 
+    # Given shifts
+    accepted_shifts = Request_shift.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        accepted=True,
+    ).values_list(
+        'user_shift__shift_name',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'user_shift__owner__first_name',
+        'user_shift__owner__last_name',
+        'note',
+    ).exclude(user_shift__date__lt=(datetime.datetime.now()))
     context = {'gifts': gifts,
                'gifts_form': gifts_form,
                'accepted': accepted,
                'leaves': given_leaves,
-               'request_leaves': request_leaves}
+               'request_leaves': request_leaves,
+               'accepted_shifts': accepted_shifts}
     return render(request, 'inform/exchanges.html', context)
 
 
@@ -156,6 +170,18 @@ def wishes(request):
         'giver_shift__owner__first_name',
         'giver_shift__owner__last_name',
         'given_leave__date',
+        'note',
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
+    # Show accepted shifts
+    accepted_shifts = Request_shift.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=True,
+    ).values_list(
+        'user_shift__date',
+        'giver_shift__start_hour',
+        'giver_shift__end_hour',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
         'note',
     ).exclude(user_shift__date__lt=datetime.datetime.now())
     # Show only one wish per date
