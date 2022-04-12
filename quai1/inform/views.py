@@ -275,14 +275,12 @@ def wishes(request):
 
 
 def delete_wish(request):
-    print('debug delete_wish', request.POST)
     if request.method == 'POST':
         shift = request.POST['leave']
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
             if 'shift' in request.POST:
-                print('debug delete_wish')
                 Request_shift.objects.filter(
                     user_shift=shift,
                     user_shift__owner__username=request.user,
