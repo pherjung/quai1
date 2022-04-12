@@ -253,6 +253,10 @@ def wishes(request):
         'user_shift',
         'user_shift__date',
         'note',
+        'request__start_hour1',
+        'request__start_hour2',
+        'request__end_hour1',
+        'request__end_hour2',
     ).exclude(Q(
         user_shift__date__lt=datetime.datetime.now()
     ) | Q(accepted=True)
