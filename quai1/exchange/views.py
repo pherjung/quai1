@@ -38,7 +38,7 @@ def request_leave(request):
             requested_date = form.cleaned_data['date']
             user_note = form.cleaned_data['note']
             form_date = datetime.strptime(requested_date, "%A %d %B %Y")
-            request = Shift.objects.get(date=form_date, owner=user)
+            request_data = Shift.objects.get(date=form_date, owner=user)
             if form.cleaned_data['request_leave'] == 'request_leave':
                 # Check if there is already requested leave
                 wishes = Request_leave.objects.filter(
@@ -66,7 +66,7 @@ def request_leave(request):
                             gift = bool(give[give_it].id in leaves[index[0]])
 
                         save_requested = Request_leave.objects.create(
-                            user_shift=request,
+                            user_shift=request_data,
                             giver_shift=give[give_it],
                             note=user_note,
                             gift=gift
@@ -161,7 +161,7 @@ def request_leave(request):
                 shift_it = 0
                 while shift_it < len(shifts):
                     save_modify = Request_shift.objects.create(
-                        user_shift=request,
+                        user_shift=request_data,
                         giver_shift=shifts[shift_it],
                         note=user_note,
                         request=log,
