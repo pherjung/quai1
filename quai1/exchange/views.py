@@ -6,7 +6,7 @@ from django.db.models import Q
 
 from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
-from .models import Give_leave, Request_leave, Request_shift
+from .models import Give_leave, Request_leave, Request_shift, Request_log
 
 
 def save_leave(request):
@@ -146,6 +146,17 @@ def request_leave(request):
                     | Q(date=form_date,
                         shift_name__iregex=(r'^200'))
                 ).exclude(owner=user)
+                log = Request_log.objects.create(
+                    user=request.user,
+                    date=form_date,
+                    start_hour1=start_hour1,
+                    start_hour2=start_hour2,
+                    tolerance_start=tolerance_start,
+                    end_hour1=end_hour1,
+                    end_hour2=end_hour2,
+                    tolerance_end=tolerance_end,
+                )
+                log.save()
 
                 shift_it = 0
                 while shift_it < len(shifts):
@@ -153,6 +164,7 @@ def request_leave(request):
                         user_shift=request,
                         giver_shift=shifts[shift_it],
                         note=user_note,
+                        request=log,
                     )
                     save_modify.save()
                     shift_it += 1
