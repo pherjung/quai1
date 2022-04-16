@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'login',
     'exchange',
     'inform',
+    'calendarManager',
 ]
 
 MIDDLEWARE = [
