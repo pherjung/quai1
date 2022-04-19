@@ -45,9 +45,7 @@ def request_leave(request):
                               request_data,
                               user_note)
             elif form.cleaned_data['request_leave'] == 'schedule':
-                query = search_shifts(form,
-                                      form_date,
-                                      True)
+                query = search_shifts(form, form_date, True)
                 # Shift starting from range start_hour_1 +/- tolerance
                 shifts = Shift.objects.filter(
                     Q(**query)
@@ -74,7 +72,7 @@ def request_leave(request):
                         giver_shift=shifts[shift_it],
                         note=user_note,
                         request=log,
-                    ).save()
+                    )
                     shift_it += 1
 
     return HttpResponseRedirect(reverse('calendar'))
