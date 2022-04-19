@@ -51,14 +51,18 @@ def search_shifts(form, form_date, switch):
         end_hour2 = form.cleaned_data['end_hour_2']
         tolerance_end = form.cleaned_data['tolerance_end']
         tolerance_start = form.cleaned_data['tolerance_start']
-        query = {'date': form_date}
     else:
-        # To-do
-        print('To-Do')
+        start_hour1 = form['start_hour1']
+        start_hour2 = form['start_hour2']
+        end_hour1 = form['end_hour1']
+        end_hour2 = form['end_hour2']
+        tolerance_end = form['tolerance_end']
+        tolerance_start = form['tolerance_start']
 
+    query = {'date': form_date}
     condition = 0
-    condition += 1 if start_hour1 else 0
-    condition += 1 if start_hour2 else 0
+    condition += bool(start_hour1)
+    condition += bool(start_hour2)
     condition += 3 if end_hour1 else 0
     condition += 3 if end_hour2 else 0
     match condition:
@@ -68,11 +72,7 @@ def search_shifts(form, form_date, switch):
             minus = (datetime.combine(
                 form_date,
                 start) - tolerance_start).time()
-            if switch:
-                query['start_hour__gt'] = minus
-            else:
-                # To-do
-                print('To-Do')
+            query['start_hour__gt'] = minus
         # Search between start_minus and start_plus
         case 2:
             minus = (datetime.combine(
@@ -81,11 +81,7 @@ def search_shifts(form, form_date, switch):
             plus = (datetime.combine(
                 form_date,
                 start_hour2) + tolerance_start).time()
-            if switch:
-                query['start_hour__range'] = [minus, plus]
-            else:
-                # To-do
-                print('To-Do')
+            query['start_hour__range'] = [minus, plus]
         # Search starting from end_minus
         # Search between requested time
         case 3:
@@ -93,11 +89,7 @@ def search_shifts(form, form_date, switch):
             plus = (datetime.combine(
                 form_date,
                 end) + tolerance_end).time()
-            if switch:
-                query['end_hour__lt'] = plus
-            else:
-                # To-do
-                print('To-Do')
+            query['end_hour__lt'] = plus
         # Search between end_minus and end_plus
         case 6:
             minus = (datetime.combine(
@@ -106,11 +98,7 @@ def search_shifts(form, form_date, switch):
             plus = (datetime.combine(
                 form_date,
                 end_hour2) + tolerance_end).time()
-            if switch:
-                query['end_hour__range'] = [minus, plus]
-            else:
-                # To-do
-                print('To-Do')
+            query['end_hour__range'] = [minus, plus]
         case 4:
             start = start_hour1 if start_hour1 else start_hour2
             minus = (datetime.combine(
@@ -120,11 +108,8 @@ def search_shifts(form, form_date, switch):
             plus = (datetime.combine(
                 form_date,
                 end) + tolerance_end).time()
-            if switch:
-                query['start_hour__gt'] = minus
-                query['end_hour__lt'] = plus
-            else:
-                print('to-do')
+            query['start_hour__gt'] = minus
+            query['end_hour__lt'] = plus
         case _:
             # To-do
             print('catch false case')
