@@ -22,6 +22,7 @@ class Request_log(models.Model):
     end_hour1 = models.TimeField(null=True)
     end_hour2 = models.TimeField(null=True)
     tolerance_end = models.DurationField(null=True)
+    note = models.TextField(null=True)
 
 
 class Request_leave(models.Model):

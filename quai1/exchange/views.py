@@ -63,6 +63,7 @@ def request_leave(request):
                     end_hour1=form.cleaned_data['end_hour_1'],
                     end_hour2=form.cleaned_data['end_hour_2'],
                     tolerance_end=form.cleaned_data['tolerance_end'],
+                    note=user_note
                 )
                 log.save()
 
