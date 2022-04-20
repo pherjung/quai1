@@ -23,8 +23,7 @@ def save_leave(request):
                     giver_shift__date=form_date,
                 ).update(gift=True)
                 give = Shift.objects.get(date=form_date, owner=request.user)
-                save_gived = Give_leave.objects.create(shift=give)
-                save_gived.save()
+                Give_leave.objects.create(shift=give)
         except IntegrityError:
             print('Congé déjà posé')
         return HttpResponseRedirect(reverse('calendar'))
@@ -63,7 +62,6 @@ def request_leave(request):
                     tolerance_end=form.cleaned_data['tolerance_end'],
                     note=user_note
                 )
-                log.save()
 
                 shift_it = 0
                 while shift_it < len(shifts):

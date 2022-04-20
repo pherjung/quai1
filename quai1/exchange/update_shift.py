@@ -31,13 +31,12 @@ def search_wishes(user, form_date, request_data, user_note):
             for index in enumerate(leaves):
                 gift = bool(give[give_it].id in leaves[index[0]])
 
-            save_requested = Request_leave.objects.create(
+            Request_leave.objects.create(
                 user_shift=request_data,
                 giver_shift=give[give_it],
                 note=user_note,
                 gift=gift
             )
-            save_requested.save()
             give_it += 1
     else:
         print('There is already an requested leave')
