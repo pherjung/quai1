@@ -34,7 +34,7 @@ class Request_leave(models.Model):
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)
-    gift = models.BooleanField()
+    validated = models.BooleanField()
     given_leave = models.ForeignKey(Shift,
                                     null=True,
                                     on_delete=models.DO_NOTHING)

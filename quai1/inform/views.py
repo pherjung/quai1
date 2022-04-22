@@ -58,7 +58,7 @@ def exchanges(request):
         'user_shift__owner',
         'user_shift__owner__username',
         'note',
-        'gift',
+        'validated',
         'user_shift')
 
     leaves = 0
@@ -189,7 +189,7 @@ def delete(request):
             Request_leave.objects.filter(
                 giver_shift=shift,
                 giver_shift__owner__username=request.user,
-            ).update(gift=False)
+            ).update(validated=False)
             Give_leave.objects.filter(
                 shift=shift,
                 shift__owner__username=request.user
