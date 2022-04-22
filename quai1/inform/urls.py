@@ -8,4 +8,5 @@ urlpatterns = [
     path('exchanges/delete/', views.delete),
     path('wishes/', views.wishes, name='wishes'),
     path('wishes/delete/', views.delete_wish),
+    path('wishes/confirm/', views.validate_leave),
 ]

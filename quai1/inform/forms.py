@@ -40,3 +40,16 @@ class AcceptDeclineForm(forms.Form):
 
     shift = forms.CharField(label="",
                             widget=forms.HiddenInput())
+
+class ValidateForm(forms.Form):
+    def __init__(self, *args, **kwargs):
+        self.request_leave = kwargs.pop('request_leave')
+        self.exchange = kwargs.pop('exchange')
+        super().__init__(*args, **kwargs)
+        self.fields['request_leave'].initial = self.request_leave
+        self.fields['exchange'].initial = self.exchange
+
+    request_leave = forms.CharField(label="",
+                                    widget=forms.HiddenInput())
+    exchange = forms.CharField(label="",
+                               widget=forms.HiddenInput())

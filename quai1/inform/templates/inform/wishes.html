@@ -36,6 +36,15 @@
   {% endif %}
   <td>{{ accepted.6 }}</td>
 </tr>
+<tr class=td-bottom>
+    <td colspan="5">
+        <form onclick="validate('{{ accepted.8 }}', 'Échanges congé', '{{ accepted.0 }}', '{{ accepted.5 }}')" action="confirm/" method="post">
+        {% csrf_token %}
+        {{ validate_leaves|get_item:accepted.7 }}
+        <input value="Valider" name="status" type="submit"></input>
+      </form>
+    </td>
+</tr>
 {% endfor %}
 
 {% if accepted_wishes %}

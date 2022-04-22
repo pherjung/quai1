@@ -6,7 +6,8 @@ from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
 from exchange.models import Request_leave, Give_leave, Request_shift
-from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm
+from calendrier.models import Shift
+from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
 
 
 @register.filter
@@ -161,11 +162,6 @@ def validate(request):
                             accepted=True,
                             given_leave=date_leave,
                         )
-                        Give_leave.objects.filter(
-                            shift=date_leave
-                        ).update(
-                            given=True,
-                            who=request.user)
                     case None:
                         Request_shift.objects.filter(
                             user_shift=shift,
@@ -202,7 +198,7 @@ def delete(request):
 
 @login_required
 def wishes(request):
-    # Show leave accepted or to negotiate
+    # Show accepted leave or to negotiate
     accepted_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
         accepted=True,
@@ -214,7 +210,14 @@ def wishes(request):
         'giver_shift__owner__last_name',
         'given_leave__date',
         'note',
+        'id',
+        'giver_shift__owner__email'
     ).exclude(user_shift__date__lt=datetime.datetime.now())
+    validate_leaves_form = {}
+    for leave in accepted_wishes:
+        validate_leaves_form[leave[7]] = ValidateForm(request_leave=leave[7],
+                                                      exchange=leave[5])
+
     # Show accepted shifts
     accepted_shifts = Request_shift.objects.filter(
         user_shift__owner__username=request.user,
@@ -293,4 +296,32 @@ def delete_wish(request):
     else:
         DeleteForm()
 
+    return HttpResponseRedirect(reverse('wishes'))
+
+
+def validate_leave(request):
+    if request.method == 'POST':
+        validate_data = request.POST['request_leave']
+        exchange = request.POST['exchange']
+        form = ValidateForm(request.POST,
+                            request_leave=validate_data,
+                            exchange=exchange)
+        if form.is_valid():
+            validate_data = form.cleaned_data['request_leave']
+            exchanged_date = form.cleaned_data['exchange']
+            shift = Shift.objects.get(date=exchanged_date,
+                                      owner__username=request.user)
+            request_leave = Request_leave.objects.get(id=validate_data)
+            Give_leave.objects.update_or_create(
+                shift=shift,
+                defaults={'given': True,
+                          'who': request_leave.giver_shift.owner},
+            )
+            Request_leave.objects.filter(
+                id=validate_data
+            ).update(validated=True, given_shift=shift)
+            Request_leave.objects.filter(
+                user_shift=request_leave.user_shift,
+                user_shift__owner__username=request.user
+            ).exclude(id=validate_data).delete()
     return HttpResponseRedirect(reverse('wishes'))
