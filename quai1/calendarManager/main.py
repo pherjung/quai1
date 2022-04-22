@@ -46,8 +46,7 @@ def write_data(user):
             begin = entry.begin.format('HH:mm:ss')
             end = entry.end.format('HH:mm:ss')
 
-        values = {'shift_id': event_id,
-                  'shift_name': entry.name.split(': ')[1],
+        values = {'shift_name': entry.name.split(': ')[1],
                   'date': entry.begin.format('YYYY-MM-DD'),
                   'start_hour': begin,
                   'end_hour': end,
