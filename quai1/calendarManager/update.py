@@ -159,23 +159,14 @@ def update_shift(log, shift_id):
     shifts->list of tuple
     """
     # Retrieve user's shift
-    giver_shift = Shift.objects.filter(
-        id=shift_id
-    ).values(
-        'id',
-        'date',
-        'shift_name',
-        'start_hour',
-        'end_hour',
-        'owner_id'
-    ).get()
+    giver_shift = Shift.objects.get(id=shift_id)
     # Remove if timetable no longer corresponds to wish
     start_or_end(log, giver_shift)
     # Remove if it's not a shift anymore
-    if not re.search("^[0-9]", giver_shift['shift_name']):
+    if not re.search("^[0-9]", giver_shift.shift_name):
         print("Shift has changed. To be removed")
         # To be tested
         # Request_shift.objects.filter(
-        #     giver_shift_id=shift_id,
+        #     giver_shift=shift_id,
         #     request_id=log['id']
         # ).delete()
