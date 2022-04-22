@@ -60,7 +60,7 @@ def write_data(user):
 
 
 for who in users_url:
-    # write_data(who)
+    write_data(who)
     log = log_ids(who['id'])
     for i in log:
         excluded = []
