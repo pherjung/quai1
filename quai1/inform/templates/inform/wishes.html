@@ -6,7 +6,7 @@
 <h3>Aucun souhaits</h3>
 {% endif %}
 
-{% if accepted_wishes %}
+{% if accepted_wishes or validated_leaves %}
 <h3>Congés échangés</h3>
 <table class="table">
   <tr>
@@ -18,8 +18,28 @@
   </tr>
 {% endif %}
 
-{% for accepted in accepted_wishes %}
+{% for validated in validated_leaves %}
 <tr class=td-bottom>
+  <td>{{ validated.0|date:"l d.m.y" }}</td>
+  <td class="hour">
+    {{ validated.1|default_if_none:"-" }}</br>
+    {{ validated.2|default_if_none:"-" }}
+  </td>
+  <td>
+    {{ validated.3 }}</br>
+    {{ validated.4 }}
+  </td>
+  {% if not validated.5 %}
+    <td>À discuter</p></td>
+  {% else %}
+    <td>{{ validated.5|date:"l d.m.y" }}</td>
+  {% endif %}
+  <td>{{ validated.6 }}</td>
+</tr>
+{% endfor %}
+
+{% for accepted in accepted_wishes %}
+<tr>
   <td>{{ accepted.0|date:"l d.m.y" }}</td>
   <td class="hour">
     {{ accepted.1|default_if_none:"-" }}</br>
@@ -47,7 +67,7 @@
 </tr>
 {% endfor %}
 
-{% if accepted_wishes %}
+{% if accepted_wishes or validated_leaves %}
 </table>
 {% endif %}
 

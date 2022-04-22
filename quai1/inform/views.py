@@ -41,7 +41,7 @@ def exchanges(request):
         'user_shift__owner__first_name',
         'user_shift__owner__last_name',
         'note',
-        'given_leave__date',
+        'given_shift__date',
     ).exclude(user_shift__date__lt=(datetime.datetime.now()))
 
     # Requested leaves
@@ -160,7 +160,7 @@ def validate(request):
                             giver_shift__owner__username=request.user,
                         ).update(
                             accepted=True,
-                            given_leave=date_leave,
+                            given_shift=date_leave,
                         )
                     case None:
                         Request_shift.objects.filter(
@@ -198,6 +198,21 @@ def delete(request):
 
 @login_required
 def wishes(request):
+    # Show validated leaves
+    validated_leaves = Request_leave.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=True,
+        validated=True,
+        given_shift__isnull=False,
+    ).values_list(
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
+        'given_shift__date',
+        'note',
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
     # Show accepted leave or to negotiate
     accepted_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
@@ -208,11 +223,14 @@ def wishes(request):
         'user_shift__end_hour',
         'giver_shift__owner__first_name',
         'giver_shift__owner__last_name',
-        'given_leave__date',
+        'given_shift__date',
         'note',
         'id',
         'giver_shift__owner__email'
-    ).exclude(user_shift__date__lt=datetime.datetime.now())
+    ).exclude(
+        Q(validated=True)
+        | Q(user_shift__date__lt=datetime.datetime.now())
+    )
     validate_leaves_form = {}
     for leave in accepted_wishes:
         validate_leaves_form[leave[7]] = ValidateForm(request_leave=leave[7],
@@ -268,7 +286,9 @@ def wishes(request):
     for day in schedules:
         schedules_form[day[0]] = DeleteForm(leave_id=day[0])
 
-    context = {'accepted_wishes': accepted_wishes,
+    context = {'validated_leaves': validated_leaves,
+               'accepted_wishes': accepted_wishes,
+               'validate_leaves': validate_leaves_form,
                'accepted_shifts': accepted_shifts,
                'wishes': user_wishes,
                'wishes_form': wishes_dict,
