@@ -285,23 +285,23 @@ def wishes(request):
         wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
     # Wish to change the schedule
-    schedules = Request_shift.objects.filter(
-        user_shift__owner__username=request.user,
-        accepted=False,
+    schedules = Request_shift_log.objects.filter(
+        user=request.user,
+        active=True,
     ).values_list(
-        'user_shift',
-        'user_shift__date',
+        'date',
         'note',
-        'request__start_hour1',
-        'request__start_hour2',
-        'request__end_hour1',
-        'request__end_hour2',
+        'start_hour1',
+        'start_hour2',
+        'end_hour1',
+        'end_hour2',
+        'id',
     ).exclude(
-        user_shift__date__lt=datetime.datetime.now()
-    ).distinct()
+        date__lt=datetime.datetime.now()
+    )
     schedules_form = {}
     for day in schedules:
-        schedules_form[day[0]] = DeleteForm(leave_id=day[0])
+        schedules_form[day[6]] = DeleteForm(leave_id=day[6])
 
     context = {'validated_leaves': validated_leaves,
                'accepted_wishes': accepted_wishes,
@@ -322,16 +322,14 @@ def delete_wish(request):
         shift = request.POST['leave']
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
-            shift = form.cleaned_data['leave']
+            request_log = form.cleaned_data['leave']
             if 'shift' in request.POST:
-                request_shift = Request_shift.objects.filter(
-                    user_shift=shift,
-                    user_shift__owner__username=request.user,
-                ).exclude(accepted=True)
+                Request_shift.objects.filter(
+                    request__id=request_log,
+                ).exclude(accepted=True).delete()
                 Request_shift_log.objects.filter(
-                    id=request_shift[0].request.id,
+                    id=request_log
                 ).update(active=False)
-                request_shift.delete()
             else:
                 Request_leave.objects.filter(
                     user_shift=shift,

@@ -171,26 +171,26 @@
 
 {% for day in schedules %}
   <tr>
-    <td>{{ day.1|date:"l d.m.y" }}</td>
+    <td>{{ day.0|date:"l d.m.y" }}</td>
     <td>
-      {% if day.3 or day.4 %}
+      {% if day.2 or day.3 %}
         Entrée de service</br>
-      {% elif day.5 or day.6 %}
+      {% elif day.4 or day.5 %}
         Fin de service</br>
       {% endif %}
 
+      {{ day.2|default_if_none:'' }}
       {{ day.3|default_if_none:'' }}
       {{ day.4|default_if_none:'' }}
       {{ day.5|default_if_none:'' }}
-      {{ day.6|default_if_none:'' }}
     </td>
-    <td>{{ day.2|default_if_none:'' }}</td>
+    <td>{{ day.1|default_if_none:'' }}</td>
   </tr>
   <tr class="td-bottom">
     <td colspan="3">
       <form action="delete/" method="post">
         {% csrf_token %}
-        {{ schedules_form|get_item:day.0 }}
+        {{ schedules_form|get_item:day.6 }}
         <input value="shift" name="shift" type="hidden">
         <input value="Supprimer les souhaits non statués" name="status" type="submit"></input>
       </form>
