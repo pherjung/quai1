@@ -321,16 +321,21 @@ def wishes(request):
 
 
 def delete_wish(request):
+    "Delete schedule or requested leave"
     if request.method == 'POST':
         shift = request.POST['leave']
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
             shift = form.cleaned_data['leave']
             if 'shift' in request.POST:
-                Request_shift.objects.filter(
+                request_shift = Request_shift.objects.filter(
                     user_shift=shift,
                     user_shift__owner__username=request.user,
-                ).exclude(accepted=True).delete()
+                ).exclude(accepted=True)
+                Request_log.objects.filter(
+                    id=request_shift[0].request.id,
+                ).update(active=False)
+                request_shift.delete()
             else:
                 Request_leave.objects.filter(
                     user_shift=shift,
