@@ -112,8 +112,16 @@ function from_between(name) {
 function validate(copyaddress, subject, date1, date2) {
   to = "repartition@sbb.ch"
   cc = copyaddress
-  subj = subject + " " + date1 + " - " + date2
-  msg = "Bonjour, j'échange mon tour du " + date1 + " contre le congé de mon collègue. En échange, je lui donne mon congé du " + date2 + "."
+  if (date2) {
+    subj = subject + " " + date1 + " - " + date2
+    msg = "Bonjour, j'échange mon tour du " + date1 + " contre le congé de mon collègue. En échange, je lui donne mon congé du " + date2 + "."
+
+  } else {
+    subj = subject + " " + date1
+    msg = "Bonjour, j'échange mon tour du " + date1 + " avec celui de mon collègue."
+
+  }
+
   window.location.href = "mailto:" + to + "?cc=" + cc + "&subject=" + subj + "&body=" + msg;
 
 }

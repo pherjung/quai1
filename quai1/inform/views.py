@@ -368,3 +368,28 @@ def validate_leave(request):
                 user_shift__owner__username=request.user
             ).exclude(id=validate_data).delete()
     return HttpResponseRedirect(reverse('wishes'))
+
+
+def validate_shift(request):
+    if request.method == 'POST':
+        validate_data = request.POST['request_leave']
+        exchange = request.POST['exchange']
+        form = ValidateForm(request.POST,
+                            request_leave=validate_data,
+                            exchange=exchange)
+        if form.is_valid():
+            request_shift = Request_shift.objects.filter(
+                user_shift=form.cleaned_data['request_leave'],
+                giver_shift=form.cleaned_data['exchange'],
+            ).values('request')
+            request_shift.update(confirmed=True)
+            Request_shift.objects.filter(
+                user_shift=form.cleaned_data['request_leave'],
+            ).exclude(
+                giver_shift=form.cleaned_data['exchange'],
+            ).delete()
+            Request_log.objects.filter(
+                id=request_shift[0]['request'],
+            ).update(active=False)
+
+    return HttpResponseRedirect(reverse('wishes'))

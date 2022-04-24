@@ -110,6 +110,15 @@
   </td>
   <td>{{ accepted_shift.5 }}</td>
 </tr>
+<tr class=td-bottom>
+    <td colspan="4">
+        <form onclick="validate('{{ accepted_shift.9 }}', 'Échange le tour du', '{{ accepted_shift.0 }}')" action="confirm_shift/" method="post">
+        {% csrf_token %}
+        {{ shifts_form|get_item:accepted_shift.8 }}
+        <input value="Valider" name="status" type="submit"></input>
+      </form>
+    </td>
+</tr>
 {% endfor %}
 
 {% if accepted_shifts or confirmed_shifts %}
