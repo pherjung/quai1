@@ -15,7 +15,8 @@ def log_ids(user):
     today = datetime.now().strftime("%Y-%m-%d")
     data = Request_log.objects.filter(
         user_id=user,
-        date__gt=today
+        date__gt=today,
+        active=True,
     ).values(
         'id',
         'date',
