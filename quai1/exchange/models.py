@@ -26,6 +26,13 @@ class Request_shift_log(models.Model):
     active = models.BooleanField(default=True)
 
 
+class Request_leave_log(models.Model):
+    user = models.ForeignKey(CustomUser,
+                             on_delete=models.DO_NOTHING)
+    date = models.DateField()
+    active = models.BooleanField(default=True)
+
+
 class Request_leave(models.Model):
     user_shift = models.ForeignKey(Shift,
                                    related_name='requester_leave',
@@ -39,6 +46,8 @@ class Request_leave(models.Model):
     given_shift = models.ForeignKey(Shift,
                                     null=True,
                                     on_delete=models.DO_NOTHING)
+    request = models.ForeignKey(Request_leave_log,
+                                on_delete=models.DO_NOTHING)
 
 
 class Request_shift(models.Model):
