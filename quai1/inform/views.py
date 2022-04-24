@@ -270,16 +270,15 @@ def wishes(request):
     # Show only one wish per date
     user_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
-        accepted=None,
+        accepted=False,
     ).values_list(
         'user_shift',
         'user_shift__date',
         'user_shift__start_hour',
         'user_shift__end_hour',
         'note',
-    ).exclude(Q(
+    ).exclude(
         user_shift__date__lt=datetime.datetime.now()
-    ) | Q(accepted=True)
     ).distinct()
     wishes_dict = {}
     for item in user_wishes:
@@ -288,7 +287,7 @@ def wishes(request):
     # Wish to change the schedule
     schedules = Request_shift.objects.filter(
         user_shift__owner__username=request.user,
-        accepted=None,
+        accepted=False,
     ).values_list(
         'user_shift',
         'user_shift__date',
@@ -297,9 +296,8 @@ def wishes(request):
         'request__start_hour2',
         'request__end_hour1',
         'request__end_hour2',
-    ).exclude(Q(
+    ).exclude(
         user_shift__date__lt=datetime.datetime.now()
-    ) | Q(accepted=True)
     ).distinct()
     schedules_form = {}
     for day in schedules:
