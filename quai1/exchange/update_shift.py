@@ -35,7 +35,7 @@ def search_wishes(user, form_date, request_data, user_note):
                 user_shift=request_data,
                 giver_shift=give[give_it],
                 note=user_note,
-                gift=gift
+                validated=gift,
             )
             give_it += 1
     else:

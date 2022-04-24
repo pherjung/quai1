@@ -21,7 +21,7 @@ def save_leave(request):
                 Request_leave.objects.filter(
                     giver_shift__owner__username=request.user,
                     giver_shift__date=form_date,
-                ).update(gift=True)
+                ).update(validated=True)
                 give = Shift.objects.get(date=form_date, owner=request.user)
                 Give_leave.objects.create(shift=give)
         except IntegrityError:
