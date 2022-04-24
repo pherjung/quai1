@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
-from exchange.models import Request_leave, Give_leave, Request_shift, Request_log
+from exchange.models import Request_leave, Give_leave, Request_shift, Request_shift_log
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
 
@@ -328,7 +328,7 @@ def delete_wish(request):
                     user_shift=shift,
                     user_shift__owner__username=request.user,
                 ).exclude(accepted=True)
-                Request_log.objects.filter(
+                Request_shift_log.objects.filter(
                     id=request_shift[0].request.id,
                 ).update(active=False)
                 request_shift.delete()
@@ -389,7 +389,7 @@ def validate_shift(request):
             ).exclude(
                 giver_shift=form.cleaned_data['exchange'],
             ).delete()
-            Request_log.objects.filter(
+            Request_shift_log.objects.filter(
                 id=request_shift[0]['request'],
             ).update(active=False)
 

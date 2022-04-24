@@ -3,7 +3,7 @@ from django.db.models import Q
 import re
 
 from calendrier.models import Shift
-from exchange.models import Request_log, Request_shift
+from exchange.models import Request_shift_log, Request_shift
 
 
 def log_ids(user):
@@ -13,7 +13,7 @@ def log_ids(user):
     return a QuerySet with dict
     """
     today = datetime.now().strftime("%Y-%m-%d")
-    data = Request_log.objects.filter(
+    data = Request_shift_log.objects.filter(
         user_id=user,
         date__gt=today,
         active=True,

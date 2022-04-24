@@ -12,7 +12,7 @@ class Give_leave(models.Model):
                             on_delete=models.DO_NOTHING)
 
 
-class Request_log(models.Model):
+class Request_shift_log(models.Model):
     user = models.ForeignKey(CustomUser,
                              on_delete=models.DO_NOTHING)
     date = models.DateField()
@@ -51,5 +51,5 @@ class Request_shift(models.Model):
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)
     confirmed = models.BooleanField(default=False)
-    request = models.ForeignKey(Request_log,
+    request = models.ForeignKey(Request_shift_log,
                                 on_delete=models.DO_NOTHING)
