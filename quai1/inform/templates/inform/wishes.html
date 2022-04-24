@@ -71,7 +71,7 @@
 </table>
 {% endif %}
 
-{% if accepted_shifts %}
+{% if accepted_shifts or confirmed_shifts %}
 <h3>Tours échangés</h3>
 <table class="table">
   <tr>
@@ -82,8 +82,23 @@
   </tr>
 {% endif %}
 
-{% for accepted_shift in accepted_shifts %}
+{% for confirmed in confirmed_shifts %}
 <tr class=td-bottom>
+  <td>{{ confirmed.0|date:"l d.m.y" }}</td>
+  <td class="hour">
+    {{ confirmed.1|default_if_none:"-" }}</br>
+    {{ confirmed.2|default_if_none:"-" }}
+  </td>
+  <td>
+    {{ confirmed.3 }}</br>
+    {{ confirmed.4 }}
+  </td>
+  <td>{{ confirmed.5 }}</td>
+</tr>
+{% endfor %}
+
+{% for accepted_shift in accepted_shifts %}
+<tr>
   <td>{{ accepted_shift.0|date:"l d.m.y" }}</td>
   <td class="hour">
     {{ accepted_shift.1|default_if_none:"-" }}</br>
@@ -97,7 +112,7 @@
 </tr>
 {% endfor %}
 
-{% if accepted_shifts %}
+{% if accepted_shifts or confirmed_shifts %}
 </table>
 {% endif %}
 

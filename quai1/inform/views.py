@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
-from exchange.models import Request_leave, Give_leave, Request_shift
+from exchange.models import Request_leave, Give_leave, Request_shift, Request_log
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
 
@@ -236,10 +236,10 @@ def wishes(request):
         validate_leaves_form[leave[7]] = ValidateForm(request_leave=leave[7],
                                                       exchange=leave[5])
 
-    # Show accepted shifts
-    accepted_shifts = Request_shift.objects.filter(
+    # Show confirmed shifts
+    confirmed_shifts = Request_shift.objects.filter(
         user_shift__owner__username=request.user,
-        accepted=True,
+        confirmed=True,
     ).values_list(
         'user_shift__date',
         'giver_shift__start_hour',
@@ -248,6 +248,27 @@ def wishes(request):
         'giver_shift__owner__last_name',
         'note',
     ).exclude(user_shift__date__lt=datetime.datetime.now())
+    # Show accepted shifts
+    accepted_shifts = Request_shift.objects.filter(
+        user_shift__owner__username=request.user,
+        accepted=True,
+        confirmed=False,
+    ).values_list(
+        'user_shift__date',
+        'giver_shift__start_hour',
+        'giver_shift__end_hour',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
+        'note',
+        'user_shift',
+        'giver_shift',
+        'request',
+        'giver_shift__owner__email',
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
+    shifts_form = {}
+    for switch in accepted_shifts:
+        shifts_form[switch[8]] = ValidateForm(request_leave=switch[6],
+                                              exchange=switch[7])
     # Show only one wish per date
     user_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
@@ -289,7 +310,9 @@ def wishes(request):
     context = {'validated_leaves': validated_leaves,
                'accepted_wishes': accepted_wishes,
                'validate_leaves': validate_leaves_form,
+               'confirmed_shifts': confirmed_shifts,
                'accepted_shifts': accepted_shifts,
+               'shifts_form': shifts_form,
                'wishes': user_wishes,
                'wishes_form': wishes_dict,
                'schedules': schedules,

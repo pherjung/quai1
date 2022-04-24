@@ -23,6 +23,7 @@ class Request_log(models.Model):
     end_hour2 = models.TimeField(null=True)
     tolerance_end = models.DurationField(null=True)
     note = models.TextField(null=True)
+    active = models.BooleanField(default=True)
 
 
 class Request_leave(models.Model):
@@ -49,5 +50,6 @@ class Request_shift(models.Model):
                                     on_delete=models.DO_NOTHING)
     note = models.TextField(null=True)
     accepted = models.BooleanField(null=True)
+    confirmed = models.BooleanField(default=False)
     request = models.ForeignKey(Request_log,
                                 on_delete=models.DO_NOTHING)
