@@ -217,6 +217,7 @@ def wishes(request):
     accepted_wishes = Request_leave.objects.filter(
         user_shift__owner__username=request.user,
         accepted=True,
+        validated=False,
     ).values_list(
         'user_shift__date',
         'user_shift__start_hour',
@@ -227,10 +228,7 @@ def wishes(request):
         'note',
         'id',
         'giver_shift__owner__email'
-    ).exclude(
-        Q(validated=True)
-        | Q(user_shift__date__lt=datetime.datetime.now())
-    )
+    ).exclude(user_shift__date__lt=datetime.datetime.now())
     validate_leaves_form = {}
     for leave in accepted_wishes:
         validate_leaves_form[leave[7]] = ValidateForm(request_leave=leave[7],
