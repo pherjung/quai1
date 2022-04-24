@@ -122,7 +122,7 @@
 {% endif %}
 
 {% for accept_shift in accepted_shifts %}
-<tr>
+<tr class="td-bottom">
   <td>{{ accept_shift.0 }}</td>
   <td>{{ accept_shift.1|date:"l d.m.y" }}</td>
   <td>
@@ -134,15 +134,6 @@
     {{ accept_shift.5 }}
   </td>
   <td>{{ accept_shift.6|default_if_none:'-' }}</td>
-</tr>
-<tr class="td-bottom">
-  <td colspan="5">
-    {% if accept.7 %}
-      <p>En échange : {{ accept.7|date:"l d.m.y" }}</p>
-    {% else %}
-      <p>À discuter</p>
-    {% endif %}
-  </td>
 </tr>
 {% endfor %}
 
