@@ -62,14 +62,14 @@ for who in users_url:
     write_data(who)
     log = log_ids(who['id'])
     for i in log:
-        excluded = []
+        excluded = [who['id']]
         exchange = shifts_to_change(i['id'])
         query = search_shifts(i, i['date'], False)
         for a in exchange:
             excluded.append(a['giver_shift_id'])
             update_shift(i, a['giver_shift_id'])
         # Submit new shifts as exchange
-        new_shifts = all_shifts(who['id'], i['date'], query, excluded)
+        new_shifts = all_shifts(i['date'], query, excluded)
         for p in new_shifts:
             Request_shift.objects.create(
                 user_shift=i['user_shift_id'],

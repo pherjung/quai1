@@ -113,9 +113,8 @@ def start_or_end(log, shift):
                     # ).delete()
 
 
-def all_shifts(owner_id, date, query, excluded):
+def all_shifts(date, query, excluded):
     """Find all shifts from a choosen user
-    owner_id->int
     date->datetime.datetime
     query->dict
     excluded->list with int
@@ -126,7 +125,7 @@ def all_shifts(owner_id, date, query, excluded):
         | Q(date=date,
             shift_name__iregex=(r'^200'))
     ).exclude(
-        Q(id__in=excluded) | Q(owner=owner_id)
+        id__in=excluded,
     ).values(
         'id',
         'shift_name',
