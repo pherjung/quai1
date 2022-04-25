@@ -25,12 +25,20 @@ class Request_shift_log(models.Model):
     note = models.TextField(null=True)
     active = models.BooleanField(default=True)
 
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'date'],
+                                               name='unique_shift_log')]
+
 
 class Request_leave_log(models.Model):
     user = models.ForeignKey(CustomUser,
                              on_delete=models.DO_NOTHING)
     date = models.DateField()
     active = models.BooleanField(default=True)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['user', 'date'],
+                                               name='unique_leave_log')]
 
 
 class Request_leave(models.Model):
