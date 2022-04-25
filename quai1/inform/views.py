@@ -318,19 +318,22 @@ def delete_wish(request):
         shift = request.POST['leave']
         form = DeleteForm(request.POST, leave_id=shift)
         if form.is_valid():
-            request_log = form.cleaned_data['leave']
             if 'shift' in request.POST:
                 Request_shift.objects.filter(
-                    request__id=request_log,
+                    request__id=form.cleaned_data['leave'],
                 ).exclude(accepted=True).delete()
                 Request_shift_log.objects.filter(
-                    id=request_log
+                    id=form.cleaned_data['leave'],
                 ).update(active=False)
             else:
                 Request_leave.objects.filter(
-                    user_shift=shift,
+                    request__id=form.cleaned_data['leave'],
                     user_shift__owner__username=request.user,
                 ).exclude(accepted=True).delete()
+                Request_leave_log.objects.filter(
+                    user=request.user,
+                    id=form.cleaned_data['leave'],
+                ).update(active=False)
     else:
         DeleteForm()
 
