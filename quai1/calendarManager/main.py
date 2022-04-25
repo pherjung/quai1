@@ -5,7 +5,7 @@ from ics import Calendar
 import requests
 import arrow
 
-sys.path.append('/home/pherjung/projet/cff/quai1++/quai1')
+sys.path.append('./../../quai1')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quai1.settings')
 django.setup()
 
