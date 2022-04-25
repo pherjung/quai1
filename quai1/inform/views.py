@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
 from django.db.models import Q
-from exchange.models import Request_leave, Give_leave, Request_shift, Request_shift_log
+from exchange.models import Request_leave, Give_leave, Request_shift, Request_shift_log, Request_leave_log
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
 
@@ -267,19 +267,15 @@ def wishes(request):
     for switch in accepted_shifts:
         shifts_form[switch[8]] = ValidateForm(request_leave=switch[6],
                                               exchange=switch[7])
-    # Show only one wish per date
-    user_wishes = Request_leave.objects.filter(
-        user_shift__owner__username=request.user,
-        accepted=False,
+    # Show user's wishes
+    user_wishes = Request_leave_log.objects.filter(
+        user=request.user,
+        active=True,
     ).values_list(
-        'user_shift',
-        'user_shift__date',
-        'user_shift__start_hour',
-        'user_shift__end_hour',
+        'id',
+        'date',
         'note',
-    ).exclude(
-        user_shift__date__lt=datetime.datetime.now()
-    ).distinct()
+    ).exclude(date__lt=datetime.datetime.now())
     wishes_dict = {}
     for item in user_wishes:
         wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()

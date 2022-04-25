@@ -130,7 +130,6 @@
 <table class="table">
   <tr>
     <th>Date</th>
-    <th>Horaire</th>
     <th>Note</th>
   </tr>
 {% endif %}
@@ -138,11 +137,7 @@
 {% for wish in wishes %}
   <tr>
     <td>{{ wish.1|date:"l d.m.y" }}</td>
-    <td>
-      {{ wish.2|default_if_none:'-' }}</br>
-      {{ wish.3|default_if_none:'-' }}
-    </td>
-    <td>{{ wish.4|default_if_none:'' }}</td>
+    <td>{{ wish.2|default_if_none:'' }}</td>
   </tr>
   <tr class="td-bottom">
     <td colspan="3">
