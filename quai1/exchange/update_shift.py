@@ -2,44 +2,37 @@ from datetime import datetime
 from django.db.models import Q
 
 from calendrier.models import Shift
-from .models import Give_leave, Request_leave, Request_shift
+from .models import Give_leave, Request_leave
 
 
-def search_wishes(user, form_date, request_data, user_note):
-    # Check if there is already requested leave
-    wishes = Request_leave.objects.filter(
-        user_shift__owner__username=user,
-        user_shift__date=form_date,
-    )
-    if not wishes:
-        # Recover all given leaves
-        leaves = Give_leave.objects.filter(
-            shift_id__date=form_date
-        ).exclude(
-            shift_id__owner_id__username=user
-        ).values_list('shift_id')
-        # Recover column ID of all leaves not owned by requester
-        give = Shift.objects.filter(
-            date=form_date,
-            start_hour=None,
-            shift_name__iregex=r'(C|R)T*'
-        ).exclude(owner=user)
-        # Save shifts
-        give_it = 0
-        gift = False  # Useful in case len(give) is 0
-        while give_it < len(give):
-            for index in enumerate(leaves):
-                gift = bool(give[give_it].id in leaves[index[0]])
+def search_wishes(user, log_id, user_shift):
+    # Recover all given leaves
+    leaves = Give_leave.objects.filter(
+        shift_id__date=log_id.date
+    ).exclude(
+        shift_id__owner_id__username=user
+    ).values_list('shift_id')
+    # Recover column ID of all leaves not owned by requester
+    give = Shift.objects.filter(
+        date=log_id.date,
+        start_hour=None,
+        shift_name__iregex=r'(C|R)T*'
+    ).exclude(owner=user)
+    # Save shifts
+    give_it = 0
+    gift = False  # Useful in case len(give) is 0
+    while give_it < len(give):
+        for index in enumerate(leaves):
+            gift = bool(give[give_it].id in leaves[index[0]])
 
-            Request_leave.objects.create(
-                user_shift=request_data,
-                giver_shift=give[give_it],
-                note=user_note,
-                validated=gift,
-            )
-            give_it += 1
-    else:
-        print('There is already an requested leave')
+        Request_leave.objects.get_or_create(
+            user_shift=user_shift,
+            giver_shift=give[give_it],
+            note=log_id.note,
+            validated=gift,
+            request=log_id,
+        )
+        give_it += 1
 
 
 def search_shifts(form, form_date, switch):
