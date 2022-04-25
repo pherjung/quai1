@@ -34,6 +34,7 @@ class Request_leave_log(models.Model):
     user = models.ForeignKey(CustomUser,
                              on_delete=models.DO_NOTHING)
     date = models.DateField()
+    note = models.TextField(null=True)
     active = models.BooleanField(default=True)
 
     class Meta:
