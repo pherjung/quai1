@@ -12,12 +12,10 @@ django.setup()
 from login.models import CustomUser
 from calendrier.models import Shift
 from exchange.models import Request_shift
-from calendarManager.update import log_ids, all_shifts, shifts_to_change, update_shift
+from calendarManager.update import shift_log_ids, all_shifts, shifts_to_change, update_shift
 from exchange.update_shift import search_shifts
 
-users_url = CustomUser.objects.all().values('id',
-                                            'username',
-                                            'url')
+users = CustomUser.objects.all().values('id', 'username', 'url')
 
 
 def lang(url_raw):
@@ -58,10 +56,11 @@ def write_data(user):
         )
 
 
-for who in users_url:
+for who in users:
     write_data(who)
-    log = log_ids(who['id'])
-    for i in log:
+    # Update schedule
+    shifts_log = shift_log_ids(who['id'])
+    for i in shifts_log:
         excluded = [who['id']]
         exchange = shifts_to_change(i['id'])
         query = search_shifts(i, i['date'], False)

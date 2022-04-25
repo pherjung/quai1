@@ -6,7 +6,7 @@ from calendrier.models import Shift
 from exchange.models import Request_shift_log, Request_shift
 
 
-def log_ids(user):
+def shift_log_ids(user):
     """
     Fetch all logs from a user
     user->int
@@ -14,7 +14,7 @@ def log_ids(user):
     """
     today = datetime.now().strftime("%Y-%m-%d")
     data = Request_shift_log.objects.filter(
-        user_id=user,
+        user__id=user,
         date__gt=today,
         active=True,
     ).values(
@@ -51,22 +51,22 @@ def start_or_end(log, shift):
         case 1:
             # Check service entry. From
             start1 = (datetime.combine(
-                shift['date'], start)-tolerance_start).time()
-            if shift['start_hour'] and shift['start_hour'] < start1:
+                shift.date, start)-tolerance_start).time()
+            if shift.start_hour and shift.start_hour < start1:
                 print("remove shift prout")
                 # Tested and it works
                 Request_shift.objects.filter(
-                    giver_shift_id=shift['id'],
+                    giver_shift_id=shift.id,
                     request_id=log['id']
                 ).delete()
         case 2:
             # Check service entry. Between
             start1 = (datetime.combine(
-                shift['date'], log['start_hour1'])-tolerance_start).time()
+                shift.date, log['start_hour1'])-tolerance_start).time()
             start2 = (datetime.combine(
-                shift['date'], log['start_hour2'])+tolerance_start).time()
-            if shift['start_hour']:
-                if not start1 < shift['start_hour'] < start2:
+                shift.date, log['start_hour2'])+tolerance_start).time()
+            if shift.start_hour:
+                if not start1 < shift.start_hour < start2:
                     print("remove shift from exchange_request_shift")
                     # To be tested
                     # Request_shift.objects.filter(
@@ -76,8 +76,8 @@ def start_or_end(log, shift):
         case 3:
             # Check end of service. From
             end1 = (datetime.combine(
-                shift['date'], end)-tolerance_end).time()
-            if shift['end_hour'] and shift['end_hour'] < end1:
+                shift.date, end)-tolerance_end).time()
+            if shift.end_hour and shift.end_hour < end1:
                 print("remove shift from exchange_request_shift")
                 # To be tested
                 # Request_shift.objects.filter(
@@ -87,10 +87,10 @@ def start_or_end(log, shift):
         case 6:
             # Check end of service. Between
             end1 = (datetime.combine(
-                shift['date'], log['end_hour1'])-tolerance_start).time()
+                shift.date, log['end_hour1'])-tolerance_start).time()
             end2 = (datetime.combine(
-                shift['date'], log['end_hour2'])+tolerance_start).time()
-            if shift['end_hour'] and not end1 < shift['end_hour'] < end2:
+                shift.date, log['end_hour2'])+tolerance_start).time()
+            if shift.end_hour and not end1 < shift.end_hour < end2:
                 print("remove shift from exchange_request_shift")
                 # To be tested
                 # Request_shift.objects.filter(
@@ -100,11 +100,11 @@ def start_or_end(log, shift):
         case 4:
             # Check start and end of service. Between
             start1 = (datetime.combine(
-                shift['date'], start)-tolerance_start).time()
+                shift.date, start)-tolerance_start).time()
             end1 = (datetime.combine(
-                shift['date'], end)-tolerance_end).time()
-            if shift['start_hour'] and shift['end_hour']:
-                if shift['start_hour'] < start1 and shift['end_hour'] < end1:
+                shift.date, end)-tolerance_end).time()
+            if shift.start_hour and shift.end_hour:
+                if shift.start_hour < start1 and shift.end_hour < end1:
                     print("remove shift from exchange_request_shift")
                     # To be tested
                     # Request_shift.objects.filter(
