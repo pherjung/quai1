@@ -11,11 +11,12 @@ django.setup()
 
 from login.models import CustomUser
 from calendrier.models import Shift
-from exchange.models import Request_shift
-from calendarManager.update import shift_log_ids, all_shifts, shifts_to_change, update_shift
-from exchange.update_shift import search_shifts
+from exchange.models import Request_shift, Request_leave, Request_leave_log
+from calendarManager.update import shift_log_ids, all_shifts, shifts_to_change, update_shift, leave_log_ids
+from exchange.update_shift import search_shifts, search_wishes
 
 users = CustomUser.objects.all().values('id', 'username', 'url')
+LEAVES = ('RT', 'RTT', 'CT', 'CTT')
 
 
 def lang(url_raw):
@@ -76,3 +77,21 @@ for who in users:
                 note=i['note'],
                 request=i['id']
             )
+    # Update leaves
+    leaves_log = leave_log_ids(who['id'])
+    for a in leaves_log:
+        user_shift = Shift.objects.get(date=a.date, owner__id=who['id'])
+        # Remove wish if user's shift is now a leave
+        if user_shift.shift_name in LEAVES:
+            Request_leave_log.objects.filter(user=who['id'],
+                                             date=a.date).delete()
+            Request_leave.objects.filter(request=a.id).delete()
+            print("debug: user's shift isn't anymore a leave. Remove wish")
+            continue
+        # Remove wish if giver's shift isn't a leave anymore
+        leaves_wishes = Request_leave.objects.filter(request=a.id)
+        for c in leaves_wishes:
+            if c.giver_shift.shift_name not in LEAVES:
+                c.delete()
+                print("debug: giver's shift isn't anymore a leave. Remove")
+        search_wishes(who['id'], a, user_shift)

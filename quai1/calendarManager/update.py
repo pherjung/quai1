@@ -3,7 +3,7 @@ from django.db.models import Q
 import re
 
 from calendrier.models import Shift
-from exchange.models import Request_shift_log, Request_shift
+from exchange.models import Request_shift_log, Request_shift, Request_leave_log
 
 
 def shift_log_ids(user):
@@ -27,6 +27,20 @@ def shift_log_ids(user):
         'end_hour2',
         'tolerance_end',
         'note'
+    )
+    return data
+
+
+def leave_log_ids(user):
+    """
+    Fetch all logs from an user
+    user->int
+    """
+    today = datetime.now().strftime("%Y-%m-%d")
+    data = Request_leave_log.objects.filter(
+        user__id=user,
+        date__gt=today,
+        active=True,
     )
     return data
 
