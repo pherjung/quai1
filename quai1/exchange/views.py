@@ -39,10 +39,10 @@ def request_leave(request):
                                            owner=request.user)
             user_note = form.cleaned_data['note']
             if form.cleaned_data['request_leave'] == 'request_leave':
-                wishes, created = Request_leave_log.objects.get_or_create(
-                    user=request.user,
-                    date=form_date,
-                    note=user_note,
+                wishes, created = Request_leave_log.objects.update_or_create(
+                    user=request.user, date=form_date,
+                    defaults={'note': user_note,
+                              'active': True},
                 )
                 if created:
                     search_wishes(request.user, wishes, user_shift)
@@ -69,7 +69,7 @@ def request_leave(request):
                 shift_it = 0
                 while shift_it < len(shifts):
                     Request_shift.objects.create(
-                        user_shift=request_data,
+                        user_shift=user_shift,
                         giver_shift=shifts[shift_it],
                         note=user_note,
                         request=log,
