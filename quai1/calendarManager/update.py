@@ -127,25 +127,18 @@ def start_or_end(log, shift):
                     # ).delete()
 
 
-def all_shifts(date, query, excluded):
+def all_shifts(date, query, excluded, user_id):
     """Find all shifts from a choosen user
     date->datetime.date
     query->dict
     excluded->list with int
+    user_id->int
     return a django.db.models.query.QuerySet
     """
     shifts = Shift.objects.filter(
         Q(**query)
-        | Q(date=date,
-            shift_name__iregex=(r'^200'))
-    ).exclude(
-        id__in=excluded,
-    ).values(
-        'id',
-        'shift_name',
-        'start_hour',
-        'end_hour'
-    )
+        | Q(date=date, shift_name__iregex=(r'^200'))
+    ).exclude(Q(id__in=excluded) | Q(owner=user_id))
     return shifts
 
 
