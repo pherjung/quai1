@@ -23,7 +23,7 @@ def search_wishes(user, log_id, user_shift):
         date=log_id.date,
         start_hour=None,
         shift_name__iregex=r'(C|R)T*'
-    ).exclude(owner=user)
+    ).exclude(owner__username=user)
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
@@ -56,12 +56,12 @@ def search_shifts(form, form_date, switch):
         tolerance_end = form.cleaned_data['tolerance_end']
         tolerance_start = form.cleaned_data['tolerance_start']
     else:
-        start_hour1 = form['start_hour1']
-        start_hour2 = form['start_hour2']
-        end_hour1 = form['end_hour1']
-        end_hour2 = form['end_hour2']
-        tolerance_end = form['tolerance_end']
-        tolerance_start = form['tolerance_start']
+        start_hour1 = form.start_hour1
+        start_hour2 = form.start_hour2
+        end_hour1 = form.end_hour1
+        end_hour2 = form.end_hour2
+        tolerance_end = form.tolerance_end
+        tolerance_start = form.tolerance_start
 
     query = {'date': form_date}
     condition = 0
