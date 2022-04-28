@@ -12,7 +12,7 @@ django.setup()
 from login.models import CustomUser
 from calendrier.models import Shift
 from exchange.models import Request_shift, Request_leave, Request_leave_log
-from calendarManager.update import shift_log_ids, all_shifts, shifts_to_change, update_shift, leave_log_ids
+from calendarManager.update import shift_log_ids, all_shifts, update_shift, leave_log_ids
 from exchange.update_shift import search_shifts, search_wishes
 
 users = CustomUser.objects.all().values('id', 'username', 'url')
@@ -60,41 +60,57 @@ def write_data(user):
         )
 
 
-for who in users:
-    write_data(who)
-    # Update schedule
-    shifts_log = shift_log_ids(who['id'])
-    for i in shifts_log:
-        excluded = [who['id']]
-        exchange = shifts_to_change(i['id'])
-        query = search_shifts(i, i['date'], False)
-        for a in exchange:
-            excluded.append(a['giver_shift_id'])
-            update_shift(i, a['giver_shift_id'])
+def update_shifts(user_id, request_shift_logs):
+    """
+    Check if shift (still) corresponds to the need. Update if necessary
+    user_id->int
+    request_shift_logs->django.db.models.query.QuerySet
+    """
+    for log in request_shift_logs:
+        exchange = Request_shift.objects.filter(request_id=log.id)
+        excluded = []
+        query = search_shifts(log, log.date, False)
+        user_shift = Shift.objects.get(owner=user_id, date=log.date)
+        for req in exchange:
+            excluded.append(req.giver_shift.id)
+            update_shift(log, req)
         # Submit new shifts as exchange
-        new_shifts = all_shifts(i['date'], query, excluded)
-        for p in new_shifts:
-            Request_shift.objects.create(
-                user_shift=i['user_shift_id'],
-                giver_shift=p['id'],
-                note=i['note'],
-                request=i['id']
+        new_shifts = all_shifts(log.date, query, excluded, user_id)
+        for shift in new_shifts:
+            Request_shift.objects.get_or_create(
+                user_shift=user_shift,
+                giver_shift=shift,
+                note=log.note,
+                request=log
             )
-    # Update leaves
-    leaves_log = leave_log_ids(who['id'])
-    for a in leaves_log:
-        user_shift = Shift.objects.get(date=a.date, owner__id=who['id'])
+
+
+def update_leave(username, request_leave_logs):
+    """
+    Update leaves
+    username->str
+    request_leave_logs->django.db.models.query.QuerySet
+    """
+    for log in request_leave_logs:
+        user_shift = Shift.objects.get(date=log.date, owner__username=username)
         # Remove wish if user's shift is now a leave
         if user_shift.shift_name in LEAVES:
-            Request_leave_log.objects.filter(user=who['id'],
-                                             date=a.date).delete()
-            Request_leave.objects.filter(request=a.id).delete()
+            Request_leave_log.objects.filter(user__username=username,
+                                             date=log.date).delete()
+            Request_leave.objects.filter(request=log.id).delete()
             print("debug: user's shift isn't anymore a leave. Remove wish")
             continue
         # Remove wish if giver's shift isn't a leave anymore
-        leaves_wishes = Request_leave.objects.filter(request=a.id)
-        for c in leaves_wishes:
-            if c.giver_shift.shift_name not in LEAVES:
-                c.delete()
+        leaves_wishes = Request_leave.objects.filter(request=log.id)
+        for req in leaves_wishes:
+            if req.giver_shift.shift_name not in LEAVES:
+                req.delete()
                 print("debug: giver's shift isn't anymore a leave. Remove")
-        search_wishes(who['id'], a, user_shift)
+        search_wishes(username, log, user_shift)
+
+for who in users:
+    write_data(who)
+    shifts_log = shift_log_ids(who['id'])
+    update_shifts(who['id'], shifts_log)
+    leaves_log = leave_log_ids(who['id'])
+    update_leave(who['username'], leaves_log)
