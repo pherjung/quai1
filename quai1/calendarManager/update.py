@@ -1,48 +1,9 @@
-from datetime import datetime, timedelta
 from django.db.models import Q
+from datetime import datetime
 import re
 
 from calendrier.models import Shift
-from exchange.models import Request_shift_log, Request_shift, Request_leave_log
-
-
-def shift_log_ids(user):
-    """
-    Fetch all logs from a user
-    user->int
-    return a QuerySet with dict
-    """
-    today = datetime.now().strftime("%Y-%m-%d")
-    data = Request_shift_log.objects.filter(
-        user__id=user,
-        date__gt=today,
-        active=True,
-    ).values(
-        'id',
-        'date',
-        'start_hour1',
-        'start_hour2',
-        'tolerance_start',
-        'end_hour1',
-        'end_hour2',
-        'tolerance_end',
-        'note'
-    )
-    return data
-
-
-def leave_log_ids(user):
-    """
-    Fetch all logs from an user
-    user->int
-    """
-    today = datetime.now().strftime("%Y-%m-%d")
-    data = Request_leave_log.objects.filter(
-        user__id=user,
-        date__gt=today,
-        active=True,
-    )
-    return data
+from exchange.models import Request_shift
 
 
 def start_or_end(log, shift):

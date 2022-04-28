@@ -1,5 +1,6 @@
 import sys
 import os
+from datetime import datetime
 import django
 from ics import Calendar
 import requests
@@ -11,8 +12,8 @@ django.setup()
 
 from login.models import CustomUser
 from calendrier.models import Shift
-from exchange.models import Request_shift, Request_leave, Request_leave_log
-from calendarManager.update import shift_log_ids, all_shifts, update_shift, leave_log_ids
+from exchange.models import Request_shift, Request_shift_log, Request_leave, Request_leave_log
+from calendarManager.update import all_shifts, update_shift
 from exchange.update_shift import search_shifts, search_wishes
 
 users = CustomUser.objects.all().values('id', 'username', 'url')
@@ -110,7 +111,16 @@ def update_leave(username, request_leave_logs):
 
 for who in users:
     write_data(who)
-    shifts_log = shift_log_ids(who['id'])
+    today = datetime.now()
+    shifts_log = Request_shift_log.objects.filter(
+        user__id=who['id'],
+        date__gt=today,
+        active=True,
+    )
     update_shifts(who['id'], shifts_log)
-    leaves_log = leave_log_ids(who['id'])
+    leaves_log = Request_leave_log.objects.filter(
+        user=who['id'],
+        date__gt=today,
+        active=True,
+    )
     update_leave(who['username'], leaves_log)
