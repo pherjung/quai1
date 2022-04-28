@@ -149,23 +149,6 @@ def all_shifts(date, query, excluded):
     return shifts
 
 
-def shifts_to_change(log_id):
-    """
-    From log, retrieve all shifts corresponding to the request
-    log_id->int
-    return a QuerySet with dict
-    """
-    shifts = Request_shift.objects.filter(
-        request_id=log_id
-    ).values(
-        'id',
-        'giver_shift_id',
-        'user_shift_id',
-        'request_id'
-    )
-    return shifts
-
-
 def update_shift(log, shift_id):
     """
     Retrieve user's shift and check if it's still corresponding
