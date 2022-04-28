@@ -20,7 +20,10 @@ LEAVES = ('RT', 'RTT', 'CT', 'CTT')
 
 
 def lang(url_raw):
-    "Change language to French"
+    """
+    Change language to French
+    url_raw->str
+    """
     url = url_raw.split('&')[0]
     request = requests.get(f"{url}&sprache=fr")
     return request

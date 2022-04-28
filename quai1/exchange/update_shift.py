@@ -6,6 +6,12 @@ from .models import Give_leave, Request_leave
 
 
 def search_wishes(user, log_id, user_shift):
+    """
+    Search all existing wishes for a leave
+    user->str
+    log_id->exchange.models.Request_leave_log
+    user_shift->calendrier.models.Shift
+    """
     # Recover all given leaves
     leaves = Give_leave.objects.filter(
         shift_id__date=log_id.date
@@ -36,6 +42,12 @@ def search_wishes(user, log_id, user_shift):
 
 
 def search_shifts(form, form_date, switch):
+    """
+    Search
+    form->
+    form_date->
+    switch->Boolean
+    """
     if switch:
         start_hour1 = form.cleaned_data['start_hour_1']
         start_hour2 = form.cleaned_data['start_hour_2']
