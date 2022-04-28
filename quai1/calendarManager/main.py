@@ -16,7 +16,7 @@ from exchange.models import Request_shift, Request_shift_log, Request_leave, Req
 from calendarManager.update import all_shifts, update_shift
 from exchange.update_shift import search_shifts, search_wishes
 
-users = CustomUser.objects.all().values('id', 'username', 'url')
+users = CustomUser.objects.all()
 LEAVES = ('RT', 'RTT', 'CT', 'CTT')
 
 
@@ -35,13 +35,13 @@ def write_data(user):
     Update or create calendar
     user->dict
     """
-    request = lang(user['url'])
+    request = lang(user.url)
     request.encoding = request.apparent_encoding
     cal = Calendar(request.text)
     events = cal.timeline.start_after(arrow.now())
 
     for entry in events:
-        event_id = entry.begin.format('YYYY-MM-DD')+'_'+user['username']
+        event_id = entry.begin.format('YYYY-MM-DD')+'_'+user.username
         if entry.begin.format('HH:mm') == entry.end.format('HH:mm'):
             begin = None
             end = None
@@ -53,7 +53,7 @@ def write_data(user):
                   'date': entry.begin.format('YYYY-MM-DD'),
                   'start_hour': begin,
                   'end_hour': end,
-                  'owner_id': user['id']
+                  'owner': user,
                   }
         Shift.objects.update_or_create(
             shift_id=event_id,
@@ -113,14 +113,14 @@ for who in users:
     write_data(who)
     today = datetime.now()
     shifts_log = Request_shift_log.objects.filter(
-        user__id=who['id'],
+        user__id=user.id,
         date__gt=today,
         active=True,
     )
-    update_shifts(who['id'], shifts_log)
+    update_shifts(user.id, shifts_log)
     leaves_log = Request_leave_log.objects.filter(
-        user=who['id'],
+        user=user.id,
         date__gt=today,
         active=True,
     )
-    update_leave(who['username'], leaves_log)
+    update_leave(user.username, leaves_log)
