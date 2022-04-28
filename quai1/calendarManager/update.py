@@ -49,7 +49,8 @@ def start_or_end(log, shift):
     """
     Determine if wish is to change start or end hour
     and if it start/end from or between
-    log->list
+    log->exchange.models.Request_shift_log
+    shift->calendrier.models.Shift
     return tuple. 1st item is start/end. 2nd From/Between
     """
     condition = 0
@@ -129,10 +130,10 @@ def start_or_end(log, shift):
 
 def all_shifts(date, query, excluded):
     """Find all shifts from a choosen user
-    date->datetime.datetime
+    date->datetime.date
     query->dict
     excluded->list with int
-    return a QuerySet with dict
+    return a django.db.models.query.QuerySet
     """
     shifts = Shift.objects.filter(
         Q(**query)
@@ -149,14 +150,14 @@ def all_shifts(date, query, excluded):
     return shifts
 
 
-def update_shift(log, shift_id):
+def update_shift(log, shift):
     """
     Retrieve user's shift and check if it's still corresponding
-    log->list
-    shifts->list of tuple
+    log->exchange.models.Request_shift_log
+    shift->exchange.models.Request_shift
     """
     # Retrieve user's shift
-    giver_shift = Shift.objects.get(id=shift_id)
+    giver_shift = Shift.objects.get(id=shift.giver_shift.id)
     # Remove if timetable no longer corresponds to wish
     start_or_end(log, giver_shift)
     # Remove if it's not a shift anymore
@@ -164,6 +165,6 @@ def update_shift(log, shift_id):
         print("Shift has changed. To be removed")
         # To be tested
         # Request_shift.objects.filter(
-        #     giver_shift=shift_id,
+        #     giver_shift=shift.giver_shift,
         #     request_id=log['id']
         # ).delete()
