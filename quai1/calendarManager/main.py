@@ -109,8 +109,12 @@ def update_leave(username, request_leave_logs):
                 print("debug: giver's shift isn't anymore a leave. Remove")
         search_wishes(username, log, user_shift)
 
-for who in users:
-    write_data(who)
+
+def apply(user):
+    """
+    apply update
+    user->
+    """
     today = datetime.now()
     shifts_log = Request_shift_log.objects.filter(
         user__id=user.id,
@@ -124,3 +128,8 @@ for who in users:
         active=True,
     )
     update_leave(user.username, leaves_log)
+
+
+for who in users:
+    write_data(who)
+    apply(who)
