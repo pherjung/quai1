@@ -128,6 +128,10 @@ def apply(user):
     update_leave(user.username, leaves_log)
 
 
+# First update all calendars
 for who in users:
     write_data(who)
+
+# Then check if there are differences
+for who in users:
     apply(who)
