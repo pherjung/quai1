@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.contrib.auth import views as auth_views
 from calendrier import views
+from calendarManager import views as cal
 
 urlpatterns = [
     path('', auth_views.LoginView.as_view(), name='home'),
@@ -26,4 +27,5 @@ urlpatterns = [
     path('calendar/', views.CalendarView.as_view(), name='calendar'),
     path('calendar/', include('exchange.urls')),
     path('calendar/', include('inform.urls')),
+    path('update/', cal.save_calendar, name='update')
 ]
