@@ -15,6 +15,7 @@ from calendrier.models import Shift
 from exchange.models import Request_shift, Request_shift_log, Request_leave, Request_leave_log
 from calendarManager.update import all_shifts, update_shift
 from exchange.update_shift import search_shifts, search_wishes
+from django.db.utils import OperationalError
 
 users = CustomUser.objects.all()
 LEAVES = ('RT', 'RTT', 'CT', 'CTT')
@@ -128,10 +129,13 @@ def apply(user):
     update_leave(user.username, leaves_log)
 
 
-# First update all calendars
-for who in users:
-    write_data(who)
+try:
+    # First update all calendars
+    for who in users:
+        write_data(who)
 
-# Then check if there are differences
-for who in users:
-    apply(who)
+    # Then check if there are differences
+    for who in users:
+        apply(who)
+except OperationalError:
+    pass
