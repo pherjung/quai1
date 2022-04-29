@@ -99,14 +99,12 @@ def update_leave(username, request_leave_logs):
             Request_leave_log.objects.filter(user__username=username,
                                              date=log.date).delete()
             Request_leave.objects.filter(request=log.id).delete()
-            print("debug: user's shift isn't anymore a leave. Remove wish")
             continue
         # Remove wish if giver's shift isn't a leave anymore
         leaves_wishes = Request_leave.objects.filter(request=log.id)
         for req in leaves_wishes:
             if req.giver_shift.shift_name not in LEAVES:
                 req.delete()
-                print("debug: giver's shift isn't anymore a leave. Remove")
         search_wishes(username, log, user_shift)
 
 
