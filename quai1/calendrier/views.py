@@ -18,12 +18,13 @@ def monthly_calendar(request):
     for week in month_days:
         week_events = []
         for day in week:
-            print('haha', day)
-            shift = shifts.get(date=day)
-            print('debug', shift.date.month, datum.month)
-            if shift.date.month == datum.month:
-                week_events += [[day, shift]]
-            else:
+            try:
+                shift = shifts.get(date=day)
+                if shift.date.month == datum.month:
+                    week_events += [[day, shift]]
+                else:
+                    week_events += [[None, None]]
+            except Shift.DoesNotExist:
                 week_events += [[None, None]]
 
         events.append(week_events)
