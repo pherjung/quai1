@@ -1,0 +1,24 @@
+<table class="calendar" id="{{ next_month.0 }}-{{ next_month.1 }}">
+  <tr><th class="month" colspan="7">{{ full_date|date:"M Y" }}</th></tr>
+  <tr>
+    <td>Monday</td>
+    <td>Tuesday</td>
+    <td>Wednesday</td>
+    <td>Thursday</td>
+    <td>Friday</td>
+    <td>Saturday</td>
+    <td>Sunday</td>
+  </tr>
+  {% for week in events %}
+  <tr>
+    {% for day, shifts in week %}
+      <td class="{{ shifts.date|date:"l_d_M_y" }}" onclick="displayBlock(this, 'calendar')">
+        <div class='date'>{{ day|date:"j" }}</div>
+        <p id='shift' class="{{ shifts.shift_name }}">{{ shifts.shift_name }}</p>
+        <p>{{ shifts.start_hour|default_if_none:"" }}</p>
+        <p>{{ shifts.end_hour|default_if_none:"" }}</p>
+      </td>
+    {% endfor %}
+  </tr>
+ {% endfor %}
+</table>
