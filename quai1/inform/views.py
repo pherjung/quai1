@@ -365,6 +365,10 @@ def validate_leave(request):
                 user_shift=request_leave.user_shift,
                 user_shift__owner__username=request.user
             ).exclude(id=validate_data).delete()
+            Request_leave_log.objects.filter(
+                user=request.user,
+                id=request_leave.request.id,
+            ).update(active=False)
     return HttpResponseRedirect(reverse('wishes'))
 
 
