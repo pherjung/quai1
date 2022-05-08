@@ -1,10 +1,9 @@
 import sys
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 import django
-from ics import Calendar
+import vobject
 import requests
-import arrow
 
 sys.path.append('./../../quai1')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quai1.settings')
@@ -38,28 +37,42 @@ def write_data(user):
     """
     request = lang(user.url)
     request.encoding = request.apparent_encoding
-    cal = Calendar(request.text)
-    events = cal.timeline.start_after(arrow.now())
+    cal = vobject.readOne(request.text)
+    events = cal.getSortedChildren()
 
     for entry in events:
-        event_id = entry.begin.format('YYYY-MM-DD')+'_'+user.username
-        if entry.begin.format('HH:mm') == entry.end.format('HH:mm'):
-            begin = None
-            end = None
-        else:
-            begin = entry.begin.format('HH:mm:ss')
-            end = entry.end.format('HH:mm:ss')
+        if entry.name == 'VEVENT':
+            cal_start = entry.getChildValue('dtstart')
+            cal_end = entry.getChildValue('dtend')
+            event_id = f"{cal_start.strftime('%Y-%m-%d')}_{user.username}"
+            if cal_start.strftime('%H:%M') == cal_end.strftime('%H:%M'):
+                begin = None
+                end = None
+            else:
+                begin = cal_start.strftime('%H:%M:%S')
+                end = cal_end.strftime('%H:%M:%S')
 
-        values = {'shift_name': entry.name.split(': ')[1],
-                  'date': entry.begin.format('YYYY-MM-DD'),
-                  'start_hour': begin,
-                  'end_hour': end,
-                  'owner': user,
-                  }
-        Shift.objects.update_or_create(
-            shift_id=event_id,
-            defaults=values
-        )
+            shift_name_raw = entry.getChildValue('description').split('\n')[0]
+            values = {'shift_name': shift_name_raw.split(': ')[1],
+                      'date': cal_start.strftime('%Y-%m-%d'),
+                      'start_hour': begin,
+                      'end_hour': end,
+                      'owner': user,
+                      }
+            if cal_start+timedelta(1) == cal_end:
+                Shift.objects.update_or_create(
+                    shift_id=event_id,
+                    defaults=values
+                )
+            else:
+                while cal_start < cal_end:
+                    event_id = f"{cal_start.strftime('%Y-%m-%d')}_{user.username}"
+                    values['date'] = cal_start.strftime('%Y-%m-%d')
+                    Shift.objects.update_or_create(
+                        shift_id=event_id,
+                        defaults=values
+                    )
+                    cal_start += timedelta(1)
 
 
 def update_shifts(user_id, request_shift_logs):
