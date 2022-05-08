@@ -131,30 +131,26 @@ body {
 
 }
 
+
 .parent {
   position: relative;
   display: block;
 
 }
 
-.calendar {
-  table-layout: fixed;
-  font-size: 13px;
-  text-align: center;
-  font-weight: normal;
-
-}
 
 .calendar td {
   border: 1px solid black;
   vertical-align: top;
-  height: 90px;
+  width: 110px;
+  height: 100px;
   padding: 10px 0px 0px 5px;
 
 }
 
 .calendar p {
   margin: auto;
+  text-align: center;
 
 }
 
@@ -169,26 +165,12 @@ body {
 
 }
 
-.button {
+button {
   position: relative;
-  padding-top: 1%;
+  text-align: center;
   display: block;
-  width: 200px;
+  width: 100px;
   margin: auto;
-
-}
-
-.header {
-  margin: auto;
-  justify-content: center;
-  display: flex;
-  font-weight: bold;
-
-}
-
-.header div {
-  padding-left: 10px;
-  padding-right: 35px;
 
 }
 

@@ -17,8 +17,8 @@
   </head>
   <body>
     {% include 'calendrier/header.html' %}
-    {% block content %}
-    {% endblock %}
+    {% block content %}{% endblock %}
     <script src="{% static 'calendrier/scripts.js' %}"></script>
+    <script src="{% static 'calendrier/jquery-3.6.0.min.js' %}"></script>
   </body>
 </html>

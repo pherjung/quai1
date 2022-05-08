@@ -24,8 +24,9 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('login.urls')),
     path('accounts/', include('django.contrib.auth.urls')),
-    path('calendar/', views.CalendarView.as_view(), name='calendar'),
+    path('calendar/', views.view_calendar, name='calendar'),
     path('calendar/', include('exchange.urls')),
     path('calendar/', include('inform.urls')),
-    path('update/', cal.save_calendar, name='update')
+    path('calendar/calendar', views.values, name='value'),
+    path('update/', cal.save_calendar, name='update'),
 ]
