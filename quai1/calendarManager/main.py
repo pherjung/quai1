@@ -1,6 +1,6 @@
 import sys
 import os
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 import django
 import vobject
 import requests
@@ -39,40 +39,49 @@ def write_data(user):
     request.encoding = request.apparent_encoding
     cal = vobject.readOne(request.text)
     events = cal.getSortedChildren()
+    today = datetime.now()
+    batch = []
 
     for entry in events:
         if entry.name == 'VEVENT':
-            cal_start = entry.getChildValue('dtstart')
-            cal_end = entry.getChildValue('dtend')
-            event_id = f"{cal_start.strftime('%Y-%m-%d')}_{user.username}"
-            if cal_start.strftime('%H:%M') == cal_end.strftime('%H:%M'):
-                begin = None
-                end = None
-            else:
-                begin = cal_start.strftime('%H:%M:%S')
-                end = cal_end.strftime('%H:%M:%S')
+            start = entry.getChildValue('dtstart')
+            dtst = datetime(year=start.year,
+                            month=start.month,
+                            day=start.day)
+            end = entry.getChildValue('dtend')
+            # Do not apply events before today
+            if dtst < today:
+                continue
 
+            event_id = f"{start.strftime('%Y-%m-%d')}_{user.username}"
             shift_name_raw = entry.getChildValue('description').split('\n')[0]
-            values = {'shift_name': shift_name_raw.split(': ')[1],
-                      'date': cal_start.strftime('%Y-%m-%d'),
+            if isinstance(start, datetime):
+                begin = start.strftime('%H:%M:%S')
+                ende = end.strftime('%H:%M:%S')
+            else:
+                begin = None
+                ende = None
+
+            values = {'shift_id': event_id,
+                      'shift_name': shift_name_raw.split(': ')[1],
+                      'date': start.strftime('%Y-%m-%d'),
                       'start_hour': begin,
-                      'end_hour': end,
+                      'end_hour': ende,
                       'owner': user,
                       }
-            if cal_start+timedelta(1) == cal_end:
-                Shift.objects.update_or_create(
-                    shift_id=event_id,
-                    defaults=values
-                )
+            if isinstance(start, datetime):
+                batch.append(Shift(**values))
+            # Some holidays are only "one" event
             else:
-                while cal_start < cal_end:
-                    event_id = f"{cal_start.strftime('%Y-%m-%d')}_{user.username}"
-                    values['date'] = cal_start.strftime('%Y-%m-%d')
-                    Shift.objects.update_or_create(
-                        shift_id=event_id,
-                        defaults=values
-                    )
-                    cal_start += timedelta(1)
+                while start < end:
+                    values['shift_id'] = f"{start.strftime('%Y-%m-%d')}_{user.username}"
+                    values['date'] = start.strftime('%Y-%m-%d')
+                    batch.append(Shift(**values))
+                    start += timedelta(1)
+
+    Shift.objects.bulk_update_or_create(batch,
+                                        ['start_hour', 'end_hour'],
+                                        match_field='shift_id')
 
 
 def update_shifts(user_id, request_shift_logs):

@@ -11,3 +11,4 @@ sqlparse==0.4.2
 TatSu==5.8.0
 urllib3==1.26.9
 vobject==0.9.6.1
+django-bulk-update-or-create==0.3.0
