@@ -12,7 +12,7 @@
   {% for week in events %}
   <tr>
     {% for day, shifts in week %}
-      <td class="{{ shifts.date|date:"l_d_M_y" }}" onclick="displayBlock(this, 'calendar')">
+      <td class="{{ shifts.date|date:"l_d_M_Y" }}" onclick="displayBlock(this, 'calendar')">
         <div class='date'>{{ day|date:"j" }}</div>
         <p id='shift' class="{{ shifts.shift_name }}">{{ shifts.shift_name|truncatechars:5 }}</p>
         <p>{{ shifts.start_hour|default_if_none:"" }}</p>
