@@ -2,7 +2,7 @@
 Bourse d'échange de journées de travail
 
 ## How to install
-Install python and pip on your computer. Download project:
+Install python3 and pip on your computer. Download project:
 ```
 git clone https://github.com/pherjung/quai1
 
@@ -10,7 +10,7 @@ git clone https://github.com/pherjung/quai1
 
 ### Set up virtual environment:
 ```
-python -m venv env
+python3 -m venv env
 source env/bin/activate
 ```
 
@@ -22,11 +22,11 @@ pip install -r requirements.txt
 ### Migrate Database
 ```
 cd src
-python manage.py makemigrations
-python manage.py migrate
+python3 manage.py makemigrations
+python3 manage.py migrate
 ```
 
 ### Run server
 ```
-python manager.py runserver
+python3 manage.py runserver
 ```
