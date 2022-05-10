@@ -21,7 +21,7 @@ pip install -r requirements.txt
 
 ### Migrate Database
 ```
-cd quai1
+cd src
 python manage.py makemigrations
 python manage.py migrate
 ```
