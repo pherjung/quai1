@@ -54,12 +54,12 @@ def write_data(user):
                 continue
 
             event_id = f"{start.strftime('%Y-%m-%d')}_{user.username}"
-            shift_name_raw = entry.getChildValue('description').split('\n')[0]
+            shift_name = entry.getChildValue('summary').split(': ')[1]
             begin = start if isinstance(start, datetime) else None
             ende = end if isinstance(end, datetime) else None
 
             values = {'shift_id': event_id,
-                      'shift_name': shift_name_raw.split(': ')[1],
+                      'shift_name': shift_name,
                       'date': start.strftime('%Y-%m-%d'),
                       'start_hour': begin,
                       'end_hour': ende,
