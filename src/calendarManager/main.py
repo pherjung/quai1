@@ -53,13 +53,11 @@ def write_data(user):
             if dtst < today:
                 continue
 
-            event_id = f"{start.strftime('%Y-%m-%d')}_{user.username}"
             shift_name = entry.getChildValue('summary').split(': ')[1]
             begin = start if isinstance(start, datetime) else None
             ende = end if isinstance(end, datetime) else None
 
-            values = {'shift_id': event_id,
-                      'shift_name': shift_name,
+            values = {'shift_name': shift_name,
                       'date': start.strftime('%Y-%m-%d'),
                       'start_hour': begin,
                       'end_hour': ende,
@@ -70,14 +68,13 @@ def write_data(user):
             # Some holidays are only "one" event
             else:
                 while start < end:
-                    values['shift_id'] = f"{start.strftime('%Y-%m-%d')}_{user.username}"
                     values['date'] = start.strftime('%Y-%m-%d')
                     batch.append(Shift(**values))
                     start += timedelta(1)
 
     Shift.objects.bulk_update_or_create(batch,
                                         ['start_hour', 'end_hour'],
-                                        match_field='shift_id')
+                                        match_field=['date', 'owner'])
 
 
 def update_shifts(user_id, request_shift_logs):
