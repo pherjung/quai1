@@ -88,7 +88,7 @@ def find(last, date, username):
     serie = find_2serie(last, date, username)
     start_date = date
     increment = 1
-    while start_date.date() != serie.date:
+    while start_date != serie.date:
         new_date = date-td(days=increment) if last else date+td(days=increment)
         try:
             day = Shift.objects.get(date=new_date,
