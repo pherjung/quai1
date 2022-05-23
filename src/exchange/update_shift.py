@@ -73,45 +73,29 @@ def search_shifts(form, form_date, switch):
         # Search starting from start_minus
         case 1:
             start = start_hour1 if start_hour1 else start_hour2
-            minus = (datetime.combine(
-                form_date,
-                start) - tolerance_start).time()
+            minus = datetime.combine(form_date, start) - tolerance_start
             query['start_hour__gt'] = minus
         # Search between start_minus and start_plus
         case 2:
-            minus = (datetime.combine(
-                form_date,
-                start_hour1) - tolerance_start).time()
-            plus = (datetime.combine(
-                form_date,
-                start_hour2) + tolerance_start).time()
+            minus = datetime.combine(form_date, start_hour1) - tolerance_start
+            plus = datetime.combine(form_date, start_hour2) + tolerance_start
             query['start_hour__range'] = [minus, plus]
         # Search starting from end_minus
         # Search between requested time
         case 3:
             end = end_hour1 if end_hour1 else end_hour2
-            plus = (datetime.combine(
-                form_date,
-                end) + tolerance_end).time()
+            plus = datetime.combine(form_date, end) + tolerance_end
             query['end_hour__lt'] = plus
         # Search between end_minus and end_plus
         case 6:
-            minus = (datetime.combine(
-                form_date,
-                end_hour1) - tolerance_end).time()
-            plus = (datetime.combine(
-                form_date,
-                end_hour2) + tolerance_end).time()
+            minus = datetime.combine(form_date, end_hour1) - tolerance_end
+            plus = datetime.combine(form_date, end_hour2) + tolerance_end
             query['end_hour__range'] = [minus, plus]
         case 4:
             start = start_hour1 if start_hour1 else start_hour2
-            minus = (datetime.combine(
-                form_date,
-                start) - tolerance_start).time()
+            minus = datetime.combine(form_date, start) - tolerance_start
             end = end_hour1 if end_hour1 else end_hour2
-            plus = (datetime.combine(
-                form_date,
-                end) + tolerance_end).time()
+            plus = datetime.combine(form_date, end) + tolerance_end
             query['start_hour__gt'] = minus
             query['end_hour__lt'] = plus
         case _:
