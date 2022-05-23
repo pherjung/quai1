@@ -135,6 +135,10 @@ def horary(last, datum, username):
             if last and work_day[2] in ['night-start', 'morning']:
                 hours = 0
                 start_raw = start_raw.replace(hour=0, minute=0)
+            elif not last:
+                buffer = work_day[0].start_hour+td(hours=hours)
+                if buffer.date() == work_day[0].start_hour.date():
+                    day += td(1)
         case 2:
             if last:
                 leave = work_day[0].date+td(1)
@@ -162,9 +166,12 @@ def horary(last, datum, username):
         case _:
             hours = 9 if last else -9
             buffer = work_day[0].start_hour+td(hours=hours)
-            if last and buffer.date() == work_day[0].start_hour.date():
-                start_raw = start_raw.replace(hour=0, minute=0)
-                hours = 0
+            if buffer.date() == work_day[0].start_hour.date():
+                if last:
+                    start_raw = start_raw.replace(hour=0, minute=0)
+                    hours = 0
+                else:
+                    day += td(1)
 
     start_raw += td(hours=hours)
     start_raw = start_raw.replace(day.year, day.month, day.day)
