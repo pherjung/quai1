@@ -73,7 +73,9 @@ def write_data(user):
                     start += timedelta(1)
 
     Shift.objects.bulk_update_or_create(batch,
-                                        ['start_hour', 'end_hour'],
+                                        ['shift_name',
+                                         'start_hour',
+                                         'end_hour'],
                                         match_field=['date', 'owner'])
 
 
