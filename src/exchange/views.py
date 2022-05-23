@@ -8,6 +8,7 @@ from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
 from .models import Give_leave, Request_leave, Request_shift, Request_shift_log, Request_leave_log
 from .update_shift import search_wishes, search_shifts
+from .rest_time import start_end_hour
 
 
 def save_leave(request):
@@ -35,6 +36,7 @@ def request_leave(request):
         if form.is_valid():
             requested_date = form.cleaned_data['date']
             form_date = datetime.strptime(requested_date, "%A %d %B %Y")
+            hour_range = start_end_hour(form_date.date(), request.user)
             user_shift = Shift.objects.get(date=form_date,
                                            owner=request.user)
             user_note = form.cleaned_data['note']
@@ -53,7 +55,9 @@ def request_leave(request):
                     Q(**query)
                     | Q(date=form_date,
                         shift_name__iregex=(r'^200'))
-                ).exclude(owner=request.user)
+                ).exclude(Q(owner=request.user)
+                          | Q(start_hour__lt=hour_range['start_hour'])
+                          | Q(end_hour__gt=hour_range['end_hour']))
                 log = Request_shift_log.objects.create(
                     user=request.user,
                     date=form_date,
@@ -66,8 +70,20 @@ def request_leave(request):
                     note=user_note
                 )
 
+                users_shifts = list(shifts)
+                remove = set()
+                for tour in users_shifts:
+                    time_range = start_end_hour(form_date, tour.owner.username)
+                    if user_shift.start_hour < time_range['start_hour']:
+                        print('illegal, to-do', form_date, tour.owner.username)
+                        remove.add(tour)
+                    if user_shift.end_hour > time_range['end_hour']:
+                        print('illegal, to-do', form_date, tour.owner.username)
+                        remove.add(tour)
+
+                [users_shifts.remove(illegal) for illegal in remove]
                 shift_it = 0
-                while shift_it < len(shifts):
+                while shift_it < len(users_shifts):
                     Request_shift.objects.create(
                         user_shift=user_shift,
                         giver_shift=shifts[shift_it],
