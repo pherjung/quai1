@@ -8,6 +8,7 @@ from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
 from .models import Give_leave, Request_leave, Request_shift_log, Request_leave_log
 from .update_shift import search_wishes, search_shifts, keep_legal_shifts
+from .rest_time import start_end_hour
 
 
 def save_leave(request):

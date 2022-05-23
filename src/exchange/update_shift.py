@@ -122,11 +122,11 @@ def search_shifts(form, form_date, switch):
 def keep_legal_shifts(user_shift, shifts, date, note, log):
     """
     Keep only legal shifts
-    user_shift->
-    shifts->
-    date->
-    note->
-    log->
+    user_shift->Shift object
+    shifts->QuerySet
+    date->datetime object
+    note->str
+    log->Request_shift_log object
     """
     users_shifts = list(shifts)
     remove = set()
