@@ -2,7 +2,7 @@ from datetime import datetime
 from django.db.models import Q
 
 from calendrier.models import Shift
-from .models import Give_leave, Request_leave
+from .models import Give_leave, Request_leave, Request_shift
 from .rest_time import start_end_hour
 
 
@@ -117,3 +117,35 @@ def search_shifts(form, form_date, switch):
             # To-do
             print('catch false case')
     return query
+
+
+def keep_legal_shifts(user_shift, shifts, date, note, log):
+    """
+    Keep only legal shifts
+    user_shift->
+    shifts->
+    date->
+    note->
+    log->
+    """
+    users_shifts = list(shifts)
+    remove = set()
+    for tour in users_shifts:
+        time_range = start_end_hour(date, tour.owner.username)
+        if user_shift.start_hour < time_range['start_hour']:
+            print('illegal, to-do', date, tour.owner.username)
+            remove.add(tour)
+        if user_shift.end_hour > time_range['end_hour']:
+            print('illegal, to-do', date, tour.owner.username)
+            remove.add(tour)
+
+    [users_shifts.remove(illegal) for illegal in remove]
+    shift_it = 0
+    while shift_it < len(users_shifts):
+        Request_shift.objects.create(
+            user_shift=user_shift,
+            giver_shift=shifts[shift_it],
+            note=note,
+            request=log,
+        )
+        shift_it += 1

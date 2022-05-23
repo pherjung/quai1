@@ -6,9 +6,8 @@ from django.db.models import Q
 
 from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
-from .models import Give_leave, Request_leave, Request_shift, Request_shift_log, Request_leave_log
-from .update_shift import search_wishes, search_shifts
-from .rest_time import start_end_hour
+from .models import Give_leave, Request_leave, Request_shift_log, Request_leave_log
+from .update_shift import search_wishes, search_shifts, keep_legal_shifts
 
 
 def save_leave(request):
@@ -39,11 +38,11 @@ def request_leave(request):
             hour_range = start_end_hour(form_date.date(), request.user)
             user_shift = Shift.objects.get(date=form_date,
                                            owner=request.user)
-            user_note = form.cleaned_data['note']
+            note = form.cleaned_data['note']
             if form.cleaned_data['request_leave'] == 'request_leave':
                 wishes, created = Request_leave_log.objects.update_or_create(
                     user=request.user, date=form_date,
-                    defaults={'note': user_note,
+                    defaults={'note': note,
                               'active': True},
                 )
                 if created:
@@ -67,29 +66,9 @@ def request_leave(request):
                     end_hour1=form.cleaned_data['end_hour_1'],
                     end_hour2=form.cleaned_data['end_hour_2'],
                     tolerance_end=form.cleaned_data['tolerance_end'],
-                    note=user_note
+                    note=note
                 )
+                keep_legal_shifts(user_shift, shifts, form_date, note, log)
 
-                users_shifts = list(shifts)
-                remove = set()
-                for tour in users_shifts:
-                    time_range = start_end_hour(form_date, tour.owner.username)
-                    if user_shift.start_hour < time_range['start_hour']:
-                        print('illegal, to-do', form_date, tour.owner.username)
-                        remove.add(tour)
-                    if user_shift.end_hour > time_range['end_hour']:
-                        print('illegal, to-do', form_date, tour.owner.username)
-                        remove.add(tour)
-
-                [users_shifts.remove(illegal) for illegal in remove]
-                shift_it = 0
-                while shift_it < len(users_shifts):
-                    Request_shift.objects.create(
-                        user_shift=user_shift,
-                        giver_shift=shifts[shift_it],
-                        note=user_note,
-                        request=log,
-                    )
-                    shift_it += 1
 
     return HttpResponseRedirect(reverse('calendar'))
