@@ -46,6 +46,7 @@ def find_2serie(last, date, username):
     """
     i = 1
     serie = 0
+    leaves = ('RT', 'RTT', 'CT', 'CT', 'F', 'CTS')
     while True:
         a = 1
         new_date = date-td(days=i) if last else date+td(days=i)
@@ -55,7 +56,7 @@ def find_2serie(last, date, username):
         except Shift.DoesNotExist:
             i += 1
             continue
-        if day.shift_name in ['RT', 'RTT', 'CT', 'CT', 'F']:
+        if day.shift_name in leaves:
             while True:
                 new_date = date-td(days=i+a) if last else date+td(days=i+a)
                 try:
