@@ -46,7 +46,7 @@ def find_2serie(last, date, username):
     """
     i = 1
     serie = 0
-    leaves = ('RT', 'RTT', 'CT', 'CT', 'F', 'CTS')
+    leaves = ('RT', 'CT', 'RTT', 'CTT', 'F', 'CTS')
     while True:
         a = 1
         new_date = date-td(days=i) if last else date+td(days=i)

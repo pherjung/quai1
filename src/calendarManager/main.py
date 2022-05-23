@@ -17,7 +17,7 @@ from exchange.update_shift import search_shifts, search_wishes
 from django.db.utils import OperationalError
 
 users = CustomUser.objects.all()
-LEAVES = ('RT', 'RTT', 'CT', 'CTT')
+LEAVES = ('RT', 'CT', 'RTT', 'CTT', 'F', 'CTS')
 
 
 def lang(url_raw):
