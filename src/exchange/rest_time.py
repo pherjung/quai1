@@ -120,7 +120,7 @@ def horary(last, datum, username):
     work_day = find(last, datum, username)
     work_end = work_day[0].end_hour
     start_raw = work_end if last else work_day[0].start_hour
-    day = datum.day
+    day = datum
     hours = 12 if last else -12
     match work_day[1]:
         case 0:
@@ -128,8 +128,8 @@ def horary(last, datum, username):
                 hours = 0
                 start_raw = datetime.combine(datum, time())
             else:
-                day += 1
                 start_raw = datetime.combine(datum, time(12))
+                day += td(1)
         case 1:
             if last and work_day[2] in ['night-start', 'morning']:
                 hours = 0
@@ -148,7 +148,7 @@ def horary(last, datum, username):
                     hours = 0
                     start_raw = start_raw.replace(hour=0, minute=0)
                 elif start_raw.date() == work_day[0].start_hour.date():
-                    day += 1
+                    day += td(1)
 
             else:
                 if last:
@@ -156,7 +156,7 @@ def horary(last, datum, username):
                         start_raw = start_raw.replace(hour=0, minute=0)
                         hours = 0
                 else:
-                    day += 1
+                    day += td(1)
         case _:
             hours = 9 if last else -9
             buffer = work_day[0].start_hour+td(hours=hours)
@@ -165,7 +165,7 @@ def horary(last, datum, username):
                 hours = 0
 
     start_raw += td(hours=hours)
-    start_raw = start_raw.replace(datum.year, datum.month, day)
+    start_raw = start_raw.replace(day.year, day.month, day.day)
     return start_raw
 
 
