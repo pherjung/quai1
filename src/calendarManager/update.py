@@ -26,8 +26,7 @@ def start_or_end(log, shift):
     match condition:
         case 1:
             # Check service entry. From
-            start1 = (datetime.combine(
-                shift.date, start)-tolerance_start).time()
+            start1 = datetime.combine(shift.date, start)-tolerance_start
             if shift.start_hour and shift.start_hour < start1:
                 Request_shift.objects.filter(
                     giver_shift_id=shift.id,
@@ -35,10 +34,8 @@ def start_or_end(log, shift):
                 ).delete()
         case 2:
             # Check service entry. Between
-            start1 = (datetime.combine(
-                shift.date, log.start_hour1)-tolerance_start).time()
-            start2 = (datetime.combine(
-                shift.date, log.start_hour2)+tolerance_start).time()
+            start1 = datetime.combine(shift.date, log.start_hour1)-tolerance_start
+            start2 = datetime.combine(shift.date, log.start_hour2)+tolerance_start
             if shift.start_hour:
                 if not start1 < shift.start_hour < start2:
                     Request_shift.objects.filter(
@@ -47,7 +44,7 @@ def start_or_end(log, shift):
                     ).delete()
         case 3:
             # Check end of service. From
-            end1 = (datetime.combine(shift.date, end)-tolerance_end).time()
+            end1 = datetime.combine(shift.date, end)-tolerance_end
             if shift.end_hour and shift.end_hour > end1:
                 print('debug hour', shift.end_hour, end1, shift.date)
                 print("3 remove shift from exchange_request_shift", log.id, shift.id)
@@ -57,10 +54,8 @@ def start_or_end(log, shift):
                 ).delete()
         case 6:
             # Check end of service. Between
-            end1 = (datetime.combine(
-                shift.date, log.end_hour1)-tolerance_start).time()
-            end2 = (datetime.combine(
-                shift.date, log.end_hour2)+tolerance_start).time()
+            end1 = datetime.combine(shift.date, log.end_hour1)-tolerance_start
+            end2 = datetime.combine(shift.date, log.end_hour2)+tolerance_start
             if shift.end_hour and not end1 < shift.end_hour < end2:
                 Request_shift.objects.filter(
                     giver_shift_id=shift.id,
@@ -68,10 +63,8 @@ def start_or_end(log, shift):
                 ).delete()
         case 4:
             # Check start and end of service. Between
-            start1 = (datetime.combine(
-                shift.date, start)-tolerance_start).time()
-            end1 = (datetime.combine(
-                shift.date, end)-tolerance_end).time()
+            start1 = datetime.combine(shift.date, start)-tolerance_start
+            end1 = datetime.combine(shift.date, end)-tolerance_end
             if shift.start_hour and shift.end_hour:
                 if shift.start_hour < start1 and shift.end_hour < end1:
                     Request_shift.objects.filter(
