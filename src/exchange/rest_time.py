@@ -124,6 +124,7 @@ def horary(last, datum, username):
     hours = 12 if last else -12
     match work_day[1]:
         case 0:
+            # If no shift -> start at 00:00, end at 12:00 +1
             if last:
                 hours = 0
                 start_raw = datetime.combine(datum, time())
@@ -157,6 +158,7 @@ def horary(last, datum, username):
                         hours = 0
                 else:
                     day += td(1)
+        # If there are several leaves
         case _:
             hours = 9 if last else -9
             buffer = work_day[0].start_hour+td(hours=hours)
