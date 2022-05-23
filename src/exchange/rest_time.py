@@ -99,11 +99,13 @@ def find(last, date, username):
         if day.end_hour:
             art = define_art(day)
             return day, increment, art
+        # In case no work date is found
+        if day.shift_name == '200':
+            return serie, 0, None
 
+        # In case next day are leaves
         increment += 1
         start_date = start_date-td(1) if last else start_date+td(1)
-    # In case no work date is found
-    return serie, 0, None
 
 
 def horary(last, datum, username):
