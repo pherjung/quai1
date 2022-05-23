@@ -3,6 +3,7 @@ from django.db.models import Q
 
 from calendrier.models import Shift
 from .models import Give_leave, Request_leave
+from .rest_time import start_end_hour
 
 
 def search_wishes(user, log_id, user_shift):
@@ -18,22 +19,36 @@ def search_wishes(user, log_id, user_shift):
     ).exclude(
         shift_id__owner_id__username=user
     ).values_list('shift_id')
-    # Recover column ID of all leaves not owned by requester
+    # Recover ID of all leaves not owned by requester
     give = Shift.objects.filter(
         date=log_id.date,
         start_hour=None,
         shift_name__iregex=r'(C|R)T*'
     ).exclude(owner__username=user)
+    # Exclude unchangeable leaves
+    legal_leaves = list(give)
+    illegal_leaves = set()
+    for i in legal_leaves:
+        time_range = start_end_hour(log_id.date, i.owner.username)
+        print('debug test', time_range, i.owner.username)
+        if user_shift.start_hour < time_range['start_hour']:
+            print('illegal start, to-do')
+            illegal_leaves.add(i)
+        if user_shift.end_hour > time_range['end_hour']:
+            print('illegal end, to-do')
+            illegal_leaves.add(i)
+
+    [legal_leaves.remove(illegal) for illegal in illegal_leaves]
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
-    while give_it < len(give):
+    while give_it < len(legal_leaves):
         for index in enumerate(leaves):
             gift = bool(give[give_it].id in leaves[index[0]])
 
         Request_leave.objects.get_or_create(
             user_shift=user_shift,
-            giver_shift=give[give_it],
+            giver_shift=legal_leaves[give_it],
             note=log_id.note,
             validated=gift,
             request=log_id,
