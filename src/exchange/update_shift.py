@@ -14,25 +14,23 @@ def search_leaves(user, log_id, user_shift):
     user_shift->calendrier.models.Shift
     """
     # Recover all given leaves
-    leaves = Give_leave.objects.filter(
-        shift_id__date=log_id.date
-    ).exclude(
-        shift_id__owner_id__username=user
-    ).values_list('shift_id')
+    gifted_leaves = Give_leave.objects.filter(
+        shift__date=log_id.date,
+    ).exclude(shift__owner=user).values_list('shift_id')
     # Recover ID of all leaves not owned by requester
-    give = Shift.objects.filter(
+    available_leaves = Shift.objects.filter(
         date=log_id.date,
         start_hour=None,
         shift_name__iregex=r'(C|R)T*'
     ).exclude(owner__username=user)
     # Exclude unchangeable leaves
-    legal_leaves = exclude_illegal(user_shift, give)
+    legal_leaves = exclude_illegal(user_shift, available_leaves)
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
     while give_it < len(legal_leaves):
-        for index in enumerate(leaves):
-            gift = bool(give[give_it].id in leaves[index[0]])
+        for index in enumerate(gifted_leaves):
+            gift = bool(legal_leaves[give_it].id in gifted_leaves[index[0]])
 
         Request_leave.objects.get_or_create(
             user_shift=user_shift,
