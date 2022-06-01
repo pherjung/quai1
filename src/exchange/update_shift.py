@@ -6,7 +6,7 @@ from .models import Give_leave, Request_leave, Request_shift
 from .rest_time import start_end_hour
 
 
-def search_wishes(user, log_id, user_shift):
+def search_leaves(user, log_id, user_shift):
     """
     Search all existing wishes for a leave
     user->str

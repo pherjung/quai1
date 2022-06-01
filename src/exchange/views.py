@@ -7,7 +7,7 @@ from django.db.models import Q
 from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
 from .models import Give_leave, Request_leave, Request_shift_log, Request_leave_log
-from .update_shift import search_wishes, search_shifts, keep_legal_shifts
+from .update_shift import search_leaves, search_shifts, keep_legal_shifts
 from .rest_time import start_end_hour
 
 
@@ -47,7 +47,7 @@ def request_leave(request):
                               'active': True},
                 )
                 if created:
-                    search_wishes(request.user, wishes, user_shift)
+                    search_leaves(request.user, wishes, user_shift)
             elif form.cleaned_data['request_leave'] == 'schedule':
                 query = search_shifts(form, form_date, True)
                 # Shift starting from range start_hour_1 +/- tolerance
