@@ -7,7 +7,7 @@ from django.db.models import Q
 from calendrier.models import Shift
 from .forms import LeaveForms, RequestLeaveForms
 from .models import Give_leave, Request_leave, Request_shift_log, Request_leave_log
-from .update_shift import search_leaves, search_shifts, keep_legal_shifts
+from .update_shift import search_leaves, search_shifts, write_legal_shifts
 from .rest_time import start_end_hour
 
 
@@ -69,7 +69,6 @@ def request_leave(request):
                     tolerance_end=form.cleaned_data['tolerance_end'],
                     note=note
                 )
-                keep_legal_shifts(user_shift, shifts, form_date, note, log)
-
+                write_legal_shifts(user_shift, shifts, form_date, note, log)
 
     return HttpResponseRedirect(reverse('calendar'))

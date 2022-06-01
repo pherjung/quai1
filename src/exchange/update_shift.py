@@ -26,19 +26,7 @@ def search_leaves(user, log_id, user_shift):
         shift_name__iregex=r'(C|R)T*'
     ).exclude(owner__username=user)
     # Exclude unchangeable leaves
-    legal_leaves = list(give)
-    illegal_leaves = set()
-    for i in legal_leaves:
-        time_range = start_end_hour(log_id.date, i.owner.username)
-        print('debug test', time_range, i.owner.username)
-        if user_shift.start_hour < time_range['start_hour']:
-            print('illegal start, to-do')
-            illegal_leaves.add(i)
-        if user_shift.end_hour > time_range['end_hour']:
-            print('illegal end, to-do')
-            illegal_leaves.add(i)
-
-    [legal_leaves.remove(illegal) for illegal in illegal_leaves]
+    legal_leaves = exclude_illegal(user_shift, give)
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
@@ -119,27 +107,36 @@ def search_shifts(form, form_date, switch):
     return query
 
 
-def keep_legal_shifts(user_shift, shifts, date, note, log):
+def exclude_illegal(user_shift, shifts):
     """
     Keep only legal shifts
     user_shift->Shift object
     shifts->QuerySet
-    date->datetime object
-    note->str
-    log->Request_shift_log object
+    return only legal shifts
     """
     users_shifts = list(shifts)
     remove = set()
     for tour in users_shifts:
-        time_range = start_end_hour(date, tour.owner.username)
-        if user_shift.start_hour < time_range['start_hour']:
-            print('illegal, to-do', date, tour.owner.username)
+        # Check if my shift is legal for tour.owner
+        time_range = start_end_hour(user_shift.date, tour.owner.username)
+        if user_shift.start_hour and user_shift.start_hour < time_range['start_hour']:
             remove.add(tour)
-        if user_shift.end_hour > time_range['end_hour']:
-            print('illegal, to-do', date, tour.owner.username)
+        if user_shift.end_hour and user_shift.end_hour > time_range['end_hour']:
             remove.add(tour)
 
     [users_shifts.remove(illegal) for illegal in remove]
+    return users_shifts
+
+
+def write_legal_shifts(user_shift, shifts, date, note, log):
+    """
+    Write legal shifts
+    user_shift->Shift object
+    shifts->QuerySet
+    note->str
+    log->Request_shift_log object
+    """
+    users_shifts = exclude_illegal(user_shift, shifts, date)
     shift_it = 0
     while shift_it < len(users_shifts):
         Request_shift.objects.create(

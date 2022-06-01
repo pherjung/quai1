@@ -14,7 +14,7 @@ from login.models import CustomUser, Depot
 from calendrier.models import Shift
 from exchange.models import Request_shift, Request_shift_log, Request_leave, Request_leave_log
 from calendarManager.update import all_shifts, update_shift
-from exchange.update_shift import search_shifts, search_leaves, keep_legal_shifts
+from exchange.update_shift import search_shifts, search_leaves, write_legal_shifts
 from django.db.utils import OperationalError
 
 LEAVES = ('RT', 'CT', 'RTT', 'CTT', 'F', 'CTS')
@@ -99,8 +99,8 @@ def update_shifts(user_id, request_shift_logs):
             excluded.append(req.giver_shift.id)
             update_shift(log, req)
         # Submit new shifts as exchange
-        new_shifts = all_shifts(log.date, query, excluded, user_id)
-        keep_legal_shifts(user_shift, new_shifts, log.date, log.note, log)
+        new_shifts = all_shifts(log.date, query, excluded, user.id)
+        write_legal_shifts(user_shift, new_shifts, log.date, log.note, log)
         for shift in new_shifts:
             Request_shift.objects.get_or_create(
                 user_shift=user_shift,
