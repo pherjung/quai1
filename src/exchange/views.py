@@ -49,7 +49,7 @@ def request_leave(request):
                 if created:
                     search_leaves(request.user, wishes, user_shift)
             elif form.cleaned_data['request_leave'] == 'schedule':
-                query = search_shifts(form, form_date, True)
+                query = search_shifts(request.user, form, form_date, True)
                 # Shift starting from range start_hour_1 +/- tolerance
                 shifts = Shift.objects.filter(
                     Q(**query)
