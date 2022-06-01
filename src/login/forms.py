@@ -10,8 +10,8 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('username',
                   'first_name',
                   'last_name',
-                  'email',
                   'depot',
+                  'email',
                   'phone_nb',
                   'url',)
         depot = forms.ModelMultipleChoiceField(
