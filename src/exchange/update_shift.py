@@ -16,13 +16,13 @@ def search_leaves(user, log_id, user_shift):
     # Recover all given leaves
     gifted_leaves = Give_leave.objects.filter(
         shift__date=log_id.date,
-    ).exclude(shift__owner=user).values_list('shift_id')
+    ).exclude(shift__owner=user).values_list('shift_id').distinct()
     # Recover ID of all leaves not owned by requester
     available_leaves = Shift.objects.filter(
         date=log_id.date,
         start_hour=None,
         shift_name__iregex=r'(C|R)T*'
-    ).exclude(owner__username=user)
+    ).exclude(owner=user).distinct()
     # Exclude unchangeable leaves
     legal_leaves = exclude_illegal(user_shift, available_leaves)
     # Save shifts

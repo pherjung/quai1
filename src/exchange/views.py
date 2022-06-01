@@ -57,7 +57,8 @@ def request_leave(request):
                         shift_name__iregex=(r'^200'))
                 ).exclude(Q(owner=request.user)
                           | Q(start_hour__lt=hour_range['start_hour'])
-                          | Q(end_hour__gt=hour_range['end_hour']))
+                          | Q(end_hour__gt=hour_range['end_hour'])
+                          ).distinct()
                 log = Request_shift_log.objects.create(
                     user=request.user,
                     date=form_date,
