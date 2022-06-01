@@ -14,3 +14,7 @@ class Shift(models.Model):
     end_hour = models.DateTimeField(null=True)
     owner = models.ForeignKey(CustomUser,
                               on_delete=models.DO_NOTHING)
+
+    class Meta:
+        constraints = [models.UniqueConstraint(fields=['date', 'owner'],
+                                               name='unique_shift')]
