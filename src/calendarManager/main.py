@@ -17,7 +17,6 @@ from calendarManager.update import all_shifts, update_shift
 from exchange.update_shift import search_shifts, search_wishes, keep_legal_shifts
 from django.db.utils import OperationalError
 
-users = CustomUser.objects.all()
 LEAVES = ('RT', 'CT', 'RTT', 'CTT', 'F', 'CTS')
 
 
@@ -50,11 +49,10 @@ def write_data(user):
             dtst = datetime(year=start.year,
                             month=start.month,
                             day=start.day)
-            end = entry.getChildValue('dtend')
             # Do not apply events before today
             if dtst < today:
                 continue
-
+            end = entry.getChildValue('dtend')
             shift_name = entry.getChildValue('summary').split(': ')[1]
             begin = start if isinstance(start, datetime) else None
             ende = end if isinstance(end, datetime) else None
@@ -155,6 +153,7 @@ def apply(user):
 
 
 try:
+    users = CustomUser.objects.all()
     depots = Depot.objects.all()
     # First update all calendars
     for who in users:
