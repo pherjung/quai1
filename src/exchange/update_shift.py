@@ -16,12 +16,14 @@ def search_leaves(user, log_id, user_shift):
     # Recover all given leaves
     gifted_leaves = Give_leave.objects.filter(
         shift__date=log_id.date,
+        shift__owner__depot__in=[x.id for x in user.depot.all()],
     ).exclude(shift__owner=user).values_list('shift_id').distinct()
     # Recover ID of all leaves not owned by requester
     available_leaves = Shift.objects.filter(
         date=log_id.date,
         start_hour=None,
-        shift_name__iregex=r'(C|R)T*'
+        shift_name__iregex=r'(C|R)T*',
+        owner__depot__in=[x.id for x in user.depot.all()]
     ).exclude(owner=user).distinct()
     # Exclude unchangeable leaves
     legal_leaves = exclude_illegal(user_shift, available_leaves)
@@ -65,7 +67,9 @@ def search_shifts(user, form, form_date, switch):
         tolerance_end = form.tolerance_end
         tolerance_start = form.tolerance_start
 
-    query = {'date': form_date}
+    query = {'date': form_date,
+             'depot__in': [x.id for x in user.depot.all()],
+             }
     condition = 0
     condition += bool(start_hour1)
     condition += bool(start_hour2)

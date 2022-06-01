@@ -54,7 +54,8 @@ def request_leave(request):
                 shifts = Shift.objects.filter(
                     Q(**query)
                     | Q(date=form_date,
-                        shift_name__iregex=(r'^200'))
+                        shift_name__iregex=(r'^200'),
+                        owner__depot__in=query['depot__in'])
                 ).exclude(Q(owner=request.user)
                           | Q(start_hour__lt=hour_range['start_hour'])
                           | Q(end_hour__gt=hour_range['end_hour'])
