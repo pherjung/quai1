@@ -84,17 +84,17 @@ def write_data(user):
                                         match_field=['date', 'owner'])
 
 
-def update_shifts(user_id, request_shift_logs):
+def update_shifts(user, request_shift_logs):
     """
     Check if shift (still) corresponds to the need. Update if necessary
-    user_id->int
+    user_id->CustomUser object
     request_shift_logs->django.db.models.query.QuerySet
     """
     for log in request_shift_logs:
         exchange = Request_shift.objects.filter(request_id=log.id)
         excluded = []
-        query = search_shifts(log, log.date, False)
-        user_shift = Shift.objects.get(owner=user_id, date=log.date)
+        query = search_shifts(user, log, log.date, False)
+        user_shift = Shift.objects.get(owner=user.id, date=log.date)
         for req in exchange:
             excluded.append(req.giver_shift.id)
             update_shift(log, req)
@@ -110,17 +110,17 @@ def update_shifts(user_id, request_shift_logs):
             )
 
 
-def update_leave(username, request_leave_logs):
+def update_leave(user, request_leave_logs):
     """
     Update leaves
-    username->str
+    username->CustomUser
     request_leave_logs->django.db.models.query.QuerySet
     """
     for log in request_leave_logs:
-        user_shift = Shift.objects.get(date=log.date, owner__username=username)
+        user_shift = Shift.objects.get(date=log.date, owner=user)
         # Remove wish if user's shift is now a leave
         if user_shift.shift_name in LEAVES:
-            Request_leave_log.objects.filter(user__username=username,
+            Request_leave_log.objects.filter(user=user,
                                              date=log.date).delete()
             Request_leave.objects.filter(request=log.id).delete()
             continue
@@ -135,7 +135,7 @@ def update_leave(username, request_leave_logs):
 def apply(user):
     """
     apply update
-    user->
+    user->CustomUser object
     """
     today = datetime.now()
     shifts_log = Request_shift_log.objects.filter(
@@ -143,13 +143,13 @@ def apply(user):
         date__gt=today,
         active=True,
     )
-    update_shifts(user.id, shifts_log)
+    update_shifts(user, shifts_log)
     leaves_log = Request_leave_log.objects.filter(
         user=user.id,
         date__gt=today,
         active=True,
     )
-    update_leave(user.username, leaves_log)
+    update_leave(user, leaves_log)
 
 
 try:

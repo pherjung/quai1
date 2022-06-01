@@ -9,7 +9,7 @@ from .rest_time import start_end_hour
 def search_leaves(user, log_id, user_shift):
     """
     Search all existing wishes for a leave
-    user->str
+    user->CustomUser
     log_id->exchange.models.Request_leave_log
     user_shift->calendrier.models.Shift
     """
@@ -44,9 +44,10 @@ def search_leaves(user, log_id, user_shift):
         give_it += 1
 
 
-def search_shifts(form, form_date, switch):
+def search_shifts(user, form, form_date, switch):
     """
     Search
+    user->CustomUser object
     form->
     form_date->
     switch->Boolean
