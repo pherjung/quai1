@@ -4,12 +4,13 @@ from datetime import date, datetime, timedelta
 import django
 import vobject
 import requests
+import re
 
 sys.path.append('./../../quai1')
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'quai1.settings')
 django.setup()
 
-from login.models import CustomUser
+from login.models import CustomUser, Depot
 from calendrier.models import Shift
 from exchange.models import Request_shift, Request_shift_log, Request_leave, Request_leave_log
 from calendarManager.update import all_shifts, update_shift
@@ -39,6 +40,7 @@ def write_data(user):
     request.encoding = request.apparent_encoding
     cal = vobject.readOne(request.text)
     events = cal.getSortedChildren()
+    regex = re.compile(r"Dépôt\s+:\s(\D+)\n")
     today = datetime.now()
     batch = []
 
@@ -56,8 +58,12 @@ def write_data(user):
             shift_name = entry.getChildValue('summary').split(': ')[1]
             begin = start if isinstance(start, datetime) else None
             ende = end if isinstance(end, datetime) else None
+            place = re.search(regex, entry.getChildValue('description'))
+            # Happens dispatchers mistakenly allocate shifts from other depot
+            depot = depots.get(name=place.group(1)) if place else None
 
             values = {'shift_name': shift_name,
+                      'depot': depot,
                       'date': start.strftime('%Y-%m-%d'),
                       'start_hour': begin,
                       'end_hour': ende,
@@ -74,6 +80,7 @@ def write_data(user):
 
     Shift.objects.bulk_update_or_create(batch,
                                         ['shift_name',
+                                         'depot',
                                          'start_hour',
                                          'end_hour'],
                                         match_field=['date', 'owner'])
@@ -148,6 +155,7 @@ def apply(user):
 
 
 try:
+    depots = Depot.objects.all()
     # First update all calendars
     for who in users:
         write_data(who)
