@@ -120,9 +120,9 @@ def update_leave(user, request_leave_logs):
         user_shift = Shift.objects.get(date=log.date, owner=user)
         # Remove wish if user's shift is now a leave
         if user_shift.shift_name in LEAVES:
+            Request_leave.objects.filter(request=log.id).delete()
             Request_leave_log.objects.filter(user=user,
                                              date=log.date).delete()
-            Request_leave.objects.filter(request=log.id).delete()
             continue
         # Remove wish if giver's shift isn't a leave anymore
         leaves_wishes = Request_leave.objects.filter(request=log.id)
