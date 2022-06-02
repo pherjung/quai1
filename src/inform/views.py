@@ -4,7 +4,6 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django.shortcuts import render
 from django.template.defaulttags import register
-from django.db.models import Q
 from exchange.models import Request_leave, Give_leave, Request_shift, Request_shift_log, Request_leave_log
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
