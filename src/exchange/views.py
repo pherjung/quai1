@@ -30,7 +30,7 @@ def save_leave(request):
         return HttpResponseRedirect(reverse('calendar'))
 
 
-def request_leave(request):
+def modify_shift(request):
     if request.method == 'POST':
         form = RequestLeaveForms(request.POST)
         if form.is_valid():

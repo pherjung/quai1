@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path('validate/', views.save_leave, name='form'),
-    path('validate_shift/', views.request_leave, name='request_leave'),
+    path('validate_shift/', views.modify_shift, name='request_leave'),
 ]
