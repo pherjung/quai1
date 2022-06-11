@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from calendar import Calendar, monthrange
 from django.shortcuts import render
+from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
 from exchange.forms import LeaveForms, RequestLeaveForms
@@ -43,18 +44,21 @@ def monthly_calendar(request):
     )
     # Accepted swap offer
     accepted_shifts = wish.Request_shift.objects.filter(
-        user_shift__owner=request.user,
+        Q(user_shift__owner=request.user) | Q(giver_shift__owner=request.user),
         request__date__range=[month_days[0][0],
                               month_days[-1][-1]],
         accepted=True,
-    ).values_list('accepted', 'confirmed', 'giver_shift__start_hour',
-                  'giver_shift__end_hour')
+    ).values_list('accepted', 'confirmed',
+                  'giver_shift__start_hour',
+                  'giver_shift__end_hour',
+                  'user_shift__start_hour',
+                  'user_shift__end_hour')
     accepted_leaves = wish.Request_leave.objects.filter(
-        user_shift__owner=request.user,
+        Q(user_shift__owner=request.user) | Q(giver_shift__owner=request.user),
         request__date__range=[month_days[0][0],
                               month_days[-1][-1]],
         accepted=True,
-    ).values_list('validated')
+    ).values_list('validated', 'user_shift__shift_name')
     for week in month_days:
         week_events = []
         for day in week:
@@ -70,28 +74,33 @@ def monthly_calendar(request):
                     swap_leave = bool(swap_leaves.filter(request__date=day))
                     bottom_div = 'swap' if swap_shift or swap_leave else 'default-swap'
                     # Accepted swap offer - shift
-                    accepted_shift = bool(accepted_shifts.filter(request__date=day))
-                    swaped_shift = validated_shift = validated_leave = False
-                    if accepted_shift:
+                    accepted_shift_asker = bool(
+                        accepted_shifts.filter(request__date=day,
+                                               request__user=request.user))
+                    accepted_shift_giver = bool(
+                        accepted_shifts.filter(request__date=day,
+                                               giver_shift__owner=request.user))
+                    swaped_leave = swaped_shift = validated_shift = validated_leave = False
+                    if accepted_shift_asker or accepted_shift_giver:
                         validated_shift = bool(
                             accepted_shifts.filter(request__date=day,
                                                    confirmed=True))
                         # Check if swap is applied
                         if validated_shift:
                             hours = accepted_shifts.get(request__date=day,
-                                                        confirmed=True)[2:]
-                            swaped_shift = bool((shift.start_hour,
-                                                shift.end_hour) == hours)
+                                                        confirmed=True)
+                            swaped_shift = bool(hours[2:4] == hours[4:])
 
                     # Accepted swap offer - leave
                     accepted_leave = bool(accepted_leaves.filter(request__date=day))
                     if accepted_leave:
-                        validated_leave = bool(accepted_leaves.get(request__date=day))
-                    accepted = bool(accepted_shift or accepted_leave)
+                        validated_leave = accepted_leaves.get(request__date=day)
+                        # Check if swap is applied
+                        swaped_leave = bool(validated_leave[1] in ['RT', 'CT', 'CTT', 'RTT'])
+                    accepted = bool(accepted_shift_giver or accepted_shift_asker or accepted_leave)
                     top_div = 'wish_accepted' if accepted else top_div
                     validated = bool(validated_shift or validated_leave)
-                    # Check if swap is applied
-                    swaped_leave = bool(shift.shift_name in ['RT', 'CT', 'CTT', 'RTT'])
+                    top_div = 'helping' if accepted_shift_giver and not validated else top_div
                     swaped = bool(swaped_shift or swaped_leave)
 
                     week_events += [[day, shift, accepted, validated,

@@ -25,6 +25,9 @@
           {% elif accepted %}
             <i class="fa-solid fa-envelope"></i>
           {% endif %}
+          {% if top_div == 'helping' and not validated %}
+            <i class="fa-solid fa-clock"></i>
+          {% endif %}
         </div>
         <div class="{{ top_div }}">
           <p id='shift' class="{{ shifts.shift_name }}">{{ shifts.shift_name|truncatechars:5 }}</p>
