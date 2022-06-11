@@ -81,12 +81,25 @@ body {
     margin-right: auto;
     padding-left: 2%;
   }
+
 }
 
 @media screen and (min-width: 600px) {
-  .calendar {
-    width: 70%;
+  .table-calendar {
+    display: table;
+    width: 60%;
     margin: auto;
+    table-layout: fixed;
+  }
+
+  .week {
+    display: table-row;
+    height: 100px;
+  }
+
+  #cell {
+    display: table-cell;
+    border: 2px solid black;
   }
 
   .calendar.responsive {
@@ -133,8 +146,8 @@ body {
 }
 
 .calendar p {
-  margin: auto;
-  text-align: center;
+  margin-top: 1px;
+  margin-bottom: 1px;
 }
 
 .month {
@@ -143,7 +156,10 @@ body {
 }
 
 .date {
-  padding-bottom: 2px;
+  display: flex;
+  background-color: grey;
+}
+.date p {
   text-align: left;
 }
 

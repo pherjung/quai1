@@ -15,7 +15,7 @@ function getCookie(name) {
 
 function next_month(){
   const csrftoken = getCookie('csrftoken');
-  var next = $('table').last();
+  var next = $('.table-calendar').last();
   console.log(next.attr('id'));
   $.ajax({
     type: 'POST',

@@ -1,11 +1,11 @@
 <div class="month"><p>{{ full_date|date:"F Y" }}</p></div>
-<table class="calendar" id="{{ next_month.0 }}-{{ next_month.1 }}">
+<div class="table-calendar" id="{{ next_month.0 }}-{{ next_month.1 }}">
   {% for week in events %}
-  <tr>
+  <div class="week">
     {% for shifts, accepted, validated, swaped, top_div, bottom_div in week %}
-      <td class="{{ shifts.date|date:"l_d_F_Y" }}" onclick="displayBlock(this, 'calendar')">
-        <div class='date'>
-          {{ shifts.date|date:"j" }}
+      <div id="cell" class="{{ shifts.date|date:"l_d_F_Y" }}" onclick="displayBlock(this, 'calendar')">
+        <div class={{ shifts|yesno:'date,' }}>
+          <p>{{ shifts.date|date:"j" }}</p>
           {% if accepted and validated %}
             <i class="fa-solid fa-arrow-right-arrow-left"></i>
             <div id="{{ swaped }}"></div>
@@ -17,10 +17,10 @@
           <p id='shift' class="{{ shifts.shift_name }}">{{ shifts.shift_name|truncatechars:5 }}</p>
           <p>{{ shifts.start_hour.time|default_if_none:"" }}</p>
           <p>{{ shifts.end_hour.time|default_if_none:"" }}</p>
-          <div class="{{ bottom_div }}"></div>
         </div>
-      </td>
+        <div class="{{ bottom_div }}"></div>
+      </div>
     {% endfor %}
-  </tr>
+  </div>
  {% endfor %}
-</table>
+</div>
