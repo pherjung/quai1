@@ -11,22 +11,15 @@
   </tr>
   {% for week in events %}
   <tr>
-    {% for day, shifts, accepted, validated, swaped, top_div, bottom_div in week %}
+    {% for shifts, accepted, validated, swaped, top_div, bottom_div in week %}
       <td class="{{ shifts.date|date:"l_d_F_Y" }}" onclick="displayBlock(this, 'calendar')">
         <div class='date'>
-          {{ day|date:"j" }}
+          {{ shifts.date|date:"j" }}
           {% if accepted and validated %}
             <i class="fa-solid fa-arrow-right-arrow-left"></i>
-            {% if swaped %}
-              <div id="green"></div>
-            {% else %}
-              <div id="red"></div>
-            {% endif %}
+            <div id="{{ swaped }}"></div>
           {% elif accepted %}
-            <i class="fa-solid fa-envelope"></i>
-          {% endif %}
-          {% if top_div == 'helping' and not validated %}
-            <i class="fa-solid fa-clock"></i>
+            <i class="fa-solid {{ accepted }}"></i>
           {% endif %}
         </div>
         <div class="{{ top_div }}">
