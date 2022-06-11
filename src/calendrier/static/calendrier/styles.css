@@ -139,6 +139,7 @@ body {
 
 .month {
   font-size: 25px;
+  writing-mode: sideways-lr;
 }
 
 .date {

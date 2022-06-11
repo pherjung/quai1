@@ -1,5 +1,5 @@
+<div class="month"><p>{{ full_date|date:"F Y" }}</p></div>
 <table class="calendar" id="{{ next_month.0 }}-{{ next_month.1 }}">
-  <tr><th class="month" colspan="7">{{ full_date|date:"M Y" }}</th></tr>
   {% for week in events %}
   <tr>
     {% for shifts, accepted, validated, swaped, top_div, bottom_div in week %}
