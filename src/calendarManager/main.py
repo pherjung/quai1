@@ -100,7 +100,7 @@ def update_shifts(user, request_shift_logs):
             update_shift(log, req)
         # Submit new shifts as exchange
         new_shifts = all_shifts(log.date, query, excluded, user.id)
-        write_legal_shifts(user_shift, new_shifts, log.date, log.note, log)
+        write_legal_shifts(user_shift, new_shifts, log.note, log)
         for shift in new_shifts:
             Request_shift.objects.get_or_create(
                 user_shift=user_shift,

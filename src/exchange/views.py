@@ -71,6 +71,6 @@ def modify_shift(request):
                     tolerance_end=form.cleaned_data['tolerance_end'],
                     note=note
                 )
-                write_legal_shifts(user_shift, shifts, form_date, note, log)
+                write_legal_shifts(user_shift, shifts, note, log)
 
     return HttpResponseRedirect(reverse('calendar'))

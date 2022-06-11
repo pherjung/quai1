@@ -131,7 +131,7 @@ def exclude_illegal(user_shift, shifts):
     return users_shifts
 
 
-def write_legal_shifts(user_shift, shifts, date, note, log):
+def write_legal_shifts(user_shift, shifts, note, log):
     """
     Write legal shifts
     user_shift->Shift object
@@ -139,7 +139,7 @@ def write_legal_shifts(user_shift, shifts, date, note, log):
     note->str
     log->Request_shift_log object
     """
-    users_shifts = exclude_illegal(user_shift, shifts, date)
+    users_shifts = exclude_illegal(user_shift, shifts)
     shift_it = 0
     while shift_it < len(users_shifts):
         Request_shift.objects.create(
