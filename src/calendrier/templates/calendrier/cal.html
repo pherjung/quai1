@@ -17,8 +17,8 @@
           <p id='shift' class="{{ shifts.shift_name }}">{{ shifts.shift_name|truncatechars:5 }}</p>
           <p>{{ shifts.start_hour.time|default_if_none:"" }}</p>
           <p>{{ shifts.end_hour.time|default_if_none:"" }}</p>
-          <div class="{{ bottom_div }}"></div>
         </div>
+        <div class="{{ bottom_div }}"></div>
       </td>
     {% endfor %}
   </tr>
