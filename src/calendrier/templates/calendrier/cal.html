@@ -1,14 +1,5 @@
 <table class="calendar" id="{{ next_month.0 }}-{{ next_month.1 }}">
   <tr><th class="month" colspan="7">{{ full_date|date:"M Y" }}</th></tr>
-  <tr>
-    <td>Monday</td>
-    <td>Tuesday</td>
-    <td>Wednesday</td>
-    <td>Thursday</td>
-    <td>Friday</td>
-    <td>Saturday</td>
-    <td>Sunday</td>
-  </tr>
   {% for week in events %}
   <tr>
     {% for shifts, accepted, validated, swaped, top_div, bottom_div in week %}

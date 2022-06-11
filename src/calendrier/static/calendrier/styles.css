@@ -115,6 +115,15 @@ body {
   display: block;
 }
 
+.week_day {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: white;
+  position: sticky;
+  top: 0;
+}
+
 .calendar td {
   border: 1px solid black;
   vertical-align: top;

@@ -1,6 +1,14 @@
 {% extends 'calendrier/base.html' %}
 
 {% block content %}
+  <div class='week_day'>
+    <div>Monday</div>
+    <div>Tuesday</div>
+    <div>Wednesday</div>
+    <div>Thursday</div>
+    <div>Saturday</div>
+    <div>Sunday</div>
+  </div>
   <div class='parent'>
     <div class="calendar" id="calendar">
       {% include 'calendrier/cal.html' %}
