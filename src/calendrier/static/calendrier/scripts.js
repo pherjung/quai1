@@ -29,70 +29,71 @@ function next_month(){
   return false;
 }
 
-function myFunction(id) {
-  var x = document.getElementById(id);
-  if (x.className === id) {
-    x.className += " responsive";
-
-  } else {
-    x.className = id;
-
-  }
+function printForms(element, table, index) {
+  element.className += " responsive";
+  var row = table.insertRow(index);
+  var col = document.createElement('td');
+  col.setAttribute('colspan', '7');
+  var box = document.getElementById('box');
+  row.appendChild(col);
+  col.appendChild(box);
 
 }
 
-function switchBlock() {
-  myFunction('calendar')
-  myFunction('box')
+function switchResponsive(id, shift) {
+  var element = document.getElementById(id);
+  var index = shift.closest('tr').rowIndex;
+  var table = shift.closest('table');
+  if (element.className === id) {
+    printForms(element, table, index+1)
+
+  } else {
+    element.className = id;
+    var box_index = element.closest('tr').rowIndex;
+    var parent = document.getElementById('parent');
+    parent.append(element);
+    table.deleteRow(box_index);
+    var index = shift.closest('tr').rowIndex;
+    if (shift.id === 'shift') printForms(element, table, index+1);
+  }
 
 }
 
 function displayBlock(obj, id) {
-  var shift = obj.querySelector("#shift").className
-  var x = document.getElementById('calendar')
-  var y = document.getElementById('box')
-  if (x.className === 'calendar' && shift != 'F') {
-    x.className += " responsive"
-    y.className += " responsive"
-
+  var shift = obj.querySelector("#shift");
+  var class_div = shift.closest('div').className;
+  var shift_name = shift.className;
+  if (shift_name === 'F' || class_div === 'None') return;
+  const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
+  switchResponsive('box', shift);
+  // Print the full date
+  if (shift_name != 'F') {
+    full_date = obj.className.replace(/_/g, ' ');
+    document.getElementById("full_date").innerHTML = full_date;
   }
 
-  if (shift != 'F') {
-    full_date = obj.className.replace(/_/g, ' ')
-    document.getElementById("full_date").innerHTML = full_date
-
-  }
-
-  dates = document.getElementsByName('date')
+  var dates = document.getElementsByName('date');
   for (let u = 0; u < dates.length; u++) {
-    dates[u].setAttribute('value', full_date)
-
+    dates[u].setAttribute('value', full_date);
+  }
+  // Choose right form
+  forms = document.getElementsByTagName('form');
+  if (leaves.includes(shift_name)) {
+    var form = 'leave_form';
+  } else if (shift_name != 'F') {
+    var form = 'shift_form';
   }
 
-  forms = document.getElementsByTagName('form')
-
-  if (shift === 'RT' || shift === 'RTT' || shift === 'CT' || shift === 'CTT') {
-    var form = 'leave_form'
-
-  } else if (shift != 'F') {
-    var form = 'shift_form'
-
-  }
-
-  if (shift != 'F') {
+  if (shift_name != 'F') {
     //Set type=hidden to all children
     for (let i = 0; i < forms.length; i++) {
-      forms[i].style.display = "none"
-
+      forms[i].style.display = "none";
     }
-
     //Show wished input
     document.getElementById(form).style.display = ""
-
   }
+
   hide()
-
-
 }
 
 function hide() {

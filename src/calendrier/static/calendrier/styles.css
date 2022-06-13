@@ -33,14 +33,16 @@ body {
   display: none;
 }
 
+.box {
+  display: none;
+}
+
 .box a.icon {
   color: black;
   margin-left: 1%;
 }
 
-.box {
-  display: none;
-}
+#wish_label {text-align: left;}
 
 @media screen and (max-width: 600px) {
   .topnav a:not(:first-child) {display: none;}
@@ -91,20 +93,9 @@ body {
     margin-bottom: 10px;
   }
 
-  .calendar.responsive {
-    max-width: 45%;
-    margin-left: 10%;
-    margin-right: 1%;
-    float: left;
-  }
-
-  .calendar.responsive table {
-    width: 100%;
-  }
-
   .box.responsive {
-    padding-left: 5%;
     display: block;
+    padding-left: 5%;
   }
 
   #full_date {
