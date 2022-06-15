@@ -32,6 +32,7 @@ function next_month(){
 function printForms(element, table, index) {
   element.className += " responsive";
   var row = table.insertRow(index);
+  row.setAttribute('class', 'info');
   var col = document.createElement('td');
   col.setAttribute('colspan', '7');
   var box = document.getElementById('box');
@@ -51,7 +52,7 @@ function switchResponsive(id, shift) {
     var box_index = element.closest('tr').rowIndex;
     var parent = document.getElementById('parent');
     parent.append(element);
-    table.deleteRow(box_index);
+    $('.info').remove();
     if (shift.id === 'shift') {
       var index = shift.closest('tr').rowIndex;
       printForms(element, table, index+1);
