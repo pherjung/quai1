@@ -61,6 +61,24 @@ function switchResponsive(id, shift) {
 
 }
 
+function exchanges(date) {
+  const csrftoken = getCookie('csrftoken');
+  var index = $('#box').parents('tr');
+  $.ajax({
+    type: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    mode: 'same-origin',
+    data: JSON.stringify(date),
+    url: '/calendar/exchanges',
+    success: function(data){
+      index.after("<tr id='info' class='info'></tr>");
+      $('#info').last().html(data);
+    }
+  })
+  return false;
+
+}
+
 function displayBlock(obj, id) {
   var shift = obj.querySelector("#shift");
   var class_div = shift.closest('div').className;
@@ -68,6 +86,7 @@ function displayBlock(obj, id) {
   if (shift_name === 'F' || class_div === 'None') return;
   const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
   switchResponsive('box', shift);
+  var swap = shift.closest('td').querySelector('#exchange').className;
   // Print the full date
   if (shift_name != 'F') {
     full_date = obj.className.replace(/_/g, ' ');
@@ -93,6 +112,10 @@ function displayBlock(obj, id) {
     }
     //Show wished input
     document.getElementById(form).style.display = ""
+  }
+
+  if (swap === 'swap') {
+    exchanges(full_date);
   }
 
   hide()

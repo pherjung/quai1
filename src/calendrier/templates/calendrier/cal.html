@@ -18,7 +18,7 @@
           <p>{{ shifts.start_hour.time|default_if_none:"" }}</p>
           <p>{{ shifts.end_hour.time|default_if_none:"" }}</p>
         </div>
-        <div class="{{ bottom_div }}"></div>
+        <div id="exchange" class="{{ bottom_div }}"></div>
       </td>
     {% endfor %}
   </tr>
