@@ -46,15 +46,16 @@ function switchResponsive(id, shift) {
   var table = shift.closest('table');
   if (element.className === id) {
     printForms(element, table, index+1)
-
   } else {
     element.className = id;
     var box_index = element.closest('tr').rowIndex;
     var parent = document.getElementById('parent');
     parent.append(element);
     table.deleteRow(box_index);
-    var index = shift.closest('tr').rowIndex;
-    if (shift.id === 'shift') printForms(element, table, index+1);
+    if (shift.id === 'shift') {
+      var index = shift.closest('tr').rowIndex;
+      printForms(element, table, index+1);
+    }
   }
 
 }
