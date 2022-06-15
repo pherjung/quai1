@@ -117,7 +117,7 @@ def exchanges(request):
                'accepted_shifts': accepted_shifts,
                'request_shifts': request_shifts,
                'request_shifts_forms': shifts_forms}
-    return render(request, 'inform/exchanges.html', context)
+    return render(request, 'inform/legacy_exchanges.html', context)
 
 
 def validate(request):
@@ -308,7 +308,7 @@ def wishes(request):
                'wishes_form': wishes_dict,
                'schedules': schedules,
                'schedules_form': schedules_form}
-    return render(request, 'inform/wishes.html', context)
+    return render(request, 'inform/legacy_wishes.html', context)
 
 
 def delete_wish(request):
