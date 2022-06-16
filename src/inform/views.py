@@ -50,6 +50,9 @@ def exchanges(request):
 
 
 def validate(request):
+    """
+    Accept or decline leaves or shifts
+    """
     if request.method == 'POST':
         shift = request.POST['id']
         status = request.POST.get('status')
@@ -65,11 +68,13 @@ def validate(request):
                 date_leave = form.cleaned_data['accept_decline_date']
             if status == 'Decline':
                 match dates:
+                    # Decline leave
                     case str():
                         Request_leave.objects.filter(
                             user_shift=shift,
                             giver_shift__owner__username=request.user
                         ).update(accepted=False)
+                    # Decline shift
                     case None:
                         Request_shift.objects.filter(
                             user_shift=shift,
@@ -83,6 +88,7 @@ def validate(request):
                             user_shift=shift,
                             giver_shift__owner__username=request.user,
                         ).update(accepted=True)
+                    # Date is choosen -> accept leave
                     case str():
                         Request_leave.objects.filter(
                             user_shift=shift,
@@ -91,6 +97,7 @@ def validate(request):
                             accepted=True,
                             given_shift=date_leave,
                         )
+                    # No date provided, as it is a shift swap
                     case None:
                         Request_shift.objects.filter(
                             user_shift=shift,
