@@ -31,16 +31,18 @@ def exchanges(request):
         'user_shift__owner')
     # Recover all requesters
     requester_ids = [users[4:] for users in request_leaves]
+    # Recover all leaves requesters give
     given_leaves = {}
+    dates = Give_leave.objects.filter(
+        shift__owner__in=[uids[1] for uids in requester_ids],
+        given=False
+    ).values_list(
+        'shift',
+        'shift__date'
+    ).exclude(shift__date__lt=datetime.now())
     for i in requester_ids:
-        dates = Give_leave.objects.filter(
-            shift__owner=i[1],
-            given=False
-        ).values_list(
-            'shift',
-            'shift__date'
-        ).exclude(shift__date__lt=(datetime.now()))
-        given_leaves[i[0]] = AcceptDeclineDateForm(user_dates=dates).as_p()
+        given_leaves[i[0]] = AcceptDeclineDateForm(
+            user_dates=dates.filter(shift__owner=i[1])).as_p()
 
     context = {'request_leaves': request_leaves,
                'given_leaves': given_leaves}
