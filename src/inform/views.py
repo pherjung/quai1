@@ -29,13 +29,8 @@ def exchanges(request):
         'note',
         'user_shift',
         'user_shift__owner')
-    requester_ids = set()
-    leaves = 0
-    while leaves < len(request_leaves):
-        # Recover all requesters
-        requester_ids.add(request_leaves[leaves][4:])
-        leaves += 1
-
+    # Recover all requesters
+    requester_ids = [users[4:] for users in request_leaves]
     given_leaves = {}
     for i in requester_ids:
         dates = Give_leave.objects.filter(
