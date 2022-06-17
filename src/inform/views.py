@@ -13,8 +13,7 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
-@register.filter
-def exchanges(request):
+def retrieve_ungiven_leaves(request):
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     # Recover all the leave the connected user can exchange
     request_leaves = Request_leave.objects.filter(
@@ -44,6 +43,12 @@ def exchanges(request):
         given_leaves[i[0]] = AcceptDeclineDateForm(
             user_dates=dates.filter(shift__owner=i[1])).as_p()
 
+    return request_leaves, given_leaves
+
+
+@register.filter
+def exchanges(request):
+    request_leaves, given_leaves = retrieve_ungiven_leaves(request)
     context = {'request_leaves': request_leaves,
                'given_leaves': given_leaves}
     return render(request, 'inform/exchanges.html', context)
