@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from exchange.models import Request_leave, Give_leave, Request_shift
+from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, AcceptDeclineForm
 
 
@@ -32,17 +33,25 @@ def retrieve_ungiven_leaves(request):
     requester_ids = [users[4:] for users in request_leaves]
     # Recover all leaves requesters give
     given_leaves = {}
+    # Do not propose a leave if the donor already has one
     dates = Give_leave.objects.filter(
         shift__owner__in=[uids[1] for uids in requester_ids],
         given=False
-    ).values_list(
-        'shift',
-        'shift__date'
-    ).exclude(shift__date__lt=datetime.now())
+    ).values_list('shift', 'shift__date'
+                  ).exclude(shift__date__lt=datetime.now())
+    try:
+        has_user_leave = Shift.objects.get(owner=request.user, date=date)
+        if has_user_leave.shift_name == '200' or has_user_leave.start_hour:
+            keeped_date = date
+        else:
+            keeped_date = None
+    except Shift.DoesNotExist:
+        keeped_date = date
+
     for i in requester_ids:
         given_leaves[i[0]] = AcceptDeclineDateForm(
-            user_dates=dates.filter(shift__owner=i[1])).as_p()
-
+            user_dates=dates.filter(shift__date=keeped_date,
+                                    shift__owner=i[1])).as_p()
     return request_leaves, given_leaves
 
 
