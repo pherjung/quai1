@@ -4,8 +4,8 @@ from django.template.defaulttags import register
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from exchange.models import Request_leave, Give_leave, Request_shift, Request_shift_log, Request_leave_log
-from .forms import AcceptDeclineDateForm, DeleteForm, AcceptDeclineForm, ValidateForm
+from exchange.models import Request_leave, Give_leave, Request_shift
+from .forms import AcceptDeclineDateForm, AcceptDeclineForm
 
 
 @register.filter
