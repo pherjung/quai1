@@ -39,18 +39,18 @@ def retrieve_ungiven_leaves(request):
         given=False
     ).values_list('shift', 'shift__date'
                   ).exclude(shift__date__lt=datetime.now())
-    try:
-        has_user_leave = Shift.objects.get(owner=request.user, date=date)
-        if has_user_leave.shift_name == '200' or has_user_leave.start_hour:
-            keeped_date = date
-        else:
-            keeped_date = None
-    except Shift.DoesNotExist:
-        keeped_date = date
+    keeped_date = []
+    for day in dates:
+        try:
+            has_user_leave = Shift.objects.get(owner=request.user, date=day[1])
+            if has_user_leave.shift_name == '200' or has_user_leave.start_hour:
+                keeped_date.append(day[1])
+        except Shift.DoesNotExist:
+            keeped_date.append(day[1])
 
     for i in requester_ids:
         given_leaves[i[0]] = AcceptDeclineDateForm(
-            user_dates=dates.filter(shift__date=keeped_date,
+            user_dates=dates.filter(shift__date__in=keeped_date,
                                     shift__owner=i[1])).as_p()
     return request_leaves, given_leaves
 
