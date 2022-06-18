@@ -23,3 +23,32 @@
     </form>
   </td>
 {% endfor %}
+
+<!-- Shifts -->
+{% if request_shifts %}
+  {% for shift in request_shifts %}
+    <td>
+      <strong>Tour</strong>
+      </br>{{ shift.0 }}
+    </td>
+    <td>
+      <strong>Horaire</strong>
+      <p>{{ shift.1|time:"H:i" }}</p>
+      <p>{{ shift.2|time:"H:i" }}</p>
+    </td>
+    <td colspan='2'>
+      <strong>Remarque</strong>
+      {{ shift.3|default_if_none:'' }}
+    </td>
+    <td colspan='3'>
+      <form id="shift" action="exchanges/validate/" method="post" style="text-align: center">
+        {% csrf_token %}
+        {{ request_shifts_forms|get_item:shift.4 }}
+        <input value="{{ shift.4 }}" name="id" type="hidden">
+        <input value="Accept" name="status" type="submit"></input>
+        <input value="Decline" name="status" type="submit"></input>
+      </form>
+    </td>
+  {% endfor %}
+{% endif %}
+>>>>>>> ab15d3c (Accept/Decline shifts directly on calendar (bis))

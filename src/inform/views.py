@@ -55,11 +55,35 @@ def retrieve_ungiven_leaves(request):
     return request_leaves, given_leaves
 
 
+def recover_ungiven_shift(request):
+    """
+    Recover all the shifts the connected user can exchange
+    """
+    request_shifts = Request_shift.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        user_shift__date__gt=(datetime.now()),
+        accepted=None,
+    ).values_list(
+        'user_shift__shift_name',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'note',
+        'user_shift')
+    shifts_forms = {}
+    for item2 in request_shifts:
+        shifts_forms[item2[4]] = AcceptDeclineForm(shift_id=item2[0]).as_p()
+
+    return request_shifts, shifts_forms
+
+
 @register.filter
 def exchanges(request):
     request_leaves, given_leaves = retrieve_ungiven_leaves(request)
+    request_shifts, shifts_forms = recover_ungiven_shift(request)
     context = {'request_leaves': request_leaves,
-               'given_leaves': given_leaves}
+               'given_leaves': given_leaves,
+               'request_shifts': request_shifts,
+               'request_shifts_forms': shifts_forms}
     return render(request, 'inform/exchanges.html', context)
 
 
