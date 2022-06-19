@@ -1,32 +1,38 @@
-{% for data in request_leaves %}
-  <td>
-    <strong>Tour</strong>
-    </br>{{ data.0 }}
-  </td>
-  <td>
-    <strong>Horaire</strong>
-    <p>{{ data.1|time:"H:i" }}</p>
-    <p>{{ data.2|time:"H:i" }}</p>
-  </td>
-  <td colspan='2'>
-    <strong>Remarque</strong>
-    {{ data.3|default_if_none:'' }}
-  </td>
-  <td colspan='3'>
-    <strong>Congés</strong>
-    <form id="leave" action="exchanges/validate/" method="post" style="text-align: center">
-      {% csrf_token %}
-      {{ given_leaves|get_item:data.4 }}
-      <input value="{{ data.4 }}" name="id" type="hidden">
-      <input value="Accept" name="status" type="submit"></input>
-      <input value="Decline" name="status" type="submit"></input>
-    </form>
-  </td>
-{% endfor %}
+<!-- Leaves -->
+{% if request_leaves %}
+  {% for data in request_leaves %}
+  <tr id="info" class="info">
+    <td>
+      <strong>Tour</strong>
+      </br>{{ data.0 }}
+    </td>
+    <td>
+      <strong>Horaire</strong>
+      <p>{{ data.1|time:"H:i" }}</p>
+      <p>{{ data.2|time:"H:i" }}</p>
+    </td>
+    <td colspan='2'>
+      <strong>Remarque</strong>
+      {{ data.3|default_if_none:'' }}
+    </td>
+    <td colspan='3'>
+      <strong>Congés</strong>
+      <form id="leave" action="exchanges/validate/" method="post" style="text-align: center">
+        {% csrf_token %}
+        {{ given_leaves|get_item:data.4 }}
+        <input value="{{ data.4 }}" name="id" type="hidden">
+        <input value="Accept" name="status" type="submit"></input>
+        <input value="Decline" name="status" type="submit"></input>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+{% endif %}
 
 <!-- Shifts -->
 {% if request_shifts %}
   {% for shift in request_shifts %}
+  <tr id="info" class="info">
     <td>
       <strong>Tour</strong>
       </br>{{ shift.0 }}
@@ -49,6 +55,6 @@
         <input value="Decline" name="status" type="submit"></input>
       </form>
     </td>
+  </tr>
   {% endfor %}
 {% endif %}
->>>>>>> ab15d3c (Accept/Decline shifts directly on calendar (bis))

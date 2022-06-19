@@ -72,7 +72,7 @@ function exchanges(date) {
     url: '/calendar/exchanges',
     success: function(data){
       index.after("<tr id='info' class='info'></tr>");
-      $('#info').last().html(data);
+      $('#info').last().replaceWith(data);
     }
   })
   return false;
