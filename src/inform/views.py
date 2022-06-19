@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
 from exchange.models import Request_leave, Give_leave, Request_shift
+from exchange import rest_time
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, AcceptDeclineForm
 
@@ -31,26 +32,35 @@ def retrieve_ungiven_leaves(request):
         'user_shift__owner')
     # Recover all requesters
     requester_ids = [users[4:] for users in request_leaves]
+    keeped_date = {}
+    for users in request_leaves:
+        keeped_date[users[5]] = []
     # Recover all leaves requesters give
     given_leaves = {}
     # Do not propose a leave if the donor already has one
     dates = Give_leave.objects.filter(
         shift__owner__in=[uids[1] for uids in requester_ids],
         given=False
-    ).values_list('shift', 'shift__date'
+    ).values_list('shift', 'shift__date',
+                  'shift__owner__username', 'shift__owner',
                   ).exclude(shift__date__lt=datetime.now())
-    keeped_date = []
     for day in dates:
         try:
-            has_user_leave = Shift.objects.get(owner=request.user, date=day[1])
-            if has_user_leave.shift_name == '200' or has_user_leave.start_hour:
-                keeped_date.append(day[1])
+            user_leave = Shift.objects.get(owner=request.user, date=day[1])
+            if user_leave.shift_name == '200' or user_leave.start_hour:
+                # Check if donor can swap his shift
+                rest = rest_time.start_end_hour(day[1], day[2])
+                if user_leave.start_hour and user_leave.start_hour < rest['start_hour']:
+                    continue
+                if user_leave.end_hour and user_leave.end_hour > rest['end_hour']:
+                    continue
+                keeped_date[day[3]].append(day[1])
         except Shift.DoesNotExist:
             keeped_date.append(day[1])
 
     for i in requester_ids:
         given_leaves[i[0]] = AcceptDeclineDateForm(
-            user_dates=dates.filter(shift__date__in=keeped_date,
+            user_dates=dates.filter(shift__date__in=keeped_date[i[1]],
                                     shift__owner=i[1])).as_p()
     return request_leaves, given_leaves
 
