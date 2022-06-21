@@ -61,7 +61,7 @@ function switchResponsive(id, shift) {
 
 }
 
-function exchanges(date) {
+function exchanges(date, url) {
   const csrftoken = getCookie('csrftoken');
   var index = $('#box').parents('tr');
   $.ajax({
@@ -69,7 +69,7 @@ function exchanges(date) {
     headers: {'X-CSRFToken': csrftoken},
     mode: 'same-origin',
     data: JSON.stringify(date),
-    url: '/calendar/exchanges',
+    url: url,
     success: function(data){
       index.after("<tr id='info' class='info'></tr>");
       $('#info').last().replaceWith(data);
@@ -114,8 +114,8 @@ function displayBlock(obj, id) {
     document.getElementById(form).style.display = ""
   }
 
-  if (swap === 'swap') {
-    exchanges(full_date);
+  if (swap.className === 'swap') {
+    exchanges(full_date, '/calendar/exchanges');
   }
 
   hide()
