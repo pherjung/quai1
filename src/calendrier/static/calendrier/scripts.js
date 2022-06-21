@@ -86,7 +86,6 @@ function displayBlock(obj, id) {
   if (shift_name === 'F' || class_div === 'None') return;
   const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
   switchResponsive('box', shift);
-  var swap = shift.closest('td').querySelector('#exchange').className;
   // Print the full date
   if (shift_name != 'F') {
     full_date = obj.className.replace(/_/g, ' ');
@@ -114,11 +113,12 @@ function displayBlock(obj, id) {
     document.getElementById(form).style.display = ""
   }
 
+  hide()
+  var swap = shift.closest('td').querySelector('#exchange');
   if (swap.className === 'swap') {
     exchanges(full_date, '/calendar/exchanges');
   }
 
-  hide()
 }
 
 function hide() {
