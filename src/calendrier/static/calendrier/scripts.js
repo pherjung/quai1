@@ -122,6 +122,7 @@ function displayBlock(obj, id) {
 
   if (validate.className === 'fa-solid fa-envelope') {
     exchanges(full_date, '/calendar/to_accept_leave');
+    exchanges(full_date, '/calendar/to_accept_shift');
   }
 }
 

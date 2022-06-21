@@ -37,3 +37,36 @@
   </tr>
   {% endfor %}
 {% endif %}
+
+
+<!-- Shifts -->
+{% if accepted_shifts %}
+  {% for shift in accepted_shifts %}
+  <tr id="info" class="info">
+    <td>
+      <strong>Date</strong>
+      </br>{{ shift.0|date:"l d.m.y" }}
+    </td>
+    <td>
+      <strong>Collègue</strong>
+      <p>
+        {{ shift.1 }}</br>
+        {{ shift.2 }}
+      </p>
+    </td>
+    <td colspan='2'>
+      <strong>Horaire de son tour</strong>
+      <p>{{ shift.3|time:"H:i" }}</p>
+      <p>{{ shift.4|time:"H:i" }}</p>
+    </td>
+    <td colspan='3'>
+      <form onclick="validate('{{ shift.8 }}', 'Échange le tour du', '{{ shift.0 }}')" action="confirm_shift/" method="post">
+        {% csrf_token %}
+        {{ shift_forms|get_item:shift.7 }}
+        <input value="{{ shift.7 }}" name="id" type="hidden">
+        <input value="Valider" name="status" type="submit"></input>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+{% endif %}

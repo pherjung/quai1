@@ -4,7 +4,7 @@ from django.template.defaulttags import register
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from exchange.models import Request_leave, Request_leave_log, Give_leave
+from exchange.models import Request_leave, Request_leave_log, Give_leave, Request_shift, Request_shift_log
 from exchange import rest_time
 from calendrier.models import Shift
 from .forms import AcceptDeclineDateForm, AcceptDeclineForm, ValidateForm
@@ -218,4 +218,58 @@ def confirm_leave(request):
             ).update(active=False)
         else:
             print("You have to give back a leave")
+    return HttpResponseRedirect(reverse('calendar'))
+
+
+def to_accept_shift(request):
+    """Show accepted shifts"""
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
+    # Show accepted shifts
+    accepted_shifts = Request_shift.objects.filter(
+        user_shift__owner__username=request.user,
+        user_shift__date=date,
+        accepted=True,
+        confirmed=False,
+    ).values_list(
+        'user_shift__date',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
+        'giver_shift__start_hour',
+        'giver_shift__end_hour',
+        'user_shift',
+        'giver_shift',
+        'request',
+        'giver_shift__owner__email',
+    ).exclude(user_shift__date__lt=datetime.now())
+    shift_forms = {}
+    for switch in accepted_shifts:
+        shift_forms[switch[7]] = ValidateForm(request_leave=switch[5],
+                                              exchange=switch[6])
+    context = {'accepted_shifts': accepted_shifts,
+               'shift_forms': shift_forms}
+    return render(request, 'inform/wishes.html', context)
+
+
+def confirm_shift(request):
+    if request.method == 'POST':
+        validate_data = request.POST['request_leave']
+        exchange = request.POST['exchange']
+        form = ValidateForm(request.POST,
+                            request_leave=validate_data,
+                            exchange=exchange)
+        if form.is_valid():
+            request_shift = Request_shift.objects.filter(
+                user_shift=form.cleaned_data['request_leave'],
+                giver_shift=form.cleaned_data['exchange'],
+            ).values('request')
+            request_shift.update(confirmed=True)
+            Request_shift.objects.filter(
+                user_shift=form.cleaned_data['request_leave'],
+            ).exclude(
+                giver_shift=form.cleaned_data['exchange'],
+            ).delete()
+            Request_shift_log.objects.filter(
+                id=request_shift[0]['request'],
+            ).update(active=False)
+
     return HttpResponseRedirect(reverse('calendar'))
