@@ -1,0 +1,39 @@
+<!-- Leaves -->
+{% if accepted_leaves %}
+  {% for leave in accepted_leaves %}
+  <tr id="info" class="info">
+    <td>
+      <strong>Date</strong>
+      </br>{{ leave.0|date:"l d.m.y" }}
+    </td>
+    <td>
+      <strong>Collègue</strong>
+      <p>
+        {{ leave.1 }}</br>
+        {{ leave.2 }}
+      </p>
+    </td>
+    <td>
+      <strong>Congé échangé</strong>
+      {% if not leave.5 %}
+        <p>À discuter</p>
+      {% else %}
+        <p>{{ leave.5|date:"l d.m.y" }}</p>
+      {% endif %}
+    </td>
+    <td colspan='2'>
+      <strong>Horaire de son tour</strong>
+      <p>{{ leave.4|time:"H:i" }}</p>
+      <p>{{ leave.5|time:"H:i" }}</p>
+    </td>
+    <td colspan='3'>
+      <form onclick="validate('{{ leave.7 }}', 'Échanges congé', '{{ leave.0 }}', '{{ leave.3 }}')" action="confirm_leave/" method="post">
+        {% csrf_token %}
+        {{ leave_forms|get_item:leave.6 }}
+        <input value="{{ leave.6 }}" name="id" type="hidden">
+        <input value="Valider" name="status" type="submit"></input>
+      </form>
+    </td>
+  </tr>
+  {% endfor %}
+{% endif %}

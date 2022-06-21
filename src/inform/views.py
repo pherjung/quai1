@@ -4,10 +4,10 @@ from django.template.defaulttags import register
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from exchange.models import Request_leave, Give_leave, Request_shift
+from exchange.models import Request_leave, Request_leave_log, Give_leave
 from exchange import rest_time
 from calendrier.models import Shift
-from .forms import AcceptDeclineDateForm, AcceptDeclineForm
+from .forms import AcceptDeclineDateForm, AcceptDeclineForm, ValidateForm
 
 
 @register.filter
@@ -157,4 +157,65 @@ def validate(request):
         else:
             AcceptDeclineForm()
 
+    return HttpResponseRedirect(reverse('calendar'))
+
+
+def to_accept_leave(request):
+    """Show accepted leaves"""
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
+    accepted_leaves = Request_leave.objects.filter(
+        user_shift__owner__username=request.user,
+        user_shift__date=date,
+        accepted=True,
+        validated=False,
+    ).values_list(
+        'user_shift__date',
+        'giver_shift__owner__first_name',
+        'giver_shift__owner__last_name',
+        'given_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'id',
+        'giver_shift__owner__email'
+    ).exclude(user_shift__date__lt=datetime.now())
+    leave_forms = {}
+    for leave in accepted_leaves:
+        leave_forms[leave[6]] = ValidateForm(request_leave=leave[6],
+                                             exchange=leave[3])
+    context = {'accepted_leaves': accepted_leaves,
+               'leave_forms': leave_forms}
+    return render(request, 'inform/wishes.html', context)
+
+
+def confirm_leave(request):
+    if request.method == 'POST':
+        validate_data = request.POST['request_leave']
+        exchange = request.POST['exchange']
+        form = ValidateForm(request.POST,
+                            request_leave=validate_data,
+                            exchange=exchange)
+        if form.is_valid():
+            validate_data = form.cleaned_data['request_leave']
+            exchanged_date = form.cleaned_data['exchange']
+            shift = Shift.objects.get(date=exchanged_date,
+                                      owner__username=request.user)
+            request_leave = Request_leave.objects.get(id=validate_data)
+            Give_leave.objects.update_or_create(
+                shift=shift,
+                defaults={'given': True,
+                          'who': request_leave.giver_shift.owner},
+            )
+            Request_leave.objects.filter(
+                id=validate_data
+            ).update(validated=True, given_shift=shift)
+            Request_leave.objects.filter(
+                user_shift=request_leave.user_shift,
+                user_shift__owner__username=request.user
+            ).exclude(id=validate_data).delete()
+            Request_leave_log.objects.filter(
+                user=request.user,
+                id=request_leave.request.id,
+            ).update(active=False)
+        else:
+            print("You have to give back a leave")
     return HttpResponseRedirect(reverse('calendar'))
