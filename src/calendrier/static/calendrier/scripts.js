@@ -83,7 +83,8 @@ function displayBlock(obj, id) {
   var shift = obj.querySelector("#shift");
   var class_div = shift.closest('div').className;
   var shift_name = shift.className;
-  if (shift_name === 'F' || class_div === 'None') return;
+  const quit = ['None', 'wish_accepted']
+  if (shift_name === 'F' || quit.includes(class_div)) return;
   const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
   switchResponsive('box', shift);
   // Print the full date
