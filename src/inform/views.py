@@ -4,6 +4,7 @@ from django.template.defaulttags import register
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.urls import reverse
+from django.db.models import Q
 from exchange.models import Request_leave, Request_leave_log, Give_leave, Request_shift, Request_shift_log
 from exchange import rest_time
 from calendrier.models import Shift
@@ -209,8 +210,9 @@ def confirm_leave(request):
                 id=validate_data
             ).update(validated=True, given_shift=shift)
             Request_leave.objects.filter(
-                user_shift=request_leave.user_shift,
-                user_shift__owner__username=request.user
+                Q(user_shift__owner__username=request.user)
+                | Q(giver_shift__owner=request_leave.giver_shift.owner),
+                user_shift__date=request_leave.user_shift.date,
             ).exclude(id=validate_data).delete()
             Request_leave_log.objects.filter(
                 user=request.user,
