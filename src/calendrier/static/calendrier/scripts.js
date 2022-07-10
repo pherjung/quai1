@@ -116,11 +116,11 @@ function displayBlock(obj, id) {
 
   hide()
   var swap = shift.closest('td').querySelector('#exchange');
-  var validate = shift.closest('td').querySelector('.date > i');
   if (swap.className === 'swap') {
     exchanges(full_date, '/calendar/exchanges');
   }
 
+  var validate = shift.closest('td').querySelector('.date > i');
   if (validate.className === 'fa-solid fa-envelope') {
     exchanges(full_date, '/calendar/to_accept_leave');
     exchanges(full_date, '/calendar/to_accept_shift');
