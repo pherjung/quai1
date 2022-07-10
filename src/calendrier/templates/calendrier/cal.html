@@ -7,7 +7,7 @@
         <div class={{ shifts|yesno:'date,None' }}>
           <p>{{ shifts.date|date:"j" }}</p>
           {% if accepted and validated %}
-            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+            <i class="fa-solid {{ accepted }}"></i>
             <div id="{{ swaped }}"></div>
           {% elif accepted %}
             <i class="fa-solid {{ accepted }}"></i>

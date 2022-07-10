@@ -78,6 +78,7 @@ def monthly_calendar(request):
                                                       confirmed=True)
                         # Check if swap is applied
                         if validated_shift:
+                            accepted = 'fa-arrow-right-arrow-left'
                             hours = work.filter(request__date=day,
                                                 confirmed=True)
                             if hours:
@@ -97,6 +98,7 @@ def monthly_calendar(request):
                                                         validated=True)
                         # Check if swap is applied
                         if validated_leave:
+                            accepted = 'fa-arrow-right-arrow-left'
                             swaped_leave = validated_leave[0][1] in ['RT', 'CT', 'CTT', 'RTT', 'CTS']
 
                     validated = validated_shift or validated_leave
