@@ -70,7 +70,8 @@ def monthly_calendar(request):
                                                  accepted=True)
                     ok_shift_giver = work.filter(request__date=day,
                                                  giver_shift__owner=request.user,
-                                                 accepted=True)
+                                                 accepted=True).values_list('confirmed')
+                    # Mandatory because filter is used instead of get
                     if ok_shift_asker or ok_shift_giver:
                         accepted = 'fa-envelope'
                         validated_shift = work.filter(request__date=day,
@@ -89,21 +90,27 @@ def monthly_calendar(request):
                     ok_leave_giver = leaves.filter(request__date=day,
                                                    giver_shift__owner=request.user,
                                                    accepted=True)
+                    # Mandatory because filter is used instead of get
                     if ok_leave_asker or ok_leave_giver:
                         accepted = 'fa-envelope'
                         validated_leave = leaves.filter(request__date=day,
                                                         validated=True)
                         # Check if swap is applied
                         if validated_leave:
-                            swaped_leave = validated_leave[0][1] in ['RT', 'CT', 'CTT', 'RTT']
-
-                    if ok_shift_giver or ok_leave_giver:
-                        top_div = 'helping'
-                        accepted = 'fa-clock'
+                            swaped_leave = validated_leave[0][1] in ['RT', 'CT', 'CTT', 'RTT', 'CTS']
 
                     validated = validated_shift or validated_leave
                     top_div = 'wish_accepted' if validated else top_div
                     swaped = 'green' if swaped_shift or swaped_leave else 'red'
+                    if len(ok_shift_giver) > 0:
+                        if not ok_shift_giver[0]:
+                            top_div = 'helping'
+                            accepted = 'fa-clock'
+
+                    if len(ok_leave_giver):
+                        if not ok_leave_giver[0]:
+                            top_div = 'helping'
+                            accepted = 'fa-clock'
                 else:
                     shift = None
             except Shift.DoesNotExist:
