@@ -116,6 +116,9 @@ function displayBlock(obj, id) {
 
   hide()
   var swap = shift.closest('td').querySelector('#exchange');
+  if (class_div === 'wish') {
+    exchanges(full_date, '/calendar/wishes/');
+  }
   if (swap.className === 'swap') {
     exchanges(full_date, '/calendar/exchanges');
   }

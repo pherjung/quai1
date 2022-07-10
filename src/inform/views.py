@@ -16,6 +16,21 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+def wishes(request):
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
+    user_wishes = Request_leave_log.objects.filter(
+        user=request.user,
+        active=True,
+        date=date,
+    ).values_list(
+        'id',
+        'date',
+        'note')
+
+    context = {'wishes': user_wishes}
+    return render(request, 'inform/user_wishes.html', context)
+
+
 def retrieve_ungiven_leaves(request):
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     # Recover all the leave the connected user can exchange

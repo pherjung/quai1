@@ -10,6 +10,7 @@ urlpatterns = [
     path('confirm_leave/', views.confirm_leave),
     path('to_accept_shift', views.to_accept_shift),
     path('confirm_shift/', views.confirm_shift),
+    path('wishes/', views.wishes),
     path('legacy_exchanges/', legacy_views.exchanges, name='legacy_exchanges'),
     path('legacy_exchanges/delete/', legacy_views.delete),
     path('legacy_wishes/', legacy_views.wishes, name='legacy_wishes'),
