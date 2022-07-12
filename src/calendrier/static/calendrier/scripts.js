@@ -29,33 +29,63 @@ function next_month(){
   return false;
 }
 
-function printForms(element, table, index) {
-  element.className += " responsive";
+function printForms(element, obj) {
+  var shift = obj.querySelector("#shift");
+  var class_div = shift.closest('div').className;
+  var table = shift.closest('table');
+  var index = shift.closest('tr').rowIndex+1;
   var row = table.insertRow(index);
   row.setAttribute('class', 'info');
   var col = document.createElement('td');
   col.setAttribute('colspan', '7');
-  var box = document.getElementById('box');
   row.appendChild(col);
+  element.className += " responsive";
+  var box = document.getElementById('box');
   col.appendChild(box);
+  // Get the full date
+  if (shift.className != 'F') {
+    full_date = obj.className.replace(/_/g, ' ');
+    document.getElementById("full_date").innerHTML = full_date;
+  }
 
+  var dates = document.getElementsByName('date');
+  for (let u = 0; u < dates.length; u++) {
+    dates[u].setAttribute('value', full_date);
+  }
+
+  // Choose right form
+  forms = document.getElementsByTagName('form');
+  const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
+  if (leaves.includes(shift.className)) {
+    var form = 'leave_form';
+  } else if (shift.className != 'F') {
+    var form = 'shift_form';
+  }
+
+  if (shift.className != 'F') {
+    //Set type=hidden to all children
+    for (let i = 0; i < forms.length; i++) {
+      forms[i].style.display = "none";
+    }
+    //Show wished input
+    document.getElementById(form).style.display = ""
+  }
+
+  hide()
 }
 
-function switchResponsive(id, shift) {
+function switchResponsive(id, obj) {
   var element = document.getElementById(id);
-  var index = shift.closest('tr').rowIndex;
-  var table = shift.closest('table');
   if (element.className === id) {
-    printForms(element, table, index+1)
+    printForms(element, obj)
   } else {
     element.className = id;
     var box_index = element.closest('tr').rowIndex;
     var parent = document.getElementById('parent');
     parent.append(element);
     $('.info').remove();
-    if (shift.id === 'shift') {
-      var index = shift.closest('tr').rowIndex;
-      printForms(element, table, index+1);
+    if (obj.localName === 'td') {
+      printForms(element, obj);
     }
   }
 
@@ -85,36 +115,7 @@ function displayBlock(obj, id) {
   var shift_name = shift.className;
   const quit = ['None', 'wish_accepted']
   if (shift_name === 'F' || quit.includes(class_div)) return;
-  const leaves = ['RT', 'CT', 'CTT', 'RTT', 'CTS'];
-  switchResponsive('box', shift);
-  // Print the full date
-  if (shift_name != 'F') {
-    full_date = obj.className.replace(/_/g, ' ');
-    document.getElementById("full_date").innerHTML = full_date;
-  }
-
-  var dates = document.getElementsByName('date');
-  for (let u = 0; u < dates.length; u++) {
-    dates[u].setAttribute('value', full_date);
-  }
-  // Choose right form
-  forms = document.getElementsByTagName('form');
-  if (leaves.includes(shift_name)) {
-    var form = 'leave_form';
-  } else if (shift_name != 'F') {
-    var form = 'shift_form';
-  }
-
-  if (shift_name != 'F') {
-    //Set type=hidden to all children
-    for (let i = 0; i < forms.length; i++) {
-      forms[i].style.display = "none";
-    }
-    //Show wished input
-    document.getElementById(form).style.display = ""
-  }
-
-  hide()
+  switchResponsive('box', obj);
   var swap = shift.closest('td').querySelector('#exchange');
   if (class_div === 'wish') {
     exchanges(full_date, '/calendar/wishes/');
@@ -134,10 +135,8 @@ function hide() {
   form = document.getElementById("id_request_leave").value
   if (form == "request_leave") {
     document.getElementById("schedule").style.display = "none";
-
   } else {
     document.getElementById("schedule").style.display = "";
-
   }
 
 }
