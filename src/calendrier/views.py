@@ -105,12 +105,12 @@ def monthly_calendar(request):
                     top_div = 'wish_accepted' if validated else top_div
                     swaped = 'green' if swaped_shift or swaped_leave else 'red'
                     if len(ok_shift_giver) > 0:
-                        if not ok_shift_giver[0]:
+                        if not ok_shift_giver[0][0]:
                             top_div = 'helping'
                             accepted = 'fa-clock'
 
-                    if len(ok_leave_giver):
-                        if not ok_leave_giver[0]:
+                    if len(ok_leave_giver) > 0:
+                        if not ok_leave_giver[0][0]:
                             top_div = 'helping'
                             accepted = 'fa-clock'
                 else:
