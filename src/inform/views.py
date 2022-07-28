@@ -173,7 +173,6 @@ def recover_ungiven_shift(request):
     return request_shifts, shifts_forms
 
 
-@register.filter
 def exchanges(request):
     request_leaves, given_leaves = retrieve_ungiven_leaves(request)
     request_shifts, shifts_forms = recover_ungiven_shift(request)
