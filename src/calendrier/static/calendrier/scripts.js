@@ -46,6 +46,7 @@ function printForms(element, obj) {
   var full_date = obj.className.replace(/_/g, ' ');
   document.getElementById("full_date").innerHTML = full_date;
   var dates = document.getElementsByName('date');
+  // Set date to all forms (ask for a leave or for a swap)
   for (let u = 0; u < dates.length; u++) {
     dates[u].setAttribute('value', full_date);
   }
