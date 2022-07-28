@@ -46,6 +46,14 @@
         <strong>Note</strong>
         <p>{{ day.1|default_if_none:'' }}</p>
       </td>
+      <td colspan="3">
+        <form action="wish/delete/" method="post">
+          {% csrf_token %}
+          {{ schedules_form|get_item:day.6 }}
+          <input value="shift" name="shift" type="hidden">
+          <input value="Supprimer les souhaits non statués" name="status" type="submit"></input>
+        </form>
+      </td>
     </tr>
   {% endfor %}
 {% endif %}

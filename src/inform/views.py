@@ -60,10 +60,14 @@ def wishes(request):
         'end_hour1',
         'end_hour2',
         'id')
+    schedules_form = {}
+    for day in schedules:
+        schedules_form[day[6]] = DeleteForm(leave_id=day[6])
 
     context = {'wishes': user_wishes,
                'wishes_form': wishes_dict,
-               'schedules': schedules}
+               'schedules': schedules,
+               'schedules_form': schedules_form}
     return render(request, 'inform/user_wishes.html', context)
 
 
@@ -76,6 +80,14 @@ def delete_wish(request):
                 shift=shift,
                 shift__owner__username=request.user
             ).delete()
+            if 'shift' in request.POST:
+                Request_shift.objects.filter(
+                    request__id=form.cleaned_data['leave'],
+                ).delete()
+                Request_shift_log.objects.filter(
+                    id=form.cleaned_data['leave'],
+                ).update(active=False)
+            else:
                 Request_leave.objects.filter(
                     request__id=form.cleaned_data['leave'],
                     user_shift__owner__username=request.user,
