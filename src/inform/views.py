@@ -16,6 +16,19 @@ def get_item(dictionary, key):
     return dictionary.get(key)
 
 
+def gifts(request):
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
+    gifts = Give_leave.objects.filter(
+        shift__owner__username=request.user,
+        shift__date=date,
+        given=False,
+    ).values_list(
+        'shift',
+        'shift__date',
+    ).exclude(shift__date__lt=(datetime.now()))
+    context = {'gifts': gifts}
+    return render(request, 'inform/gifts.html', context)
+
 def wishes(request):
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     user_wishes = Request_leave_log.objects.filter(

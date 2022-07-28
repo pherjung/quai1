@@ -116,6 +116,10 @@ function displayBlock(obj, id) {
   const quit = ['None', 'wish_accepted']
   if (shift_name === 'F' || quit.includes(class_div)) return;
   switchResponsive('box', obj);
+  gifted = shift.closest('td').querySelector('i');
+  if (gifted?.className === 'fa-solid fa-gift') {
+    exchanges(full_date, '/calendar/gifts/');
+  }
   var swap = shift.closest('td').querySelector('#exchange');
   if (class_div === 'wish') {
     exchanges(full_date, '/calendar/wishes/');

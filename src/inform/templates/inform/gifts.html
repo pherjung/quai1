@@ -1,0 +1,10 @@
+{% if gifts %}
+  {% for gift in gifts %}
+    <tr id="info" class="info">
+      <td>
+        <strong>Date</strong>
+        <p>{{ gift.1|date:"l d.m.y" }}</p>
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}

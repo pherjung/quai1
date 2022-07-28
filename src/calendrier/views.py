@@ -18,6 +18,12 @@ def monthly_calendar(request):
                                                month_days[-1][-1]]
                                   ).values('date', 'shift_name',
                                            'start_hour', 'end_hour')
+    # User gift his leave
+    gifted_leaves = wish.Give_leave.objects.filter(
+        shift__owner=request.user,
+        shift__date__range=[month_days[0][0],
+                            month_days[-1][-1]],
+        given=False)
     # User ask for help
     asked_leaves = wish.Request_leave_log.objects.filter(
         user=request.user,
@@ -47,11 +53,13 @@ def monthly_calendar(request):
     for week in month_days:
         week_events = []
         for day in week:
-            validated = swaped = top_div = bottom_div = None
+            validated = gifted = swaped = top_div = bottom_div = None
             accepted = swaped_leave = swaped_shift = validated_shift = validated_leave = False
             try:
                 shift = shifts.get(date=day)
                 if shift['date'].month == datum.month:
+                    # User gift his leave
+                    gifted = gifted_leaves.filter(shift__date=day)
                     # User ask for help
                     div_leave = asked_leaves.filter(date=day)
                     div_shift = asked_shifts.filter(date=day)
@@ -118,7 +126,7 @@ def monthly_calendar(request):
             except Shift.DoesNotExist:
                 shift = None
             week_events += [[shift, accepted, validated, swaped,
-                             top_div, bottom_div]]
+                             gifted, top_div, bottom_div]]
 
         events.append(week_events)
     context = {'events': events,
