@@ -43,11 +43,8 @@ function printForms(element, obj) {
   var box = document.getElementById('box');
   col.appendChild(box);
   // Get the full date
-  if (shift.className != 'F') {
-    full_date = obj.className.replace(/_/g, ' ');
-    document.getElementById("full_date").innerHTML = full_date;
-  }
-
+  full_date = obj.className.replace(/_/g, ' ');
+  document.getElementById("full_date").innerHTML = full_date;
   var dates = document.getElementsByName('date');
   for (let u = 0; u < dates.length; u++) {
     dates[u].setAttribute('value', full_date);
