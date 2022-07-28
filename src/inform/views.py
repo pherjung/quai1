@@ -44,8 +44,12 @@ def wishes(request):
         'id',
         'date',
         'note')
+    wishes_dict = {}
+    for item in user_wishes:
+        wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
-    context = {'wishes': user_wishes}
+    context = {'wishes': user_wishes,
+               'wishes_form': wishes_dict}
     return render(request, 'inform/user_wishes.html', context)
 
 
@@ -58,6 +62,14 @@ def delete_wish(request):
                 shift=shift,
                 shift__owner__username=request.user
             ).delete()
+                Request_leave.objects.filter(
+                    request__id=form.cleaned_data['leave'],
+                    user_shift__owner__username=request.user,
+                ).delete()
+                Request_leave_log.objects.filter(
+                    user=request.user,
+                    id=form.cleaned_data['leave'],
+                ).update(active=False)
     else:
         DeleteForm()
 

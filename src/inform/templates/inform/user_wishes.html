@@ -10,6 +10,13 @@
         <strong>Note</strong>
         <p>{{ wish.2|default_if_none:'' }}</p>
       </td>
+      <td colspan="3">
+        <form action="wish/delete/" method="post">
+          {% csrf_token %}
+          {{ wishes_form|get_item:wish.0 }}
+          <input value="Supprimer" name="status" type="submit"></input>
+        </form>
+      </td>
     </tr>
   {% endfor %}
 {% endif %}
