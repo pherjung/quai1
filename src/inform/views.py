@@ -48,8 +48,22 @@ def wishes(request):
     for item in user_wishes:
         wishes_dict[item[0]] = DeleteForm(leave_id=item[0]).as_p()
 
+    schedules = Request_shift_log.objects.filter(
+        user=request.user,
+        active=True,
+        date=date,
+    ).values_list(
+        'date',
+        'note',
+        'start_hour1',
+        'start_hour2',
+        'end_hour1',
+        'end_hour2',
+        'id')
+
     context = {'wishes': user_wishes,
-               'wishes_form': wishes_dict}
+               'wishes_form': wishes_dict,
+               'schedules': schedules}
     return render(request, 'inform/user_wishes.html', context)
 
 

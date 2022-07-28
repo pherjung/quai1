@@ -20,3 +20,32 @@
     </tr>
   {% endfor %}
 {% endif %}
+
+<!-- Shift -->
+{% if schedules %}
+  {% for day in schedules %}
+    <tr id="info" class="info">
+      <td>
+        <strong>Date</strong>
+        <p>{{ day.0|date:"l d.m.y" }}</p>
+      </td>
+      <td>
+        <strong>Souhait</strong>
+        {% if day.2 or day.3 %}
+          <p>Entrée de service</p>
+        {% elif day.4 or day.5 %}
+          <p>Fin de service</p>
+        {% endif %}
+
+        {{ day.2|default_if_none:'' }}
+        {{ day.3|default_if_none:'' }}
+        {{ day.4|default_if_none:'' }}
+        {{ day.5|default_if_none:'' }}
+      </td>
+      <td>
+        <strong>Note</strong>
+        <p>{{ day.1|default_if_none:'' }}</p>
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}
