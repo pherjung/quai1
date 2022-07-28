@@ -1,60 +1,60 @@
 <!-- Leaves -->
 {% if request_leaves %}
   {% for data in request_leaves %}
-  <tr id="info" class="info">
-    <td>
-      <strong>Tour</strong>
-      </br>{{ data.0 }}
-    </td>
-    <td>
-      <strong>Horaire</strong>
-      <p>{{ data.1|time:"H:i" }}</p>
-      <p>{{ data.2|time:"H:i" }}</p>
-    </td>
-    <td colspan='2'>
-      <strong>Remarque</strong>
-      {{ data.3|default_if_none:'' }}
-    </td>
-    <td colspan='3'>
-      <strong>Congés</strong>
-      <form id="leave" action="exchanges/accept/" method="post" style="text-align: center">
-        {% csrf_token %}
-        {{ given_leaves|get_item:data.4 }}
-        <input value="{{ data.4 }}" name="id" type="hidden">
-        <input value="Accept" name="status" type="submit"></input>
-        <input value="Decline" name="status" type="submit"></input>
-      </form>
-    </td>
-  </tr>
+    <tr id="info" class="info">
+      <td>
+        <strong>Tour</strong>
+        </br>{{ data.0 }}
+      </td>
+      <td>
+        <strong>Horaire</strong>
+        <p>{{ data.1|time:"H:i" }}</p>
+        <p>{{ data.2|time:"H:i" }}</p>
+      </td>
+      <td colspan='2'>
+        <strong>Remarque</strong>
+        {{ data.3|default_if_none:'' }}
+      </td>
+      <td colspan='3'>
+        <strong>Congés</strong>
+        <form id="leave" action="exchanges/accept/" method="post" style="text-align: center">
+          {% csrf_token %}
+          {{ given_leaves|get_item:data.4 }}
+          <input value="{{ data.4 }}" name="id" type="hidden">
+          <input value="Accept" name="status" type="submit"></input>
+          <input value="Decline" name="status" type="submit"></input>
+        </form>
+      </td>
+    </tr>
   {% endfor %}
 {% endif %}
 
 <!-- Shifts -->
 {% if request_shifts %}
   {% for shift in request_shifts %}
-  <tr id="info" class="info">
-    <td>
-      <strong>Tour</strong>
-      </br>{{ shift.0 }}
-    </td>
-    <td>
-      <strong>Horaire</strong>
-      <p>{{ shift.1|time:"H:i" }}</p>
-      <p>{{ shift.2|time:"H:i" }}</p>
-    </td>
-    <td colspan='2'>
-      <strong>Remarque</strong>
-      {{ shift.3|default_if_none:'' }}
-    </td>
-    <td colspan='3'>
-      <form id="shift" action="exchanges/accept/" method="post" style="text-align: center">
-        {% csrf_token %}
-        {{ request_shifts_forms|get_item:shift.4 }}
-        <input value="{{ shift.4 }}" name="id" type="hidden">
-        <input value="Accept" name="status" type="submit"></input>
-        <input value="Decline" name="status" type="submit"></input>
-      </form>
-    </td>
-  </tr>
+    <tr id="info" class="info">
+      <td>
+        <strong>Tour</strong>
+        </br>{{ shift.0 }}
+      </td>
+      <td>
+        <strong>Horaire</strong>
+        <p>{{ shift.1|time:"H:i" }}</p>
+        <p>{{ shift.2|time:"H:i" }}</p>
+      </td>
+      <td colspan='2'>
+        <strong>Remarque</strong>
+        {{ shift.3|default_if_none:'' }}
+      </td>
+      <td colspan='3'>
+        <form id="shift" action="exchanges/accept/" method="post" style="text-align: center">
+          {% csrf_token %}
+          {{ request_shifts_forms|get_item:shift.4 }}
+          <input value="{{ shift.4 }}" name="id" type="hidden">
+          <input value="Accept" name="status" type="submit"></input>
+          <input value="Decline" name="status" type="submit"></input>
+        </form>
+      </td>
+    </tr>
   {% endfor %}
 {% endif %}

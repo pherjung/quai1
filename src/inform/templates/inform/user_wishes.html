@@ -1,15 +1,15 @@
 <!-- Leaves -->
 {% if wishes %}
   {% for wish in wishes %}
-  <tr id="info" class="info">
-    <td>
-      <strong>Date</strong>
-      <p>{{ wish.1|date:"l d.m.y" }}</p>
-    </td>
-    <td>
-      <strong>Note</strong>
-      <p>{{ wish.2|default_if_none:'' }}</p>
-    </td>
-  </tr>
+    <tr id="info" class="info">
+      <td>
+        <strong>Date</strong>
+        <p>{{ wish.1|date:"l d.m.y" }}</p>
+      </td>
+      <td>
+        <strong>Note</strong>
+        <p>{{ wish.2|default_if_none:'' }}</p>
+      </td>
+    </tr>
   {% endfor %}
 {% endif %}
