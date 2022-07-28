@@ -237,8 +237,7 @@ def to_accept_leave(request):
         'user_shift__start_hour',
         'user_shift__end_hour',
         'id',
-        'giver_shift__owner__email'
-    ).exclude(user_shift__date__lt=datetime.now())
+        'giver_shift__owner__email')
     leave_forms = {}
     for leave in accepted_leaves:
         leave_forms[leave[6]] = ValidateForm(request_leave=leave[6],
@@ -301,8 +300,7 @@ def to_accept_shift(request):
         'user_shift',
         'giver_shift',
         'request',
-        'giver_shift__owner__email',
-    ).exclude(user_shift__date__lt=datetime.now())
+        'giver_shift__owner__email')
     shift_forms = {}
     for switch in accepted_shifts:
         shift_forms[switch[7]] = ValidateForm(request_leave=switch[5],
