@@ -6,7 +6,7 @@ from . import legacy_views
 urlpatterns = [
     path('gifts/', views.gifts),
     path('exchanges', views.exchanges, name='exchanges'),
-    path('exchanges/validate/', views.validate),
+    path('exchanges/accept/', views.accept),
     path('to_accept_leave', views.to_accept_leave),
     path('confirm_leave/', views.confirm_leave),
     path('to_accept_shift', views.to_accept_shift),

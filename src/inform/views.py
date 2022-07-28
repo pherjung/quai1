@@ -146,7 +146,7 @@ def exchanges(request):
     return render(request, 'inform/exchanges.html', context)
 
 
-def validate(request):
+def accept(request):
     """
     Accept or decline leaves or shifts
     """

@@ -17,7 +17,7 @@
     </td>
     <td colspan='3'>
       <strong>Congés</strong>
-      <form id="leave" action="exchanges/validate/" method="post" style="text-align: center">
+      <form id="leave" action="exchanges/accept/" method="post" style="text-align: center">
         {% csrf_token %}
         {{ given_leaves|get_item:data.4 }}
         <input value="{{ data.4 }}" name="id" type="hidden">
@@ -47,7 +47,7 @@
       {{ shift.3|default_if_none:'' }}
     </td>
     <td colspan='3'>
-      <form id="shift" action="exchanges/validate/" method="post" style="text-align: center">
+      <form id="shift" action="exchanges/accept/" method="post" style="text-align: center">
         {% csrf_token %}
         {{ request_shifts_forms|get_item:shift.4 }}
         <input value="{{ shift.4 }}" name="id" type="hidden">
