@@ -112,8 +112,9 @@ function displayBlock(obj, id) {
   var shift = obj.querySelector("#shift");
   var class_div = shift.closest('div').className;
   var shift_name = shift.className;
-  const quit = ['None', 'wish_accepted']
-  if (shift_name === 'F' || quit.includes(class_div)) return;
+  const NOW = new Date();
+  var clicked_date = new Date(full_date);
+  if (shift_name === 'F' || clicked_date <= NOW) return;
   switchResponsive('box', obj);
   gifted = shift.closest('td').querySelector('i');
   if (gifted?.className === 'fa-solid fa-gift') {
