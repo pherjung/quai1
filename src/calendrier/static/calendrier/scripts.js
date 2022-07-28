@@ -43,7 +43,7 @@ function printForms(element, obj) {
   var box = document.getElementById('box');
   col.appendChild(box);
   // Get the full date
-  full_date = obj.className.replace(/_/g, ' ');
+  var full_date = obj.className.replace(/_/g, ' ');
   document.getElementById("full_date").innerHTML = full_date;
   var dates = document.getElementsByName('date');
   for (let u = 0; u < dates.length; u++) {
@@ -107,6 +107,7 @@ function exchanges(date, url) {
 }
 
 function displayBlock(obj, id) {
+  var full_date = obj.className.replace(/_/g, ' ');
   var shift = obj.querySelector("#shift");
   var class_div = shift.closest('div').className;
   var shift_name = shift.className;
