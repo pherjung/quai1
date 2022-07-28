@@ -12,6 +12,7 @@ from .models import Shift
 def monthly_calendar(request):
     events = []
     datum = get_date(request.GET.get('month', None))
+    today = datetime.now()
     month_days = Calendar(0).monthdatescalendar(datum.year, datum.month)
     shifts = Shift.objects.filter(owner=request.user,
                                   date__range=[month_days[0][0],
@@ -67,10 +68,12 @@ def monthly_calendar(request):
                     # User can help
                     swap_shift = work.filter(request__date=day,
                                              giver_shift__owner=request.user,
-                                             accepted=None)
+                                             accepted=None
+                                             ).exclude(request__date__lte=today)
                     swap_leave = leaves.filter(request__date=day,
                                                giver_shift__owner=request.user,
-                                               accepted=None)
+                                               accepted=None
+                                               ).exclude(request__date__lte=today)
                     bottom_div = 'swap' if swap_shift or swap_leave else 'default-swap'
                     # Accepted swap offer - shift
                     ok_shift_asker = work.filter(request__date=day,
