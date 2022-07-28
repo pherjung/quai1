@@ -13,6 +13,7 @@ urlpatterns = [
     path('confirm_shift/', views.confirm_shift),
     path('wishes/', views.wishes),
     path('wish/delete/', views.delete_wish),
+    path('helping/', views.helping),
     path('legacy_exchanges/', legacy_views.exchanges, name='legacy_exchanges'),
     path('legacy_exchanges/delete/', legacy_views.delete),
     path('legacy_wishes/', legacy_views.wishes, name='legacy_wishes'),

@@ -323,3 +323,38 @@ def confirm_shift(request):
             ).update(active=False)
 
     return HttpResponseRedirect(reverse('calendar'))
+
+
+def helping(request):
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
+    # Given leaves
+    accepted_leaves = Request_leave.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        giver_shift__date=date,
+        accepted=True,
+    ).values_list(
+        'user_shift__shift_name',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'user_shift__owner__first_name',
+        'user_shift__owner__last_name',
+        'note',
+        'given_shift__date')
+    # Given shifts
+    accepted_shifts = Request_shift.objects.filter(
+        giver_shift_id__owner__username=request.user,
+        accepted=True,
+    ).values_list(
+        'user_shift__shift_name',
+        'user_shift__date',
+        'user_shift__start_hour',
+        'user_shift__end_hour',
+        'user_shift__owner__first_name',
+        'user_shift__owner__last_name',
+        'note',
+    ).exclude(user_shift__date__lt=(datetime.now()))
+
+    context = {'accepted_leaves': accepted_leaves,
+               'accepted_shifts': accepted_shifts}
+    return render(request, 'inform/helping.html', context)

@@ -127,6 +127,9 @@ function displayBlock(obj, id) {
   if (swap.className === 'swap') {
     exchanges(full_date, '/calendar/exchanges');
   }
+  if (class_div === 'helping') {
+    exchanges(full_date, '/calendar/helping/');
+  }
 
   var validate = shift.closest('td').querySelector('.date > i');
   if (validate.className === 'fa-solid fa-envelope') {

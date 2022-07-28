@@ -1,0 +1,65 @@
+<!-- swaped Leaves -->
+{% if accepted_leaves %}
+  {% for accept in accepted_leaves %}
+    <tr id="info" class="info">
+      <td>
+        <strong>Tour</strong>
+        <p>{{ accept.0 }}<p>
+      </td>
+      <td>
+        <strong>Date</strong>
+        <p>{{ accept.1|date:"l d.m.y" }}</p>
+      </td>
+      <td>
+        <strong>Horaire</strong>
+        <p>{{ accept.2|default_if_none:'-' }}</p>
+        <p>{{ accept.3|default_if_none:'-' }}</p>
+      </td>
+      <td>
+        <strong>Collègue</strong>
+        <p>{{ accept.4 }}</p>
+        <p>{{ accept.5 }}</p>
+      </td>
+      <td>{{ accept.6|default_if_none:'-' }}</td>
+      <td colspan="5">
+        <strong>En échange</strong>
+        {% if accept.7 %}
+          <p>{{ accept.7|date:"l d.m.y" }}</p>
+        {% else %}
+          <p>À discuter</p>
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}
+
+<!-- swaped shifts -->
+{% if accepted_shifts %}
+  {% for accept_shift in accepted_shifts %}
+    <tr id="info" class="info">
+      <td>
+        <strong>Tour</strong>
+        <p>{{ accept_shift.0 }}</p>
+      </td>
+      <td>
+        <strong>Date</strong>
+        <p>{{ accept_shift.1|date:"l d.m.y" }}</p>
+      </td>
+      <td>
+        <strong>Horaire</strong>
+        <p>{{ accept_shift.2|default_if_none:'-' }}</p>
+        <p>{{ accept_shift.3|default_if_none:'-' }}</p>
+      </td>
+      <td>
+        <strong>Collègue</strong>
+        <p>{{ accept_shift.4 }}</p>
+        <p>{{ accept_shift.5 }}</p>
+      </td>
+      <td>
+        <strong>Notes</strong>
+        <p>{{ accept_shift.6|default_if_none:'-' }}</p>
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}
+
