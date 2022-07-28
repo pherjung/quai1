@@ -8,7 +8,7 @@ from django.db.models import Q
 from exchange.models import Request_leave, Request_leave_log, Give_leave, Request_shift, Request_shift_log
 from exchange import rest_time
 from calendrier.models import Shift
-from .forms import AcceptDeclineDateForm, AcceptDeclineForm, ValidateForm
+from .forms import AcceptDeclineDateForm, AcceptDeclineForm, DeleteForm, ValidateForm
 
 
 @register.filter
@@ -26,7 +26,12 @@ def gifts(request):
         'shift',
         'shift__date',
     ).exclude(shift__date__lt=(datetime.now()))
-    context = {'gifts': gifts}
+    gifts_form = {}
+    for item in gifts:
+        gifts_form[item[0]] = DeleteForm(leave_id=item[0])
+
+    context = {'gifts': gifts,
+               'gifts_form': gifts_form}
     return render(request, 'inform/gifts.html', context)
 
 def wishes(request):
@@ -42,6 +47,21 @@ def wishes(request):
 
     context = {'wishes': user_wishes}
     return render(request, 'inform/user_wishes.html', context)
+
+
+def delete_wish(request):
+    if request.method == 'POST':
+        shift = request.POST['leave']
+        form = DeleteForm(request.POST, leave_id=shift)
+        if form.is_valid():
+            Give_leave.objects.filter(
+                shift=shift,
+                shift__owner__username=request.user
+            ).delete()
+    else:
+        DeleteForm()
+
+    return HttpResponseRedirect(reverse('calendar'))
 
 
 def retrieve_ungiven_leaves(request):

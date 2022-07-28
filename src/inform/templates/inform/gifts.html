@@ -5,6 +5,13 @@
         <strong>Date</strong>
         <p>{{ gift.1|date:"l d.m.y" }}</p>
       </td>
+      <td>
+        <form action="wish/delete/" method="post">
+          {% csrf_token %}
+          {{ gifts_form|get_item:gift.0 }}
+          <input value="Supprimer" name="status" type="submit"></input>
+        </form>
+      </td>
     </tr>
   {% endfor %}
 {% endif %}
