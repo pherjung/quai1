@@ -132,7 +132,7 @@ function displayBlock(obj, id) {
   }
 
   var validate = shift.closest('td').querySelector('.date > i');
-  if (validate.className === 'fa-solid fa-envelope') {
+  if (validate?.className === 'fa-solid fa-envelope') {
     exchanges(full_date, '/calendar/to_accept_leave');
     exchanges(full_date, '/calendar/to_accept_shift');
   }
