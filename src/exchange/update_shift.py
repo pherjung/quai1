@@ -28,18 +28,20 @@ def search_leaves(user, log_id):
 
 def write_legal_leaves(user, log_id, user_shift):
     """
-    Write legal leaves
+    Write legal leaves. Remove illegal leaves offer if exist
     user->CustomUser
     log_id->exchange.models.Request_leave_log
     user_shift->calendrier.models.Shift
     """
     gifts, available_leaves = search_leaves(user, log_id)
     # Exclude unchangeable leaves
-    legal_leaves = exclude_illegal(user_shift, available_leaves)
+    to_remove = exclude_illegal(user_shift, available_leaves)
+    Request_leave.objects.filter(giver_shift_id__in=to_remove).delete()
+    [available_leaves.remove(illegal) for illegal in to_remove]
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
-    while give_it < len(legal_leaves):
+    while give_it < len(available_leaves):
         for index in enumerate(gifts):
             gift = bool(available_leaves[give_it].id in gifts[index[0]])
 
@@ -126,9 +128,8 @@ def exclude_illegal(user_shift, shifts):
     shifts->QuerySet
     return only legal shifts
     """
-    users_shifts = list(shifts)
     remove = set()
-    for tour in users_shifts:
+    for tour in list(shifts):
         # Check if my shift is legal for tour.owner
         time_range = start_end_hour(user_shift.date, tour.owner.username)
         if user_shift.start_hour and user_shift.start_hour < time_range['start_hour']:
@@ -136,19 +137,21 @@ def exclude_illegal(user_shift, shifts):
         if user_shift.end_hour and user_shift.end_hour > time_range['end_hour']:
             remove.add(tour)
 
-    [users_shifts.remove(illegal) for illegal in remove]
-    return users_shifts
+    return remove
 
 
 def write_legal_shifts(user_shift, shifts, note, log):
     """
-    Write legal shifts
+    Write legal shifts. Remove illegal swap offer if exists
     user_shift->Shift object
     shifts->QuerySet
     note->str
     log->Request_shift_log object
     """
-    users_shifts = exclude_illegal(user_shift, shifts)
+    users_shifts = list(shifts)
+    to_remove = exclude_illegal(user_shift, shifts)
+    Request_shift.objects.filter(giver_shift_id__in=to_remove).delete()
+    [users_shifts.remove(illegal) for illegal in to_remove]
     shift_it = 0
     while shift_it < len(users_shifts):
         Request_shift.objects.create(
