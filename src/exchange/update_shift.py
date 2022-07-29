@@ -44,7 +44,7 @@ def write_legal_leaves(user, log_id, user_shift):
             gift = bool(available_leaves[give_it].id in gifts[index[0]])
 
         Request_leave.objects.get_or_create(
-            user_shift=user_shifts,
+            user_shift=user_shift,
             giver_shift=available_leaves[give_it],
             note=log_id.note,
             validated=gift,
