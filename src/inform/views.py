@@ -157,9 +157,10 @@ def recover_ungiven_shift(request):
     """
     Recover all the shifts the connected user can exchange
     """
+    date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     request_shifts = Request_shift.objects.filter(
         giver_shift_id__owner__username=request.user,
-        user_shift__date__gt=(datetime.now()),
+        user_shift__date=date,
         accepted=None,
     ).values_list(
         'user_shift__shift_name',
