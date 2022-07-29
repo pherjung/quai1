@@ -5,12 +5,11 @@ from .models import Give_leave, Request_leave, Request_shift
 from .rest_time import start_end_hour
 
 
-def search_leaves(user, log_id, user_shift):
+def search_leaves(user, log_id):
     """
     Search all existing wishes for a leave
     user->CustomUser
     log_id->exchange.models.Request_leave_log
-    user_shift->calendrier.models.Shift
     """
     # Recover all given leaves
     gifted_leaves = Give_leave.objects.filter(
@@ -24,18 +23,29 @@ def search_leaves(user, log_id, user_shift):
         shift_name__iregex=r'(C|R)T*',
         owner__depot__in=[x.id for x in user.depot.all()]
     ).exclude(owner=user).distinct()
+    return gifted_leaves, list(available_leaves)
+
+
+def write_legal_leaves(user, log_id, user_shift):
+    """
+    Write legal leaves
+    user->CustomUser
+    log_id->exchange.models.Request_leave_log
+    user_shift->calendrier.models.Shift
+    """
+    gifts, available_leaves = search_leaves(user, log_id)
     # Exclude unchangeable leaves
     legal_leaves = exclude_illegal(user_shift, available_leaves)
     # Save shifts
     give_it = 0
     gift = False  # Useful in case len(give) is 0
     while give_it < len(legal_leaves):
-        for index in enumerate(gifted_leaves):
-            gift = bool(legal_leaves[give_it].id in gifted_leaves[index[0]])
+        for index in enumerate(gifts):
+            gift = bool(available_leaves[give_it].id in gifts[index[0]])
 
         Request_leave.objects.get_or_create(
-            user_shift=user_shift,
-            giver_shift=legal_leaves[give_it],
+            user_shift=user_shifts,
+            giver_shift=available_leaves[give_it],
             note=log_id.note,
             validated=gift,
             request=log_id,

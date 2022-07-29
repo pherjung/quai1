@@ -14,7 +14,7 @@ from login.models import CustomUser, Depot
 from calendrier.models import Shift
 from exchange.models import Request_shift, Request_shift_log, Request_leave, Request_leave_log
 from calendarManager.update import all_shifts, update_shift
-from exchange.update_shift import search_shifts, search_leaves, write_legal_shifts
+from exchange.update_shift import search_shifts, write_legal_shifts, write_legal_leaves
 from django.db.utils import OperationalError
 
 LEAVES = ('RT', 'CT', 'RTT', 'CTT', 'F', 'CTS')
@@ -129,7 +129,7 @@ def update_leave(user, request_leave_logs):
         for req in leaves_wishes:
             if req.giver_shift.shift_name not in LEAVES:
                 req.delete()
-        search_leaves(user, log, user_shift)
+        write_legal_leaves(user, log, user_shift)
 
 
 def apply(user):
