@@ -259,13 +259,11 @@ def to_accept_leave(request):
         'giver_shift__owner__first_name',
         'giver_shift__owner__last_name',
         'given_shift__date',
-        'user_shift__start_hour',
-        'user_shift__end_hour',
         'id',
         'giver_shift__owner__email')
     leave_forms = {}
     for leave in accepted_leaves:
-        leave_forms[leave[6]] = ValidateForm(request_leave=leave[6],
+        leave_forms[leave[4]] = ValidateForm(request_leave=leave[4],
                                              exchange=leave[3])
     context = {'accepted_leaves': accepted_leaves,
                'leave_forms': leave_forms}

@@ -21,16 +21,11 @@
           <p>{{ leave.3|date:"l d.m.y" }}</p>
         {% endif %}
       </td>
-      <td colspan='2'>
-        <strong>Horaire de son tour</strong>
-        <p>{{ leave.4|time:"H:i" }}</p>
-        <p>{{ leave.5|time:"H:i" }}</p>
-      </td>
       <td colspan='3'>
-        <form onclick="validate('{{ leave.7 }}', 'Échanges congé', '{{ leave.0 }}', '{{ leave.3 }}')" action="confirm_leave/" method="post">
+        <form onclick="validate('{{ leave.5 }}', 'Échanges congé', '{{ leave.0 }}', '{{ leave.3 }}')" action="confirm_leave/" method="post">
           {% csrf_token %}
-          {{ leave_forms|get_item:leave.6 }}
-          <input value="{{ leave.6 }}" name="id" type="hidden">
+          {{ leave_forms|get_item:leave.4 }}
+          <input value="{{ leave.4 }}" name="id" type="hidden">
           <input value="Valider" name="status" type="submit"></input>
         </form>
       </td>
