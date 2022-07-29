@@ -34,6 +34,7 @@ def gifts(request):
                'gifts_form': gifts_form}
     return render(request, 'inform/gifts.html', context)
 
+
 def wishes(request):
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     user_wishes = Request_leave_log.objects.filter(
