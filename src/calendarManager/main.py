@@ -1,6 +1,6 @@
 import sys
 import os
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import django
 import vobject
 import requests

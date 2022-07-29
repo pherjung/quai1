@@ -1,5 +1,4 @@
 from datetime import datetime
-from django.db.models import Q
 
 from calendrier.models import Shift
 from .models import Give_leave, Request_leave, Request_shift
