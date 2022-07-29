@@ -107,31 +107,38 @@ def retrieve_ungiven_leaves(request):
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     # Recover all the leave the connected user can exchange
     request_leaves = Request_leave.objects.filter(
-        giver_shift__date=date,
+        giver_shift__date__gte=date,
         giver_shift_id__owner__username=request.user,
         user_shift__date__gt=(datetime.now()),
-        accepted=None,
     ).values_list(
         'user_shift__shift_name',
         'user_shift__start_hour',
         'user_shift__end_hour',
         'note',
         'user_shift',
-        'user_shift__owner')
+        'user_shift__owner',
+        'given_shift',
+        'id')
     # Recover all requesters
-    requester_ids = [users[4:] for users in request_leaves]
+    requester_ids = [users[4:] for users in request_leaves.filter(request__date=date, accepted=None)]
     keeped_date = {}
-    for users in request_leaves:
-        keeped_date[users[5]] = []
+    for users in request_leaves.filter(request__date=date, accepted=None):
+        keeped_date[users[5]] = []  # 5 == user_shift__owner
+
+    already_gifted = []
+    for used_gift in request_leaves:
+        if used_gift[6]: already_gifted.append(used_gift[6])
     # Recover all leaves requesters give
     given_leaves = {}
     # Do not propose a leave if the donor already has one
     dates = Give_leave.objects.filter(
         shift__owner__in=[uids[1] for uids in requester_ids],
+        shift__date__gte=datetime.now(),
         given=False
-    ).values_list('shift', 'shift__date',
-                  'shift__owner__username', 'shift__owner',
-                  ).exclude(shift__date__lt=datetime.now())
+    ).exclude(shift_id__in=already_gifted
+              ).values_list('shift', 'shift__date',
+                            'shift__owner__username',
+                            'shift__owner')
     for day in dates:
         try:
             user_leave = Shift.objects.get(owner=request.user, date=day[1])
@@ -150,12 +157,12 @@ def retrieve_ungiven_leaves(request):
         given_leaves[i[0]] = AcceptDeclineDateForm(
             user_dates=dates.filter(shift__date__in=keeped_date[i[1]],
                                     shift__owner=i[1])).as_p()
-    return request_leaves, given_leaves
+    return request_leaves.filter(request__date=date, accepted=None), given_leaves
 
 
 def recover_ungiven_shift(request):
     """
-    Recover all the shifts the connected user can exchange
+    Recover all shifts the connected user can exchange
     """
     date = datetime.strptime(json.loads(request.body), '%A %d %B %Y')
     request_shifts = Request_shift.objects.filter(
